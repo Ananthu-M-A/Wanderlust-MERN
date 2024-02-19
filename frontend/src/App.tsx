@@ -3,8 +3,10 @@ import Layout from "./layouts/Layout";
 import './index.css';
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import AddHotel from "./components/AddHotel";
+import AddHotel from "./pages/AddHotel";
 import { useAppContext } from "./contexts/AppContext";
+import Hotels from "./pages/Hotels";
+import EditHotel from "./pages/EditHotel";
 
 function App() {
   const { isLoggedIn } = useAppContext();
@@ -17,11 +19,6 @@ function App() {
           <Route path="/" element={
             <Layout>
               <p>Home Page</p>
-            </Layout>} />
-
-          <Route path="/hotels" element={
-            <Layout>
-              <p>Hotels Page</p>
             </Layout>} />
 
           <Route path="/register" element={
@@ -38,6 +35,16 @@ function App() {
             <Route path="/add-hotel" element={
               <Layout>
                 <AddHotel />
+              </Layout>} />
+
+            <Route path="/edit-hotel/:hotelId" element={
+              <Layout>
+                <EditHotel />
+              </Layout>} />
+
+            <Route path="/hotels" element={
+              <Layout>
+                <Hotels />
               </Layout>} />
           </>}
 
