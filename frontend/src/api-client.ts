@@ -1,6 +1,7 @@
 import { LoginFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
-import { HotelType } from '../../backend/src/models/hotel';
+import { HotelType, SearchResponse } from '../../backend/src/shared/types';
+
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -89,7 +90,7 @@ export const loadHotels = async (): Promise<HotelType[]> => {
 };
 
 
-export const loadHotelById = async (hotelId: string): Promise<HotelType[]> => {
+export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
     const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}`, {
         credentials: "include"
     })
@@ -100,14 +101,40 @@ export const loadHotelById = async (hotelId: string): Promise<HotelType[]> => {
 }
 
 
-export const updateHotelById = async (hotelIFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelIFormData.get("hotelId")}`, {
+export const updateHotelById = async (hotelFormData: FormData) => {
+    const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelFormData.get("hotelId")}`, {
         method: "PUT",
-        body: hotelIFormData,
+        body: hotelFormData,
         credentials: "include"
     })
     if (!response.ok) {
         throw new Error("Failed to update hotels");
+    }
+    return response.json();
+}
+
+
+export type SearchParams = {
+    destination?: string;
+    checkIn?: string;
+    checkOut?: string;
+    adultCount?: string;
+    childCount?: string;
+    page?: string;
+}
+
+export const searchHotels = async (searchParams: SearchParams):Promise<SearchResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("destination", searchParams.destination || "");
+    queryParams.append("checkIn", searchParams.checkIn || "");
+    queryParams.append("checkOut", searchParams.checkOut || "");
+    queryParams.append("adultCount", searchParams.adultCount || "");
+    queryParams.append("childCount", searchParams.childCount || "");
+    queryParams.append("page", searchParams.page || "");
+
+    const response = await fetch(`${API_BASE_URL}/api/home/search?${queryParams}`);
+    if (!response.ok) {
+        throw new Error("Error searching hotels");
     }
     return response.json();
 }

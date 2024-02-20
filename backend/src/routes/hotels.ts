@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
-import Hotel, { HotelType } from '../models/hotel';
+import Hotel from '../models/hotel';
+import { HotelType } from '../shared/types';
 import verifyToken from '../middleware/auth';
 import { body } from 'express-validator';
 
@@ -66,15 +67,14 @@ router.get('/:id', verifyToken, async (req: Request, res: Response) => {
 });
 
 
-router.put('/:id', verifyToken, upload.array("imageFiles"),
+router.put('/:hotelid', verifyToken, upload.array("imageFiles"),
     async (req: Request, res: Response) => {
-        const id = req.params.id.toString();
         try {
             const updatedHotel: HotelType = req.body;
             updatedHotel.lastUpdated = new Date();
 
             const hotel = await Hotel.findOneAndUpdate({
-                _id: req.params.hotelId,
+                _id: req.body.hotelId,
                 userId: req.userId
             }, updatedHotel, { new: true });
             if (!hotel) {
@@ -86,6 +86,8 @@ router.put('/:id', verifyToken, upload.array("imageFiles"),
 
             hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || [])];
             await hotel.save();
+            console.log(hotel);
+            
             res.status(201).json(hotel);
         } catch (error) {
             res.status(500).json({ message: "Something went wrong" });
