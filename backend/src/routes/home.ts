@@ -7,10 +7,21 @@ const router = express.Router();
 router.get('/search', async (req: Request, res: Response) => {
     try {
         const query = constructSearchQuery(req.query);
+        let sortOption = {};
+        switch (req.query.sortOption) {
+            case "starRating":
+                sortOption = { starRating: -1 }; break;
+            case "pricePerNightAsc":
+                sortOption = { pricePerNight: 1 }; break;
+            case "pricePerNightDesc":
+                sortOption = { pricePerNight: -1 }; break;
+
+        }
+
         const pageSize = 5;
         const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
         const skip = (pageNumber - 1) * pageSize;
-        const hotels = await Hotel.find(query).skip(skip).limit(pageSize);
+        const hotels = await Hotel.find(query).sort(sortOption).skip(skip).limit(pageSize);
         const total = await Hotel.countDocuments();
         const response: SearchResponse = {
             data: hotels,
@@ -60,18 +71,21 @@ const constructSearchQuery = (queryParams: any) => {
 
     if (queryParams.types) {
         constructedQuery.type = {
-            $in: Array.isArray(queryParams.facilities)
+            $in: Array.isArray(queryParams.types)
                 ? queryParams.types
                 : [queryParams.types]
         }
     }
 
     if (queryParams.stars) {
-        const starRating = parseInt(queryParams.stars.toString());
-        constructedQuery.starRating = { $eq: starRating };
+        constructedQuery.starRating = {
+            $in: Array.isArray(queryParams.stars)
+            ? queryParams.stars
+            : [queryParams.stars]
+        }
     }
 
-    if(queryParams.maxPrice){
+    if (queryParams.maxPrice) {
         constructedQuery.pricePerNight = {
             $lte: parseInt(queryParams.maxPrice).toString(),
         };
