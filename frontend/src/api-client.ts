@@ -1,9 +1,21 @@
 import { LoginFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
-import { HotelType, SearchResponse } from '../../backend/src/shared/types';
+import { HotelType, SearchResponse, UserType } from '../../backend/src/shared/types';
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export const loadCurrentUser = async (): Promise<UserType> => {
+    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Error loading user");
+    }
+    return response.json();
+}
+
 
 export const register = async (formData: RegisterFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/users/register`, {
@@ -145,11 +157,18 @@ export const searchHotels = async (searchParams: SearchParams): Promise<SearchRe
     searchParams.types?.forEach((type) => queryParams.append("types", type));
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
-
-
     const response = await fetch(`${API_BASE_URL}/api/home/search?${queryParams}`);
     if (!response.ok) {
         throw new Error("Error searching hotels");
+    }
+    return response.json();
+}
+
+
+export const loadHotelHomeById = async (hotelId: string):Promise<HotelType> => {
+    const response = await fetch(`${API_BASE_URL}/api/home/${hotelId}`);
+    if (!response.ok) {
+        throw new Error("Failed to update hotels");
     }
     return response.json();
 }
