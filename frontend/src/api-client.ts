@@ -1,6 +1,7 @@
 import { LoginFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
-import { HotelType, SearchResponse, UserType } from '../../backend/src/shared/types';
+import { HotelType, PaymentIntentResponse, SearchResponse, UserType } from '../../backend/src/shared/types';
+import { BookingFormData } from "./forms/BookingForm/BookingForm";
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -165,10 +166,42 @@ export const searchHotels = async (searchParams: SearchParams): Promise<SearchRe
 }
 
 
-export const loadHotelHomeById = async (hotelId: string):Promise<HotelType> => {
+export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => {
     const response = await fetch(`${API_BASE_URL}/api/home/${hotelId}`);
     if (!response.ok) {
         throw new Error("Failed to update hotels");
     }
     return response.json();
 }
+
+export const createPaymentIntent =
+    async (hotelId: string, numberOfNights: string): Promise<PaymentIntentResponse> => {
+        const response = await fetch(`${API_BASE_URL}/api/home/${hotelId}/bookings/payment-intent`, {
+            credentials: "include",
+            method: "POST",
+            body: JSON.stringify({ numberOfNights }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        if (!response.ok) {
+            throw new Error("Error fetching payment intent");
+        }
+        return response.json();
+    };
+
+
+    export const createRoomBooking = async (formData: BookingFormData) => {
+        const response = await fetch(`${API_BASE_URL}/api/home/${formData.hotelId}/bookings`, {
+            credentials: "include",
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        if (!response.ok) {
+            throw new Error("Error booking room");
+        }
+        return response.json();
+    };
