@@ -28,11 +28,11 @@ const SearchBar = () => {
     return (
         <form onSubmit={handleSubmit}
             className="-mt-8 p-3 bg-orange-400 rounded shadow-md grid gid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4">
-            <div className="flex flex-row items-center flex-1 bg-white p-2">
-                <MdTravelExplore size={25} className="mr-2" />
-                <input placeholder="Where are you going?" value={destination}
-                    className="text-md w-full focus:outline-none"
-                    onChange={(event) => { setDestination(event.target.value) }} />
+            <div>
+                <DatePicker selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
+                    minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
+                    onChange={(date) => setCheckIn(date as Date)} wrapperClassName="min-w-full"
+                    className="min-w-full bg-white p-2 focus:outline-none" />
             </div>
             <div className="flex bg-white px-2 py-1 gap-2">
                 <label className="items-center flex">
@@ -49,25 +49,23 @@ const SearchBar = () => {
                 </label>
             </div>
             <div>
-                <DatePicker selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
-                    minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
-                    onChange={(date) => setCheckIn(date as Date)} wrapperClassName="min-w-full"
-                    className="min-w-full bg-white p-2 focus:outline-none" />
-            </div>
-            <div>
                 <DatePicker selected={checkOut} selectsStart startDate={checkIn} endDate={checkOut}
                     minDate={minDate} maxDate={maxDate} placeholderText="Check-out Date"
                     onChange={(date) => setCheckOut(date as Date)} wrapperClassName="min-w-full"
                     className="min-w-full bg-white p-2 focus:outline-none" />
             </div>
-            <div className="flex gap-1">
-                <button className="w-2/3 bg-blue-600 text-white h-full p-2 font-bold text-xl hover:bg-blue-500">
-                    Search
-                </button>
-                <button className="w-1/3 bg-red-600 text-white h-full p-2 font-bold text-xl hover:bg-red-500">
-                    Clear
-                </button>
+            <button className="w-100 bg-red-600 text-white h-full p-2 font-bold text-xl hover:bg-red-500">
+                Clear
+            </button>
+            <div className="flex flex-row items-center flex-1 bg-white p-2">
+                <MdTravelExplore size={25} className="mr-2" />
+                <input placeholder="Where are you going?" value={destination}
+                    className="text-md w-full focus:outline-none"
+                    onChange={(event) => { setDestination(event.target.value) }} />
             </div>
+            <button className="w-100 bg-blue-600 text-white h-full p-2 font-bold text-xl hover:bg-blue-500">
+                Search
+            </button>
         </form>
     )
 }

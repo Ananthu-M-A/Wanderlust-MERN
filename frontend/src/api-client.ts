@@ -52,8 +52,8 @@ export const login = async (formData: LoginFormData) => {
 }
 
 
-export const validateToken = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {
+export const validateAdminToken = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/adminAuth/validate-admin-token`, {
         credentials: "include",
     });
 
@@ -66,6 +66,17 @@ export const validateToken = async () => {
 
 export const logout = async () => {
     const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+    });
+    if (!response.ok) {
+        throw new Error("Error during Logout");
+    }
+};
+
+
+export const adminLogout = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/adminAuth/adminLogout`, {
         method: "POST",
         credentials: "include",
     });
@@ -191,17 +202,45 @@ export const createPaymentIntent =
     };
 
 
-    export const createRoomBooking = async (formData: BookingFormData) => {
-        const response = await fetch(`${API_BASE_URL}/api/home/${formData.hotelId}/bookings`, {
-            credentials: "include",
-            method: "POST",
-            body: JSON.stringify(formData),
-            headers: {
-                "Content-Type": "application/json"
-            },
-        });
-        if (!response.ok) {
-            throw new Error("Error booking room");
-        }
-        return response.json();
-    };
+export const createRoomBooking = async (formData: BookingFormData) => {
+    const response = await fetch(`${API_BASE_URL}/api/home/${formData.hotelId}/bookings`, {
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+    if (!response.ok) {
+        throw new Error("Error booking room");
+    }
+    return response.json();
+};
+
+export const adminLogin = async (formData: LoginFormData) => {
+    const response = await fetch(`${API_BASE_URL}/api/adminAuth/adminLogin`, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+    });
+
+    const responseBody = await response.json();
+    if (!response.ok) {
+        throw new Error(responseBody.message);
+    }
+}
+
+export const validateToken = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Invalid Token");
+    }
+
+    return response.json();
+}

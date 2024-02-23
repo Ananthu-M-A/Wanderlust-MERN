@@ -5,11 +5,11 @@ export type UserType = {
     password: string,
     firstName: string,
     lastName: string,
+    role: string[],
 };
 
 export type HotelType = {
     _id: string,
-    userId: string,
     name: string,
     city: string,
     country: string,

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from '../api-client';
 import { useAppContext } from "../contexts/AppContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export type RegisterFormData = {
     firstName: string,
@@ -17,7 +18,7 @@ export type RegisterFormData = {
 const Register = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const { showToast } = useAppContext();
+    const { showToast, isLoggedIn } = useAppContext();
     const { register, watch, handleSubmit, formState: { errors } } = useForm<RegisterFormData>();
 
     const mutation = useMutation(apiClient.register, {
@@ -26,12 +27,18 @@ const Register = () => {
             await queryClient.invalidateQueries("validateToken");
             navigate("/");
         },
-        onError: (error: Error) => { showToast({ message: error.message, type: "ERROR"}) },
+        onError: (error: Error) => { showToast({ message: error.message, type: "ERROR" }) },
     });
 
     const onSubmit = handleSubmit((data) => {
         mutation.mutate(data);
     });
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate("/");
+        }
+    }, [isLoggedIn])
 
     return (
         <form className="flex flex-col gap-5" onSubmit={onSubmit}>

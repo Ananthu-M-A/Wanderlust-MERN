@@ -1,26 +1,25 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from '../api-client';
-import { useAppContext } from "../contexts/AppContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useAdminContext } from "../contexts/AdminContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export type LoginFormData = {
     email: string;
     password: string;
 }
 
-const Login = () => {
+const AdminLogin = () => {
     const queryClient = useQueryClient();
-    const { showToast, isLoggedIn } = useAppContext();
+    const { showToast } = useAdminContext();
     const navigate = useNavigate();
     const location = useLocation();
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
-    const mutation = useMutation(apiClient.login, {
+    const mutation = useMutation(apiClient.adminLogin, {
         onSuccess: async () => {
             showToast({ message: "Login Successful!", type: "SUCCESS" });
-            await queryClient.invalidateQueries("validateToken");
-            navigate(location.state?.from?.pathname || "/");
+            await queryClient.invalidateQueries("validateAdminToken");
+            navigate(location.state?.from?.pathname || "/hotels");
         },
         onError: (error: Error) => { showToast({ message: error.message, type: "ERROR" }) },
     });
@@ -29,15 +28,9 @@ const Login = () => {
         mutation.mutate(data);
     });
 
-    useEffect(() => {
-        if (isLoggedIn) {
-            navigate("/");
-        }
-    }, [isLoggedIn])
-
     return (
         <form className="flex flex-col gap-5" onSubmit={onSubmit}>
-            <h2 className="text-3xl font-bold">Login</h2>
+            <h2 className="text-3xl font-bold">Admin Login</h2>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Email
                 <input type="email"
@@ -53,9 +46,6 @@ const Login = () => {
                 {errors.password && (<span className="text-red-500">{errors.password.message}</span>)}
             </label>
             <span className="flex items-center justify-between">
-                <span className="text-sm">
-                    Not Registered? <Link className="underline" to="/register">Create an account now</Link>
-                </span>
                 <button type="submit"
                     className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl">
                     Login
@@ -65,4 +55,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default AdminLogin;

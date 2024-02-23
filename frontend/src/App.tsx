@@ -10,9 +10,12 @@ import EditHotel from "./pages/EditHotel";
 import Search from "./pages/Search";
 import Detail from "./pages/Detail";
 import Booking from "./pages/Booking";
+import AdminLogin from "./pages/AdminLogin";
+import { useAdminContext } from "./contexts/AdminContext";
 
 function App() {
   const { isLoggedIn } = useAppContext();
+  const { isAdminLoggedIn } = useAdminContext();
 
   return (
     <>
@@ -44,12 +47,24 @@ function App() {
               <Login />
             </Layout>} />
 
+          <Route path="/adminLogin" element={
+            <Layout>
+              <AdminLogin />
+            </Layout>} />
+
           {isLoggedIn && <>
+            <Route path="/adminHome" element={
+              <Layout>
+                <p>Admin Dashboard</p>
+              </Layout>} />
+
             <Route path="/home/:hotelId/booking" element={
               <Layout>
                 <Booking />
               </Layout>} />
+          </>}
 
+          {isAdminLoggedIn && <>
             <Route path="/add-hotel" element={
               <Layout>
                 <AddHotel />

@@ -3,11 +3,11 @@ import User from '../models/user';
 import jwt from 'jsonwebtoken';
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
-import verifyToken from '../middleware/auth';
+import verifyAdminToken from '../middleware/adminAuth';
 
 const router = express.Router();
 
-router.post("/login",
+router.post("/adminLogin",
     [
         check("email", "Email required").isEmail(),
         check("password", "Password required").isLength({ min: 6 }),
@@ -19,39 +19,39 @@ router.post("/login",
         }
         const { email, password } = req.body;
         try {
-            let user = await User.findOne({
+            let admin = await User.findOne({
                 email: email,
             });
-            if (!user || user.role.includes("admin")) {
+            if (!admin || !admin.role.includes("admin")) {
                 return res.status(400).json({ message: "Invalid credentials!" });
             }
-            const isMatch = await bcrypt.compare(password, user.password);
+            const isMatch = await bcrypt.compare(password, admin.password);
             if (!isMatch) {
                 return res.status(400).json({ message: "Invalid credentials!" });
             }
 
-            const token = jwt.sign({ userId: user.id },
+            const token = jwt.sign({ adminId: admin.id },
                 process.env.JWT_SECRET_KEY as string,
                 { expiresIn: '1d' },
             );
-            res.cookie("auth_token", token, {
+            res.cookie("admin_token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 maxAge: 86400000
             });
-            return res.status(200).json({ userId: user._id });
+            return res.status(200).json({ adminId: admin._id });
         } catch (error) {
             console.log(error);
             return res.status(500).send({ message: "Something went wrong!" });
         }
     });
 
-router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
-    res.status(200).send({ userId: req.userId });
+router.get("/validate-admin-token", verifyAdminToken, (req: Request, res: Response) => {
+    res.status(200).send({ adminId: req.adminId });
 });
 
-router.post("/logout", (req: Request, res: Response) => {
-    res.cookie("auth_token", "", {
+router.post("/adminLogout", (req: Request, res: Response) => {
+    res.cookie("admin_token", "",{
         expires: new Date(0),
     });
     res.send();

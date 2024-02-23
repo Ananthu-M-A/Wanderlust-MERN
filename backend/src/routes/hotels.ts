@@ -3,8 +3,8 @@ import multer from 'multer';
 import cloudinary from 'cloudinary';
 import Hotel from '../models/hotel';
 import { HotelType } from '../shared/types';
-import verifyToken from '../middleware/auth';
 import { body } from 'express-validator';
+import verifyAdminToken from '../middleware/adminAuth';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -13,7 +13,7 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-router.post('/', verifyToken, [
+router.post('/', verifyAdminToken, [
     body("name").notEmpty().withMessage('Name is required'),
     body("city").notEmpty().withMessage('City is required'),
     body("country").notEmpty().withMessage('Country is required'),
@@ -30,7 +30,6 @@ router.post('/', verifyToken, [
             const imageUrls = await uploadImages(imageFiles);
             newHotel.imageUrls = imageUrls;
             newHotel.lastUpdated = new Date();
-            newHotel.userId = req.userId;
 
             const hotel = new Hotel(newHotel);
             await hotel.save();
@@ -42,9 +41,9 @@ router.post('/', verifyToken, [
     });
 
 
-router.get('/', verifyToken, async (req: Request, res: Response) => {
+router.get('/', verifyAdminToken, async (req: Request, res: Response) => {
     try {
-        const hotels = await Hotel.find({ userId: req.userId });
+        const hotels = await Hotel.find();
         res.json(hotels);
 
     } catch (error) {
@@ -53,12 +52,11 @@ router.get('/', verifyToken, async (req: Request, res: Response) => {
 });
 
 
-router.get('/:id', verifyToken, async (req: Request, res: Response) => {
+router.get('/:id', verifyAdminToken, async (req: Request, res: Response) => {
     const id = req.params.id.toString();
     try {
         const hotel = await Hotel.findOne({
             _id: id,
-            userId: req.userId
         });
         res.json(hotel);
     } catch (error) {
@@ -67,7 +65,7 @@ router.get('/:id', verifyToken, async (req: Request, res: Response) => {
 });
 
 
-router.put('/:hotelid', verifyToken, upload.array("imageFiles"),
+router.put('/:hotelid', verifyAdminToken, upload.array("imageFiles"),
     async (req: Request, res: Response) => {
         try {
             const updatedHotel: HotelType = req.body;
@@ -75,7 +73,6 @@ router.put('/:hotelid', verifyToken, upload.array("imageFiles"),
 
             const hotel = await Hotel.findOneAndUpdate({
                 _id: req.body.hotelId,
-                userId: req.userId
             }, updatedHotel, { new: true });
             if (!hotel) {
                 return res.status(404).json({ message: "Hotel not found" });
@@ -86,7 +83,6 @@ router.put('/:hotelid', verifyToken, upload.array("imageFiles"),
 
             hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || [])];
             await hotel.save();
-            console.log(hotel);
             
             res.status(201).json(hotel);
         } catch (error) {

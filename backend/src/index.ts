@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import { v2 as cloudinary } from 'cloudinary';
 import hotelRoutes from './routes/hotels';
 import homeRoutes from './routes/home';
+import adminAuthRoutes from './routes/adminAuth';
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -38,6 +39,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/hotels", hotelRoutes);
 app.use("/api/home", homeRoutes);
+
+app.use("/api/adminAuth", adminAuthRoutes);
+
 
 app.listen(4000, () => {
     console.log("Server started on port 4000.");
