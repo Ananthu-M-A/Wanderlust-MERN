@@ -6,6 +6,7 @@ import GuestSection from "./GuestSection";
 import ImagesSection from "./ImagesSection";
 import { HotelType } from "../../../../backend/src/shared/types";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export type HotelFormData = {
     name: string;
@@ -31,6 +32,7 @@ type Props = {
 const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
     const formMethods = useForm<HotelFormData>();
     const { handleSubmit, reset } = formMethods;
+    const { pathname } = useLocation();
 
     useEffect(() => {
         reset(hotel);
@@ -76,8 +78,10 @@ const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
                 <GuestSection />
                 <ImagesSection />
                 <span className="flex justify-end">
-                    <button className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl disabled:bg-gray-500"
-                        disabled={isLoading} type="submit">{isLoading ? "Saving..." : "Save Hotel"}</button>
+                    <button className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl disabled:bg-gray-500"
+                        disabled={isLoading} type="submit">
+                        {((pathname === "/add-hotel") ? (isLoading ? "Pleas wait..." : "Add Hotel") : (isLoading ? "Pleas wait..." : "Update Hotel"))}
+                    </button>
                 </span>
             </form>
         </FormProvider>

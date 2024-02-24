@@ -1,11 +1,14 @@
 import { useFormContext } from "react-hook-form";
 import { HotelFormData } from "./ManageHotelForm";
+import { useLocation } from "react-router-dom";
 
 const DetailsSection = () => {
     const { register, formState: { errors } } = useFormContext<HotelFormData>();
+    const location = useLocation();
+
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-3xl font-bold mb-3">Add Hotel</h1>
+            <h1 className="text-3xl font-bold mb-3">{(location.pathname === "/add-hotel") ? "Add Hotel" : "Edit Hotel"}</h1>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Name
                 <input type="text"
@@ -51,7 +54,7 @@ const DetailsSection = () => {
                     <option value="" className="text-sm font-bold">
                         Select Rating
                     </option>
-                    {[1, 2, 3, 4, 5].map((num,index) => (
+                    {[1, 2, 3, 4, 5].map((num, index) => (
                         <option key={index} value={num}>{num}</option>
                     ))}
                 </select>

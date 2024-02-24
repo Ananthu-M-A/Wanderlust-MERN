@@ -112,7 +112,7 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
         </div>
         <div className="flex justify-end">
             <button type="submit" disabled={isLoading}
-                className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-md disabled:bg-gray-500">
+                className="bg-black text-blue-300 p-2 font-bold hover:text-white text-md disabled:bg-gray-500">
                 {isLoading ? "Saving" : "Confirm Booking"}
             </button>
         </div>

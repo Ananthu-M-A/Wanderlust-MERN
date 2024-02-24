@@ -27,7 +27,7 @@ const SearchBar = () => {
 
     return (
         <form onSubmit={handleSubmit}
-            className="-mt-8 p-3 bg-orange-400 rounded shadow-md grid gid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4">
+            className="-mt-16 p-3 bg-black rounded shadow-md grid gid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4">
             <div>
                 <DatePicker selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
                     minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
