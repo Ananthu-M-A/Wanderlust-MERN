@@ -29,6 +29,26 @@ export const register = async (formData: RegisterFormData) => {
     });
 
     const responseBody = await response.json();
+    localStorage.setItem("otpToken", responseBody.otpToken);
+
+    if (!response.ok) {
+        throw new Error(responseBody.message);
+    }
+}
+
+
+export const verifyRegistration = async (otp: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/verifyRegistration`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ otp }),
+        credentials: 'include'
+    });
+
+    const responseBody = await response.json();
+
     if (!response.ok) {
         throw new Error(responseBody.message);
     }

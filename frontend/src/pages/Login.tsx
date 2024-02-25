@@ -42,14 +42,23 @@ const Login = () => {
                 Email
                 <input type="email"
                     className="border rounded w-full py-1 px-2 font-normal"
-                    {...register('email', { required: "This feild is required" })}></input>
+                    {...register('email', {
+                        required: "This feild is required",
+                        pattern: { value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/, message: "Enter a valid Email, Eg:- user@example.com" },
+                    })}></input>
                 {errors.email && (<span className="text-red-500">{errors.email.message}</span>)}
             </label>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Password
                 <input type="password"
                     className="border rounded w-full py-1 px-2 font-normal"
-                    {...register("password", { required: "This feild is required", minLength: { value: 6, message: "Min 6 characters required" } })}></input>
+                    {...register("password", {
+                        required: "This feild is required",
+                        pattern: {
+                            value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{6,}$/,
+                            message: "Enter a valid password with uppercase, lowercase, digits & special characters(Minimum length of 6), Eg:- A5dfg$"
+                        },
+                    })}></input>
                 {errors.password && (<span className="text-red-500">{errors.password.message}</span>)}
             </label>
             <span className="flex items-center justify-between">

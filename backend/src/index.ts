@@ -9,6 +9,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import hotelRoutes from './routes/hotels';
 import homeRoutes from './routes/home';
 import adminAuthRoutes from './routes/adminAuth';
+import session from 'express-session';
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -31,8 +32,16 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "http://localhost:5173",
     credentials: true,
+}));
+app.use(session({
+    secret: process.env.SESSION_SECRET || "Secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 86400000,
+    },
 }));
 
 app.use("/api/auth", authRoutes);
