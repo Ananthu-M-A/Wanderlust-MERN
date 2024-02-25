@@ -1,22 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import SearchBar from "../components/SearchBar";
-import { useAppContext } from "../contexts/AppContext";
+import { useLocation } from "react-router-dom";
 
 interface Props {
     children: React.ReactNode;
 }
 
 const Layout = ({ children }: Props) => {
-    const { isLoggedIn } = useAppContext();
+    const { pathname } = useLocation();
+    const [showComponent, setShowComponent] = useState(true);
+    useEffect(() => {
+        if ((pathname.startsWith("/admin")) || (pathname === "/adminLogin") ||
+            (pathname === "/login") || (pathname === "/register")) {
+            setShowComponent(false);
+        } else {
+            setShowComponent(true);
+        }
+    }, [pathname]);
     return (
         <div className='flex flex-col min-h-screen'>
             <Header />
-            {isLoggedIn && <Hero />}
-            <div className="container mx-auto">
-                {isLoggedIn && <SearchBar />}
-            </div>
+            {showComponent && <>
+                <Hero />
+                <div className="container mx-auto">
+                    <SearchBar />
+                </div>
+            </>}
             <div className="container mx-auto py-10 flex-1">
                 {children}
             </div>

@@ -134,6 +134,8 @@ export const loadHotels = async (): Promise<HotelType[]> => {
 };
 
 
+
+
 export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
     const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}`, {
         credentials: "include"
@@ -156,6 +158,42 @@ export const updateHotelById = async (hotelFormData: FormData) => {
     }
     return response.json();
 }
+
+export const loadUsers = async (): Promise<UserType[]> => {
+    const response = await fetch(`${API_BASE_URL}/api/users`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to load users");
+    }
+
+    return response.json();
+};
+
+
+export const blockUser = async (userId: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/${userId}/block`, {
+        method: "PUT",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to block user");
+    }
+};
+
+
+export const unblockUser = async (userId: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/users/${userId}/unblock`, {
+        method: "PUT",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to unblock user");
+    }
+};
 
 
 export type SearchParams = {

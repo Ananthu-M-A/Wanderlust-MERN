@@ -17,11 +17,11 @@ const EditHotel = () => {
     const { mutate, isLoading } = useMutation(apiClient.updateHotelById, {
         onSuccess: () => {
             showToast({ message: "Hotel Updated!", type: "SUCCESS" });
-            navigate('/hotels');
+            navigate('/admin/hotels');
         },
         onError: () => {
             showToast({ message: "Error updating hotel", type: "ERROR" });
-            navigate('/hotels');
+            navigate('/admin/hotels');
         }
     });
 

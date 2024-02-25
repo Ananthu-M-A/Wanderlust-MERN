@@ -19,7 +19,7 @@ const AdminLogin = () => {
         onSuccess: async () => {
             showToast({ message: "Login Successful!", type: "SUCCESS" });
             await queryClient.invalidateQueries("validateAdminToken");
-            navigate(location.state?.from?.pathname || "/hotels");
+            navigate(location.state?.from?.pathname || "/admin/hotels");
         },
         onError: (error: Error) => { showToast({ message: error.message, type: "ERROR" }) },
     });

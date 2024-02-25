@@ -19,7 +19,7 @@ return (
     <div className="space-y-5">
         <span className="flex justify-between">
             <h1 className="text-3xl font-bold">Hotels</h1>
-            <Link to="/add-hotel" className="flex bg-black text-blue-300 text-xl font-bold p-2 hover:text-white">
+            <Link to="/admin/add-hotel" className="flex bg-black text-blue-300 text-xl font-bold p-2 hover:text-white">
                 Add Hotel
             </Link>
         </span>
@@ -51,7 +51,7 @@ return (
                         </div>
                     </div>
                     <span className="flex justify-end">
-                        <Link to={`/edit-hotel/${hotel._id}`}
+                        <Link to={`/admin/edit-hotel/${hotel._id}`}
                             className="flex bg-black text-blue-300 text-xl font-bold p-2 hover:text-white">
                             Details
                         </Link>

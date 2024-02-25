@@ -11,11 +11,11 @@ const AddHotel = () => {
     const { mutate, isLoading } = useMutation(apiClient.addHotel, {
         onSuccess: () => {
             showToast({ message: "Hotel Added!", type: "SUCCESS" });
-            navigate('/hotels');
+            navigate('/admin/hotels');
         },
         onError: () => {
             showToast({ message: "Error adding hotel", type: "ERROR" });
-            navigate('/hotels');
+            navigate('/admin/hotels');
         }
     });
 

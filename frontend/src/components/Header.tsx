@@ -32,8 +32,12 @@ const Header = () => {
         </>}
         < span className='flex space-x-2'>
           {isAdminLoggedIn ? (<>
-            <Link to="/hotels"
+            <Link to="/admin/dashboard"
+              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Dashboard</Link>
+            <Link to="/admin/hotels"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Hotels</Link>
+            <Link to="/admin/users"
+              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Users</Link>
             <LogoutButton isAdmin={true} />
           </>) : (<>
             {!isLoggedIn ? (

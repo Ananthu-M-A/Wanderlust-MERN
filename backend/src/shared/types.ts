@@ -5,6 +5,7 @@ export type UserType = {
     password: string,
     firstName: string,
     lastName: string,
+    isBlocked: boolean,
     role: string[],
 };
 

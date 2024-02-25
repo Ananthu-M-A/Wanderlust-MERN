@@ -6,6 +6,7 @@ import { check, validationResult } from 'express-validator';
 import verifyToken from "../middleware/auth";
 import { SessionUserData } from '../interfaces/SessionInterface';
 import { transporter } from '../utils/NodeMailer';
+import verifyAdminToken from '../middleware/adminAuth';
 
 const router = express.Router();
 
@@ -123,8 +124,8 @@ router.post("/verifyRegistration", async (req: Request, res: Response) => {
 
         if (enteredOtp === userSignupData.otp) {
             const { email, mobile, password, firstName, lastName } = userSignupData;
-
-            const user = new User({ email, mobile, password, firstName, lastName });
+            const isBlocked: boolean = false;
+            const user = new User({ email, mobile, password, firstName, lastName, isBlocked });
             await user.save();
 
             if (user) {
@@ -151,5 +152,39 @@ router.post("/verifyRegistration", async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Error creating account.." });
     }
 });
+
+
+router.put('/:userId/block', verifyAdminToken, async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
+        const users = (await User.findOneAndUpdate({ _id: userId }, { isBlocked: true }, { new: true }))
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating users" });
+    }
+});
+
+
+router.put('/:userId/unblock', verifyAdminToken, async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
+        const users = (await User.findOneAndUpdate({ _id: userId }, { isBlocked: false }, { new: true }))
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating users" });
+    }
+});
+
+
+router.get('/', verifyAdminToken, async (req: Request, res: Response) => {
+    try {
+        const users = (await User.find())
+            .filter((user) => !user.role.includes("admin"));
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Error loading users" });
+    }
+});
+
 
 export default router;

@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import './index.css';
 import Register from "./pages/Register";
@@ -12,6 +12,7 @@ import Detail from "./pages/Detail";
 import Booking from "./pages/Booking";
 import AdminLogin from "./pages/AdminLogin";
 import { useAdminContext } from "./contexts/AdminContext";
+import Users from "./pages/Users";
 
 function App() {
   const { isLoggedIn } = useAppContext();
@@ -21,7 +22,6 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-
           <Route path="/" element={
             <Layout>
               <p>Home Page</p>
@@ -53,11 +53,6 @@ function App() {
             </Layout>} />
 
           {isLoggedIn && <>
-            <Route path="/adminHome" element={
-              <Layout>
-                <p>Admin Dashboard</p>
-              </Layout>} />
-
             <Route path="/home/:hotelId/booking" element={
               <Layout>
                 <Booking />
@@ -65,23 +60,36 @@ function App() {
           </>}
 
           {isAdminLoggedIn && <>
-            <Route path="/add-hotel" element={
+            <Route path="/admin/dashboard" element={
+              <Layout>
+                <p>Admin Dashboard</p>
+              </Layout>} />
+
+            <Route path="/admin/add-hotel" element={
               <Layout>
                 <AddHotel />
               </Layout>} />
 
-            <Route path="/edit-hotel/:hotelId" element={
+            <Route path="/admin/edit-hotel/:hotelId" element={
               <Layout>
                 <EditHotel />
               </Layout>} />
 
-            <Route path="/hotels" element={
+            <Route path="/admin/users" element={
+              <Layout>
+                <Users />
+              </Layout>} />
+
+            <Route path="/admin/hotels" element={
               <Layout>
                 <Hotels />
               </Layout>} />
           </>}
 
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={
+            <Layout>
+              <p>404 Not Found</p>
+            </Layout>} />
 
         </Routes>
       </BrowserRouter>
