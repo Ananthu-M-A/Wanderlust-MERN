@@ -66,7 +66,7 @@ const Login = () => {
                     Not Registered? <Link className="underline" to="/register">Create an account now</Link>
                 </span>
                 <button type="submit"
-                    className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl">
+                    className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
                     Login
                 </button>
             </span>

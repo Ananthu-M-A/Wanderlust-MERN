@@ -45,7 +45,7 @@ const Header = () => {
                 className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Login</Link>
             ) : (<>
               <span className='flex space-x-2'>
-                <Link to="/login"
+                <Link to="/home/account"
                   className='flex items-center text-blue-300 hover:text-white px-3 font-bold'>Account</Link>
               </span>
               <span className='flex space-x-2'>

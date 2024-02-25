@@ -13,6 +13,7 @@ import Booking from "./pages/Booking";
 import AdminLogin from "./pages/AdminLogin";
 import { useAdminContext } from "./contexts/AdminContext";
 import Users from "./pages/Users";
+import Account from "./pages/Account";
 
 function App() {
   const { isLoggedIn } = useAppContext();
@@ -56,6 +57,11 @@ function App() {
             <Route path="/home/:hotelId/booking" element={
               <Layout>
                 <Booking />
+              </Layout>} />
+
+            <Route path="/home/account" element={
+              <Layout>
+                <Account />
               </Layout>} />
           </>}
 

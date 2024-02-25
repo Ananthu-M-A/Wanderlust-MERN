@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from '../api-client';
 import { useAppContext } from "../contexts/AppContext";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type RegisterFormData = {
     firstName: string,
@@ -14,38 +14,61 @@ export type RegisterFormData = {
     confirmPassword: string
 }
 
-
 const Register = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { showToast } = useAppContext();
     const { register, watch, handleSubmit, formState: { errors } } = useForm<RegisterFormData>();
     const [showComponent, setShowComponent] = useState<boolean>(false);
+    const [timeLeft, setTimeLeft] = useState<number>(30);
     const [otp, setOtp] = useState<string>('');
+    const [timerRunning, setTimerRunning] = useState<boolean>(false);
 
     const mutation = useMutation(apiClient.register, {
         onSuccess: async () => {
-            showToast({ message: "Registration Initiated!", type: "SUCCESS" });
+            showToast({ message: "OTP sent, Check your email!", type: "SUCCESS" });
             await queryClient.invalidateQueries("validateToken");
             setShowComponent(true);
+            setTimerRunning(true);
         },
         onError: (error: Error) => { showToast({ message: error.message, type: "ERROR" }) },
     });
 
     const mutationOtp = useMutation(apiClient.verifyRegistration, {
         onSuccess: async () => {
-            showToast({ message: "Registration Success!", type: "SUCCESS" });
+            showToast({ message: "Registration Successfull!", type: "SUCCESS" });
             await queryClient.invalidateQueries("validateToken");
             navigate('/');
         },
         onError: (error: Error) => { showToast({ message: error.message, type: "ERROR" }) },
     });
 
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+
+        if (timerRunning) {
+            interval = setInterval(() => {
+                setTimeLeft((prevTime) => {
+                    if (prevTime === 0) {
+                        setTimerRunning(false);
+                        clearInterval(interval);
+                        setShowComponent(false);
+                    }
+                    return prevTime - 1;
+                });
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [timerRunning]);
+
     const onSubmit = handleSubmit((data) => {
+        setTimeLeft(30);
         mutation.mutate(data);
+        setTimerRunning(true);
     });
 
-    const handleClick = () => {
+    const handleOtpVerification = () => {
         mutationOtp.mutate(otp);
     }
 
@@ -127,28 +150,45 @@ const Register = () => {
                     {errors.confirmPassword && (<span className="text-red-500">{errors.confirmPassword.message}</span>)}
                 </label>
                 <span>
-                    <button type="submit"
-                        className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
+                    <button type="submit" className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
                         Send OTP
                     </button>
                 </span>
             </form>
-            {showComponent && <>
-                <label className="text-gray-700 text-sm font-bold flex-1">
-                    Enter OTP
-                    <input type="mobile" onChange={(e) => { setOtp(e.target.value) }} value={otp}
-                        className="border rounded w-full py-1 px-2 font-normal"
-                    ></input>
-                    {errors.mobile && (<span className="text-red-500">{errors.mobile.message}</span>)}
-                </label>
-                <span>
-                    <button onClick={handleClick}
-                        className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
+
+            {showComponent && timeLeft > 0 && (
+                <div>
+                    <span className="mt-4 font-semibold">Timer: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+                </div>
+            )}
+
+            {!showComponent && timeLeft < 0 && (
+                <div>
+                    <span className="mt-4 font-bold text-red-600">OTP Timeout! Send Again.</span>
+                </div>
+            )}
+
+            {showComponent && timeLeft > 0 && (
+                <>
+                    <label className="text-gray-700 text-sm font-bold flex-1">
+                        Enter OTP
+                        <input
+                            type="text"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            className="border rounded w-full py-1 px-2 font-normal"
+                        />
+                    </label>
+                    <button
+                        onClick={handleOtpVerification}
+                        className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl mt-4"
+                    >
                         Create Account
                     </button>
-                </span>
-            </>}
+                </>
+            )}
         </>
     );
-}
+};
+
 export default Register;

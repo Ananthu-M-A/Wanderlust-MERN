@@ -1,11 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { AppContextProvider } from './contexts/AppContext.tsx'
-import { SearchContextProvider } from './contexts/SearchContext.tsx'
-import { AdminContextProvider } from './contexts/AdminContext.tsx'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App.tsx';
+import './index.css';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { AppContextProvider } from './contexts/AppContext.tsx';
+import { SearchContextProvider } from './contexts/SearchContext.tsx';
+import { AdminContextProvider } from './contexts/AdminContext.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,9 +13,9 @@ const queryClient = new QueryClient({
       retry: 0,
     },
   },
-})
+});
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AppContextProvider>
@@ -27,4 +27,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </AppContextProvider>
     </QueryClientProvider>
   </React.StrictMode>,
+  document.getElementById('root')
 );
