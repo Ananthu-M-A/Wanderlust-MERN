@@ -6,6 +6,7 @@ export type UserType = {
     firstName: string,
     lastName: string,
     isBlocked: boolean,
+    imageUrl: string,
     role: string[],
 };
 

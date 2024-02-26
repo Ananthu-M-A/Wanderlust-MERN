@@ -6,12 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export type RegisterFormData = {
-    firstName: string,
-    lastName: string,
-    email: string,
-    mobile: string,
-    password: string,
-    confirmPassword: string
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobile: string;
+    imageFile: File | null;
+    imageUrl: string;
+    password: string;
+    confirmPassword: string;
 }
 
 const Register = () => {
@@ -112,7 +114,7 @@ const Register = () => {
                 </label>
                 <label className="text-gray-700 text-sm font-bold flex-1">
                     Mobile
-                    <input type="mobile"
+                    <input type="tel"
                         className="border rounded w-full py-1 px-2 font-normal"
                         {...register("mobile", {
                             required: "This feild is required",

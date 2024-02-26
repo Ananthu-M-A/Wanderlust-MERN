@@ -13,7 +13,7 @@ import Booking from "./pages/Booking";
 import AdminLogin from "./pages/AdminLogin";
 import { useAdminContext } from "./contexts/AdminContext";
 import Users from "./pages/Users";
-import Account from "./pages/Account";
+import Account from "./pages/Profile";
 
 function App() {
   const { isLoggedIn } = useAppContext();

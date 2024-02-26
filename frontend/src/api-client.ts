@@ -18,6 +18,18 @@ export const loadCurrentUser = async (): Promise<UserType> => {
 }
 
 
+export const loadAccount = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/home/load-account`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Error loading user");
+    }
+    return response.json();
+}
+
+
 export const register = async (formData: RegisterFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/users/register`, {
         method: 'POST',
@@ -36,6 +48,22 @@ export const register = async (formData: RegisterFormData) => {
     }
 }
 
+export const updateProfile = async (formData: FormData) => {    
+    const response = await fetch(`${API_BASE_URL}/api/home/updateProfile`, {
+        method: 'PUT',
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: formData
+    });
+
+    const responseBody = await response.json();
+
+    if (!response.ok) {
+        throw new Error(responseBody.message);
+    }
+}
 
 export const verifyRegistration = async (otp: string) => {
     const response = await fetch(`${API_BASE_URL}/api/users/verifyRegistration`, {

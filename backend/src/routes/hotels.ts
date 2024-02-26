@@ -103,4 +103,3 @@ async function uploadImages(imageFiles: Express.Multer.File[]) {
     const imageUrls = await Promise.all(uploadImages);
     return imageUrls;
 }
-

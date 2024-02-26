@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as apiClient from "../../api-client";
 import { useAppContext } from "../../contexts/AppContext";
+import { useEffect } from "react";
 
 type Props = {
     currentUser: UserType;
@@ -33,6 +34,10 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
     const { hotelId } = useParams();
 
     const { showToast } = useAppContext();
+
+    useEffect(()=>{
+        
+    },[])
 
     const { mutate: bookRoom, isLoading } = useMutation(apiClient.createRoomBooking, {
         onSuccess: () => {
