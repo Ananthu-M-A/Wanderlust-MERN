@@ -47,7 +47,7 @@ const AdminLogin = () => {
             </label>
             <span className="flex items-center justify-between">
                 <button type="submit"
-                    className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl">
+                    className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
                     Login
                 </button>
             </span>

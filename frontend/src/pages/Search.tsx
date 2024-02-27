@@ -73,26 +73,37 @@ const Search = () => {
         </div>
       </div>
       <div className="flex flex-col gap-5">
-        <div className="flex justify-between items-center">
-          <span className="text-xl font-bold">
-            {hotelData?.pagination.total} Hotels found
-            {search.destination ? ` in ${search.destination}` : ""}
-          </span>
-          <select value={sortOption} onChange={(event) => setSortOption(event.target.value)}
-            className="p-2 border rounded-md">
-              <option value="">Sort by</option>
-              <option value="starRating">Star Rating</option>
-              <option value="pricePerNightAsc">Price Per Night(low to high)</option>
-              <option value="pricePerNightDesc">Price Per Night(high to low)</option>
-          </select>
-        </div>
-        {hotelData?.data.map((hotel, index) => (
-          <SearchResultsCard key={index} hotel={hotel} />
-        ))}
-        <Pagination
-          page={hotelData?.pagination.page || 1}
-          pages={hotelData?.pagination.pages || 1}
-          onPageChange={(page) => setPage(page)} />
+        {(hotelData?.data.length !== 0) ?
+          (<>
+            <div className="flex justify-between items-center">
+              <span className="text-xl font-bold">
+                {/* {hotelData?.data.length === 0 ? "0" : hotelData?.pagination.total} */}
+                Hotels found
+                {search.destination ? ` in ${search.destination}` : ""}
+              </span>
+              <select value={sortOption} onChange={(event) => setSortOption(event.target.value)}
+                className="p-2 border rounded-md">
+                <option value="">Sort by</option>
+                <option value="starRating">Star Rating</option>
+                <option value="pricePerNightAsc">Price Per Night(low to high)</option>
+                <option value="pricePerNightDesc">Price Per Night(high to low)</option>
+              </select>
+            </div>
+
+            {hotelData?.data.map((hotel, index) => (
+            <SearchResultsCard key={index} hotel={hotel} />
+            ))}
+
+            <Pagination
+              page={hotelData?.pagination.page || 1}
+              pages={hotelData?.pagination.pages || 1}
+              onPageChange={(page) => setPage(page)} />
+          </>)
+          : (
+            <div>
+              <img src="https://img.freepik.com/free-vector/detective-following-footprints-concept-illustration_114360-21835.jpg?t=st=1709021064~exp=1709024664~hmac=b9ac18bf2f3e27574638c5fa9f59ad646fe7013ad348bcfe5df4ab62b2d9f38f&w=740" alt="" />
+            </div>
+          )}
       </div>
     </div>
   )

@@ -3,19 +3,34 @@ import { useSearchContext } from "../contexts/SearchContext";
 import { MdTravelExplore } from "react-icons/md";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import GoogleMap from "./GoogleMap";
 
 const SearchBar = () => {
     const search = useSearchContext();
     const navigate = useNavigate();
+    const [data, setData] = useState<string[]>([]);
+    const [place, setPlace] = useState<string>();
+    const { pathname } = useLocation();
 
-    useEffect(() => { }, [])
+    useEffect(() => {
+        console.log("hotel names", data);
+        console.log("place", place);
+        if (pathname === "/") {
+            navigate("/search");
+        }
+    }, [data, place, navigate])
 
+    const [searchInput, setSearchInput] = useState('');
     const [destination, setDestination] = useState<string>(search.destination);
     const [checkIn, setCheckIn] = useState<Date>(search.checkIn);
     const [checkOut, setCheckOut] = useState<Date>(search.checkOut);
     const [adultCount, setAdultCount] = useState<number>(search.adultCount);
     const [childCount, setChildCount] = useState<number>(search.childCount);
+
+    const handleSearchInputChange = (value: string) => {
+        setSearchInput(value);
+    }
 
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
@@ -32,6 +47,13 @@ const SearchBar = () => {
     const minDate = new Date();
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 1);
+
+    const handleData = (data: string[], place: string) => {
+        setData(data);
+        setPlace(place);
+        const destination = place.split(", ");
+        search.saveSearchValues(destination[0], checkIn, checkOut, adultCount, childCount);
+    };
 
     return (
         <form onSubmit={handleSubmit}
@@ -76,6 +98,7 @@ const SearchBar = () => {
                 className="w-100 bg-red-600 text-white h-full p-2 font-bold text-xl hover:bg-red-500">
                 Reset
             </button>
+            <GoogleMap searchInput={searchInput} onInputChange={handleSearchInputChange} sendDataToParent={handleData} />
         </form>
     )
 }

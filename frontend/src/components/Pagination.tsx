@@ -12,7 +12,7 @@ const Pagination = ({ page, pages, onPageChange }: Props) => {
     }
 
     return (
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-auto">
             <ul className="flex border border-slate-300">
                 {pageNumbers.map((number, index) => (
                     <li key={index} className={`px-2 py-1 ${page === number ? "bg-gray-200" : ""}`}>
