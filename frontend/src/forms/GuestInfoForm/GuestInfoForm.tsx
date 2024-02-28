@@ -35,6 +35,9 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
     const minDate = new Date();
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 1);
+    const nightsPerStay = Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000));
+
+    const totalCost = pricePerNight * nightsPerStay;
 
     const onLoginClick = (data: GuestInfoFormData) => {
         search.saveSearchValues("", data.checkIn, data.checkOut, data.adultCount, data.childCount);
@@ -48,7 +51,7 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
 
     return (
         <div className="flex flex-col p-4 bg-blue-200 gap-4">
-            <h3 className="text-md font-bold">₹{pricePerNight}</h3>
+            <h3 className="text-md font-bold">₹{(nightsPerStay < 1) ? pricePerNight : totalCost}</h3>
             <form onSubmit={isLoggedIn ? handleSubmit(onSubmit) : handleSubmit(onLoginClick)}>
                 <div className="grid grid-cols-1 gap-4 items-center">
                     <div>
