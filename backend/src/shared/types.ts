@@ -25,6 +25,7 @@ export type HotelType = {
     imageUrls: string[],
     lastUpdated: Date,
     bookings: BookingType[];
+    isBlocked: boolean,
 };
 
 export type BookingType = {

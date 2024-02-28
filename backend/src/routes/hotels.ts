@@ -30,6 +30,7 @@ router.post('/', verifyAdminToken, [
             const imageUrls = await uploadImages(imageFiles);
             newHotel.imageUrls = imageUrls;
             newHotel.lastUpdated = new Date();
+            newHotel.isBlocked = false;
 
             const hotel = new Hotel(newHotel);
             await hotel.save();
@@ -48,6 +49,28 @@ router.get('/', verifyAdminToken, async (req: Request, res: Response) => {
 
     } catch (error) {
         res.status(500).json({ message: "Error loading hotels" });
+    }
+});
+
+
+router.put('/:hotelId/block', verifyAdminToken, async (req: Request, res: Response) => {
+    try {
+        const hotelId = req.params.hotelId;
+        const hotel = (await Hotel.findOneAndUpdate({ _id: hotelId }, { isBlocked: true }, { new: true }))
+        res.json(hotel);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating hotel" });
+    }
+});
+
+
+router.put('/:hotelId/unblock', verifyAdminToken, async (req: Request, res: Response) => {
+    try {
+        const hotelId = req.params.hotelId;
+        const hotel = (await Hotel.findOneAndUpdate({ _id: hotelId }, { isBlocked: false }, { new: true }))
+        res.json(hotel);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating hotel" });
     }
 });
 

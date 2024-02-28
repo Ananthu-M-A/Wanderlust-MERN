@@ -161,6 +161,29 @@ export const loadHotels = async (): Promise<HotelType[]> => {
     return response.json();
 };
 
+export const blockHotel = async (hotelId: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}/block`, {
+        method: "PUT",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to block hotel");
+    }
+};
+
+
+export const unblockHotel = async (hotelId: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}/unblock`, {
+        method: "PUT",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to unblock hotel");
+    }
+};
+
 
 
 

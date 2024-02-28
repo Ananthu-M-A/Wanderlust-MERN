@@ -4,11 +4,11 @@ import { useLocation } from "react-router-dom";
 
 const DetailsSection = () => {
     const { register, formState: { errors } } = useFormContext<HotelFormData>();
-    const location = useLocation();
+    const { pathname } = useLocation();
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-3xl font-bold mb-3">{(location.pathname === "/add-hotel") ? "Add Hotel" : "Edit Hotel"}</h1>
+            <h1 className="text-3xl font-bold mb-3">{(pathname === "/admin/add-hotel") ? "Add Hotel" : "Edit Hotel"}</h1>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Name
                 <input type="text"

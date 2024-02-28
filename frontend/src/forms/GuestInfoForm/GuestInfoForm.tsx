@@ -52,16 +52,20 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
             <form onSubmit={isLoggedIn ? handleSubmit(onSubmit) : handleSubmit(onLoginClick)}>
                 <div className="grid grid-cols-1 gap-4 items-center">
                     <div>
-                        <DatePicker selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
+                        <DatePicker
+                            selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
                             minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
-                            onChange={(date) => setValue("checkIn", date as Date)} wrapperClassName="min-w-full"
-                            className="min-w-full bg-white p-2 focus:outline-none" required />
+                            onChange={(date) => { setValue("checkIn", date as Date); setValue("checkOut", date as Date); }}
+                            wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none" required
+                        />
                     </div>
                     <div>
-                        <DatePicker selected={checkOut} selectsStart startDate={checkIn} endDate={checkOut}
-                            minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
-                            onChange={(date) => setValue("checkOut", date as Date)} wrapperClassName="min-w-full"
-                            className="min-w-full bg-white p-2 focus:outline-none" required />
+                        <DatePicker
+                            selected={checkOut} startDate={checkIn} endDate={checkOut}
+                            minDate={checkIn} maxDate={maxDate} placeholderText="Check-out Date"
+                            onChange={(date) => setValue("checkOut", date as Date)}
+                            wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none" required
+                        />
                     </div>
                     <div className="flex bg-white px-2 py-1 gap-2">
                         <label className="items-center flex">

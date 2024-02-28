@@ -32,7 +32,7 @@ type Props = {
 const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
     const formMethods = useForm<HotelFormData>();
     const { handleSubmit, reset } = formMethods;
-    const { pathname } = useLocation();
+    const { pathname } = useLocation();    
 
     useEffect(() => {
         reset(hotel);
@@ -80,7 +80,7 @@ const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
                 <span className="flex justify-end">
                     <button className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl disabled:bg-gray-500"
                         disabled={isLoading} type="submit">
-                        {((pathname === "/add-hotel") ? (isLoading ? "Pleas wait..." : "Add Hotel") : (isLoading ? "Pleas wait..." : "Update Hotel"))}
+                        {((pathname === "/admin/add-hotel") ? (isLoading ? "Please wait..." : "Add Hotel") : (isLoading ? "Please wait..." : "Update Hotel"))}
                     </button>
                 </span>
             </form>

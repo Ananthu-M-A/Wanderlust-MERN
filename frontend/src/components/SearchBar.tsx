@@ -41,6 +41,7 @@ const SearchBar = () => {
     const handleClear = (event: FormEvent) => {
         event.preventDefault();
         search.clearSearchValues(destination, checkIn, checkOut, adultCount, childCount);
+        navigate("/search");
         window.location.reload();
     };
 
@@ -59,10 +60,12 @@ const SearchBar = () => {
         <form onSubmit={handleSubmit}
             className="-mt-16 p-3 bg-black rounded shadow-md grid gid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4">
             <div>
-                <DatePicker selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
+                <DatePicker
+                    selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
                     minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
-                    onChange={(date) => setCheckIn(date as Date)} wrapperClassName="min-w-full"
-                    className="min-w-full bg-white p-2 focus:outline-none" />
+                    onChange={(date) => { setCheckIn(date as Date); setCheckOut(date as Date); }}
+                    wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none"
+                />
             </div>
             <div className="flex bg-white px-2 py-1 gap-2">
                 <label className="items-center flex">
@@ -79,10 +82,12 @@ const SearchBar = () => {
                 </label>
             </div>
             <div>
-                <DatePicker selected={checkOut} selectsStart startDate={checkIn} endDate={checkOut}
-                    minDate={minDate} maxDate={maxDate} placeholderText="Check-out Date"
-                    onChange={(date) => setCheckOut(date as Date)} wrapperClassName="min-w-full"
-                    className="min-w-full bg-white p-2 focus:outline-none" />
+                <DatePicker
+                    selected={checkOut} startDate={checkIn} endDate={checkOut}
+                    minDate={checkIn} maxDate={maxDate} placeholderText="Check-out Date"
+                    onChange={(date) => setCheckOut(date as Date)}
+                    wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none"
+                />
             </div>
             <button
                 className="w-100 bg-blue-600 text-white h-full p-2 font-bold text-xl hover:bg-blue-500">

@@ -43,8 +43,8 @@ router.put('/updateProfile', verifyToken, upload.single("imageFile"),
                 return res.status(404).json({ message: "User not found" });
             }
             const file = req.file as Express.Multer.File;
-            const updatedImageUrl = await uploadImage(file);            
-            user.imageUrl = updatedImageUrl;            
+            const updatedImageUrl = await uploadImage(file);
+            user.imageUrl = updatedImageUrl;
             await user.save();
 
             res.status(201).json(user);
@@ -72,8 +72,8 @@ router.get('/search', async (req: Request, res: Response) => {
         const pageSize = 5;
         const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
         const skip = (pageNumber - 1) * pageSize;
-        const hotels = await Hotel.find(query).sort(sortOption).skip(skip).limit(pageSize);
-        const total = await Hotel.countDocuments();
+        const hotels = await Hotel.find({ ...query, isBlocked: false }).sort(sortOption).skip(skip).limit(pageSize);
+        const total = await Hotel.countDocuments({ ...query, isBlocked: false });
         const response: SearchResponse = {
             data: hotels,
             pagination: {
