@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
 import Hotel from '../models/hotel';
-import { HotelType } from '../shared/types';
+import { HotelType, RoomType } from '../shared/types';
 import { body } from 'express-validator';
 import verifyAdminToken from '../middleware/adminAuth';
 
@@ -19,22 +19,39 @@ router.post('/', verifyAdminToken, [
     body("country").notEmpty().withMessage('Country is required'),
     body("description").notEmpty().withMessage('Description is required'),
     body("type").notEmpty().withMessage('Type is required'),
-    body("pricePerNight").notEmpty().isNumeric().withMessage('pricePerNight is required, must be a number'),
     body("facilities").notEmpty().isArray().withMessage('Facilities is required'),
 ], upload.array("imageFiles", 6),
     async (req: Request, res: Response) => {
         try {
             const imageFiles = req.files as Express.Multer.File[];
-            const newHotel: HotelType = req.body;
+            const newHotel = req.body;
 
             const imageUrls = await uploadImages(imageFiles);
-            newHotel.imageUrls = imageUrls;
-            newHotel.lastUpdated = new Date();
-            newHotel.isBlocked = false;
 
-            const hotel = new Hotel(newHotel);
-            await hotel.save();
-            res.status(201).send(hotel);
+            const newHotelData: HotelType = {
+                _id: newHotel._id,
+                name: newHotel.name,
+                city: newHotel.city,
+                country: newHotel.country,
+                description: newHotel.description,
+                roomTypes: [],
+                type: newHotel.type,
+                adultCount: parseInt(newHotel.adultCount),
+                childCount: parseInt(newHotel.childCount),
+                facilities: newHotel.facilities,
+                starRating: parseInt(newHotel.starRating),
+                imageUrls: imageUrls,
+                lastUpdated: new Date(),
+                bookings: [],
+                isBlocked: false
+            };
+
+            const saveHotel = async (hotelData: HotelType) => {
+                const hotel = new Hotel(hotelData);
+                await hotel.save();
+                res.status(201).send(hotel);
+            }
+            saveHotel(newHotelData);
         } catch (error) {
             console.log("Error creating hotel: ", error);
             res.status(500).json({ message: "Something went wrong" });
@@ -106,7 +123,7 @@ router.put('/:hotelid', verifyAdminToken, upload.array("imageFiles"),
 
             hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || [])];
             await hotel.save();
-            
+
             res.status(201).json(hotel);
         } catch (error) {
             res.status(500).json({ message: "Something went wrong" });

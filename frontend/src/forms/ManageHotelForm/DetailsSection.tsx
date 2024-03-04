@@ -40,13 +40,6 @@ const DetailsSection = () => {
                 {errors.description && (<span className="text-red-500">{errors.description.message}</span>)}
             </label>
             <label className="text-gray-700 text-sm font-bold max-w-[50%] ">
-                Price Per Night
-                <input type="number"
-                    className="border rounded w-full py-1 px-2 font-normal"
-                    {...register('pricePerNight', { required: "This feild is required" })}></input>
-                {errors.pricePerNight && (<span className="text-red-500">{errors.pricePerNight.message}</span>)}
-            </label>
-            <label className="text-gray-700 text-sm font-bold max-w-[50%] ">
                 Star Rating
                 <select {...register("starRating", {
                     required: "This feild is required"

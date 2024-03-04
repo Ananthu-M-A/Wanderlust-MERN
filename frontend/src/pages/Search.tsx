@@ -8,6 +8,9 @@ import StarRatingFilter from "../components/StarRatingFilter";
 import HotelTypesFilter from "../components/HotelTypesFilter";
 import FacilitiesFilter from "../components/FacilitiesFilter";
 import PriceFilter from "../components/PriceFilter";
+import MyChatBot from "../components/MyChatBot";
+import "react-chatbotify/dist/react-chatbotify.css";
+
 
 const Search = () => {
   const search = useSearchContext();
@@ -31,7 +34,7 @@ const Search = () => {
     maxPrice: selectedPrice?.toString(),
     sortOption
   }
-
+  
   const { data: hotelData } = useQuery(["searchHotels", searchParams],
     () => apiClient.searchHotels(searchParams));
 
@@ -58,6 +61,7 @@ const Search = () => {
       ? [...prevFacilities, facility]
       : prevFacilities.filter((prevFacility) => prevFacility !== facility)));
   }
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
@@ -87,6 +91,10 @@ const Search = () => {
                 <option value="pricePerNightAsc">Price Per Night(low to high)</option>
                 <option value="pricePerNightDesc">Price Per Night(high to low)</option>
               </select>
+            </div>
+
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+            <MyChatBot />
             </div>
 
             {hotelData?.data.map((hotel, index) => (

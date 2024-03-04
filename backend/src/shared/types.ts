@@ -1,3 +1,9 @@
+export type RoomType = {
+    type: string;
+    price: number;
+    quantity: number;
+};
+
 export type UserType = {
     _id: string,
     email: string,
@@ -16,11 +22,11 @@ export type HotelType = {
     city: string,
     country: string,
     description: string,
+    roomTypes: RoomType[],
     type: string,
     adultCount: number,
     childCount: number,
     facilities: string[],
-    pricePerNight: number,
     starRating: number,
     imageUrls: string[],
     lastUpdated: Date,

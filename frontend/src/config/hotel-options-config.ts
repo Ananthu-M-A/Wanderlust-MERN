@@ -15,3 +15,11 @@ export const hotelFacilities = [
     "Family Rooms",
     "Dormitory"
 ];
+
+export const roomTypes = [
+    "Single",
+    "Double",
+    "Triple",
+    "Queen",
+    "King"
+];
