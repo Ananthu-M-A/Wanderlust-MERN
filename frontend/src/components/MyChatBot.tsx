@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const MyChatBot = () => {
-  const botName = "WanderLust 4.4.4";
+  const botName = "WanderLustBookingAssistant1.0";
   const [hotel, setHotel] = useState<any[]>([]);
   const [userName, setUserName] = useState<string>("");
   const [destination, setDestination] = useState<string>("")
@@ -25,8 +25,13 @@ const MyChatBot = () => {
   }, []);
 
   const options = {
-    theme: { embedded: true },
+    header: { title: <div className="font-bold text-xl">WanderLustBookingAssistant</div>, showAvatar: true },
+    theme: { embedded: false, primaryColor: "#3B82F6", secondaryColor: "#000000", showFooter: false },
     chatHistory: { storageKey: "conversations_summary" },
+    notification: { disabled: true },
+    emoji: { disabled: true },
+    userBubble: { showAvatar: true },
+    tooltip: { mode: "START", text: "Booking Assistant😀" },
   };
 
   const handleSearchHotels = async (destination: string) => {
@@ -67,7 +72,28 @@ const MyChatBot = () => {
           return "end";
         }
         setDestination(userInput);
-        return "confirmDestination";
+        return "hotelDetails";
+      },
+    },
+
+    hotelDetails: {
+      render: () => {
+        return (<div className="bg-black text-white rounded p-4 mt-2 ml-4 mr-4">
+          <h6 className="mb-1">{`Now check details`}</h6>
+          <h6 className="text-xl font-bold">{`Hotel Name: ${hotel[0].name}`}</h6>
+          <h6 className="text-lg">{`Place: ${hotel[0].city}, ${hotel[0].country}`}</h6>
+          <h6 className="text-lg">{`Facilities: ${hotel[0].facilities}`}</h6>
+          <h6 className="text-lg">{`Rating: ${hotel[0].starRating}`}</h6>
+          <h6 className="text-lg">{`Type: ${hotel[0].type}`}</h6>
+          <h6 className="text-sm">{`Description: ${hotel[0].description}`}</h6>
+        </div>);
+      },
+      options: ["Confirm Destination", "Cancel Booking"],
+      path: ({ userInput }: { userInput: string }) => {
+        if (userInput === "Confirm Destination") {
+          return "confirmDestination";
+        }
+        return "end";
       },
     },
 
@@ -118,7 +144,7 @@ const MyChatBot = () => {
     },
 
     checkOut: {
-      message: "Select check-out date",
+      message: "Now, Select check-out date",
       render: () => (
         <DatePicker
           selected={checkOut} selectsEnd
@@ -144,6 +170,25 @@ const MyChatBot = () => {
       options: ["Continue", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Continue") {
+          return "verifyBookingDetails";
+        }
+        return "end";
+      },
+    },
+
+    verifyBookingDetails: {
+      render: () => {
+        return (<div className="bg-black text-white rounded p-4 mt-2 ml-4 mr-4">
+          <h6 className="mb-1">{`Now verify details`}</h6>
+          <h6 className="text-lg font-bold">{`User Name: ${userName}`}</h6>
+          <h6 className="text-lg font-bold">{`Hotel: ${hotel[0].name}, ${hotel[0].city}, ${hotel[0].country}`}</h6>
+          <h6 className="text-lg font-bold">{`Check-in: ${checkIn.toLocaleDateString()}`}</h6>
+          <h6 className="text-lg font-bold">{`Check-in: ${checkOut.toLocaleDateString()}`}</h6>
+        </div>);
+      },
+      options: ["Confirm Booking", "Cancel Booking"],
+      path: ({ userInput }: { userInput: string }) => {
+        if (userInput === "Confirm Booking") {
           return "end";
         }
         return "end";
@@ -158,7 +203,7 @@ const MyChatBot = () => {
           return "start";
         }
         console.log(userName, destination, checkIn, checkOut);
-        
+
       },
       chatDisabled: true,
     },
