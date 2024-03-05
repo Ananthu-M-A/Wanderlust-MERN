@@ -25,9 +25,13 @@ const MyChatBot = () => {
   }, []);
 
   const options = {
-    header: { title: <div className="font-bold text-xl">WanderLustBookingAssistant</div>, showAvatar: true },
+    header: {
+      title: <div className="font-bold text-xl">WanderLustBookingAssistant</div>,
+      showAvatar: true,
+      avatar: "/chatbot.avif"
+    },
     theme: { embedded: false, primaryColor: "#3B82F6", secondaryColor: "#000000", showFooter: false },
-    chatHistory: { storageKey: "conversations_summary" },
+    chatHistory: { disabled: true },
     notification: { disabled: true },
     emoji: { disabled: true },
     userBubble: { showAvatar: true },

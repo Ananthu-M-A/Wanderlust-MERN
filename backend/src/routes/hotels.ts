@@ -25,8 +25,17 @@ router.post('/', verifyAdminToken, [
         try {
             const imageFiles = req.files as Express.Multer.File[];
             const newHotel = req.body;
-
             const imageUrls = await uploadImages(imageFiles);
+
+            const roomTypes: RoomType[] = [];
+            for (let i = 0; i < 5; i++) {
+                const roomType: RoomType = {
+                    type: newHotel[`room[${i}].type`],
+                    price: parseInt(newHotel[`room[${i}].price`]),
+                    quantity: parseInt(newHotel[`room[${i}].quantity`])
+                };
+                roomTypes.push(roomType);
+            }
 
             const newHotelData: HotelType = {
                 _id: newHotel._id,
@@ -34,13 +43,13 @@ router.post('/', verifyAdminToken, [
                 city: newHotel.city,
                 country: newHotel.country,
                 description: newHotel.description,
-                roomTypes: [],
+                roomTypes,
                 type: newHotel.type,
                 adultCount: parseInt(newHotel.adultCount),
                 childCount: parseInt(newHotel.childCount),
                 facilities: newHotel.facilities,
                 starRating: parseInt(newHotel.starRating),
-                imageUrls: imageUrls,
+                imageUrls,
                 lastUpdated: new Date(),
                 bookings: [],
                 isBlocked: false
@@ -51,7 +60,7 @@ router.post('/', verifyAdminToken, [
                 await hotel.save();
                 res.status(201).send(hotel);
             }
-            saveHotel(newHotelData);
+
         } catch (error) {
             console.log("Error creating hotel: ", error);
             res.status(500).json({ message: "Something went wrong" });
