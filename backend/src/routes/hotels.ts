@@ -21,14 +21,16 @@ router.post('/', verifyAdminToken, [
     body("type").notEmpty().withMessage('Type is required'),
     body("facilities").notEmpty().isArray().withMessage('Facilities is required'),
 ], upload.array("imageFiles", 6),
-    async (req: Request, res: Response) => {
-        try {
-            const imageFiles = req.files as Express.Multer.File[];
-            const newHotel = req.body;
-            const imageUrls = await uploadImages(imageFiles);
+async (req: Request, res: Response) => {
+    try {
+        const imageFiles = req.files as Express.Multer.File[];
+        const newHotel = req.body;
 
-            const roomTypes: RoomType[] = [];
-            for (let i = 0; i < 5; i++) {
+        const imageUrls = await uploadImages(imageFiles);
+
+        const roomTypes: RoomType[] = [];
+        for (let i = 0; i < 5; i++) {
+            if (newHotel[`room[${i}].type`] && newHotel[`room[${i}].price`] && newHotel[`room[${i}].quantity`]) {
                 const roomType: RoomType = {
                     type: newHotel[`room[${i}].type`],
                     price: parseInt(newHotel[`room[${i}].price`]),
@@ -36,36 +38,40 @@ router.post('/', verifyAdminToken, [
                 };
                 roomTypes.push(roomType);
             }
-
-            const newHotelData: HotelType = {
-                _id: newHotel._id,
-                name: newHotel.name,
-                city: newHotel.city,
-                country: newHotel.country,
-                description: newHotel.description,
-                roomTypes,
-                type: newHotel.type,
-                adultCount: parseInt(newHotel.adultCount),
-                childCount: parseInt(newHotel.childCount),
-                facilities: newHotel.facilities,
-                starRating: parseInt(newHotel.starRating),
-                imageUrls,
-                lastUpdated: new Date(),
-                bookings: [],
-                isBlocked: false
-            };
-
-            const saveHotel = async (hotelData: HotelType) => {
-                const hotel = new Hotel(hotelData);
-                await hotel.save();
-                res.status(201).send(hotel);
-            }
-
-        } catch (error) {
-            console.log("Error creating hotel: ", error);
-            res.status(500).json({ message: "Something went wrong" });
         }
-    });
+
+        const newHotelData: HotelType = {
+            _id: newHotel._id,
+            name: newHotel.name,
+            city: newHotel.city,
+            country: newHotel.country,
+            description: newHotel.description,
+            roomTypes,
+            type: newHotel.type,
+            adultCount: parseInt(newHotel.adultCount),
+            childCount: parseInt(newHotel.childCount),
+            facilities: newHotel.facilities,
+            starRating: parseInt(newHotel.starRating),
+            imageUrls,
+            lastUpdated: new Date(),
+            bookings: [],
+            isBlocked: false
+        };
+
+        const saveHotel = async (hotelData: HotelType) => {
+            const hotel = new Hotel(hotelData);
+            await hotel.save();
+            return hotel;
+        };
+
+        const savedHotel = await saveHotel(newHotelData);
+        res.status(201).json(savedHotel);
+    } catch (error) {
+        console.log("Error creating hotel: ", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+});
+
 
 
 router.get('/', verifyAdminToken, async (req: Request, res: Response) => {
