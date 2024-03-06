@@ -49,15 +49,11 @@ export const register = async (formData: RegisterFormData) => {
 }
 
 
-export const updateProfile = async (formData: RegisterFormData) => {    
-    
+export const updateProfile = async (formData: FormData) => {    
     const response = await fetch(`${API_BASE_URL}/api/home/updateProfile`, {
         method: 'PUT',
         credentials: "include",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body:JSON.stringify(formData)
+        body: formData
     });
 
     const responseBody = await response.json();
@@ -66,6 +62,7 @@ export const updateProfile = async (formData: RegisterFormData) => {
         throw new Error(responseBody.message);
     }
 }
+
 
 
 export const verifyRegistration = async (otp: string) => {

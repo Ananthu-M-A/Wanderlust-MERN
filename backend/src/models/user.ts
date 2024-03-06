@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     isBlocked: { type: Boolean, required: true },
-    role: [{ type: String, required: true }]
+    role: [{ type: String, required: true }],
+    imageUrl: {type: String, required: false},
 });
 
 userSchema.pre("save", async function (next) {

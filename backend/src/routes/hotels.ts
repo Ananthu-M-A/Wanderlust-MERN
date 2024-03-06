@@ -135,8 +135,8 @@ router.put('/:hotelid', verifyAdminToken, upload.array("imageFiles"),
 
             const files = req.files as Express.Multer.File[];
             const updatedImageUrls = await uploadImages(files);
-
             hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || [])];
+            
             await hotel.save();
 
             res.status(201).json(hotel);

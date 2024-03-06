@@ -2,14 +2,12 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import * as apiClient from '../api-client';
 import { useAppContext } from "../contexts/AppContext";
-import { useNavigate } from "react-router-dom";
 import { RegisterFormData } from "./Register";
 import { useEffect } from "react";
 
 
 const Profile = () => {
     const queryClient = useQueryClient();
-    const navigate = useNavigate();
     const { showToast } = useAppContext();
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<RegisterFormData>();
 
@@ -31,23 +29,40 @@ const Profile = () => {
         }
     }, [user, setValue]);
 
-    const mutation = useMutation(apiClient.updateProfile, {
+    const { mutate, isLoading } = useMutation(apiClient.updateProfile, {
         onSuccess: async () => {
-            showToast({ message: "Profile updated!", type: "SUCCESS" });
             await queryClient.invalidateQueries("validateToken");
-            navigate('/home/account');
+            showToast({ message: "Profile updated!", type: "SUCCESS" });
+            window.location.reload();
         },
         onError: (error: Error) => { showToast({ message: error.message, type: "ERROR" }) },
     });
 
-    const onSubmit = handleSubmit(async(data) => {
-        mutation.mutate(data);
+    const onSubmit = handleSubmit(async (data) => {
+        const formData = new FormData();
+        formData.append("firstName", data.firstName);
+        formData.append("lastName", data.lastName);
+        formData.append("email", data.email);
+        formData.append("mobile", data.mobile);
+        formData.append("password", data.password);
+        formData.append("imageUrl", data.imageUrl)
+        if (data.imageFile[0]) {
+            formData.append("imageFile", data.imageFile[0]);
+        }
+
+        mutate(formData);
     });
+
 
     return (
         <>
             <form className="flex flex-col gap-5" onSubmit={onSubmit} encType="multipart/form-data">
                 <h2 className="text-3xl font-bold">Profile</h2>
+                <div className="flex items-center justify-center">
+                    <div className="h-20 w-20 overflow-hidden bg-gray-300 rounded-full border-4 flex-shrink-0">
+                        {user && <img className="h-full w-full object-cover" src={user.imageUrl} alt="Profile Picture" />}
+                    </div>
+                </div>
                 <div className="flex flex-col md:flex-row gap-5">
                     <label className="text-gray-700 text-sm font-bold flex-1">
                         First Name
@@ -95,14 +110,17 @@ const Profile = () => {
                     </label>
                     <label className="text-gray-700 text-sm font-bold flex-1">
                         Profile Picture
-                        {/* <div className="grid grid-cols-6 gap-4">
-                            <div className="relative group">
-                                <img src={"/chatbot.avif"} className="min-h-full object-cover" />
-                            </div>
-                        </div> */}
                         <input type="file" accept="image/*"
-                            className="w-full text-gray-700 font-normal"
-                            {...register("imageFile")} />
+                            className="w-full text-gray-700 font-normal border"
+                            {...register("imageFile", {
+                                validate: (imageFile) => {
+                                    if (imageFile?.length > 1) {
+                                        return "You can add only one image.";
+                                    }
+                                    return true;
+                                }
+                            })} />
+                        {errors.imageFile && (<span className="text-red-500">{errors.imageFile.message}</span>)}
                     </label>
                 </div>
                 <div className="flex flex-col md:flex-row gap-5">
@@ -123,7 +141,7 @@ const Profile = () => {
                 </div>
                 <span>
                     <button className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl mt-4">
-                        Update Profile
+                        {isLoading ? <span>Updating...</span> : <span>Update Profile</span>}
                     </button>
                 </span>
             </form>

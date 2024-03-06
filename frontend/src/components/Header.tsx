@@ -3,10 +3,19 @@ import '../index.css';
 import { useAppContext } from '../contexts/AppContext';
 import LogoutButton from '../components/LogoutButton';
 import { useAdminContext } from '../contexts/AdminContext';
+import { useQuery } from 'react-query';
+import * as apiClient from '../api-client';
 
 const Header = () => {
   const { isLoggedIn } = useAppContext();
   const { isAdminLoggedIn } = useAdminContext();
+
+  const { data: user } = useQuery("loadAccount", apiClient.loadAccount,
+  {
+      onSuccess: () => { },
+      onError: () => { }
+  }
+);
 
   return (
     <div className="bg-black py-6">
@@ -45,8 +54,13 @@ const Header = () => {
                 className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Login</Link>
             ) : (<>
               <span className='flex space-x-2'>
-                <Link to="/home/account"
-                  className='flex items-center text-blue-300 hover:text-white px-3 font-bold'>Account</Link>
+                <Link to="/home/account">
+                  <div className="flex items-center justify-center">
+                    <div className="h-10 w-10 overflow-hidden bg-gray-300 flex-shrink-0">
+                      {user && <img className="h-full w-full object-cover" src={user.imageUrl} alt="Profile Picture" />}
+                    </div>
+                  </div>
+                </Link>
               </span>
               <span className='flex space-x-2'>
                 <LogoutButton isAdmin={false} />

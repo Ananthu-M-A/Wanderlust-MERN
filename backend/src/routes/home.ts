@@ -36,32 +36,32 @@ router.get("/load-account", verifyToken, async (req: Request, res: Response) => 
 router.put('/updateProfile', verifyToken, upload.single("imageFile"),
     async (req: Request, res: Response) => {
         const userId = req.userId;
-        const file = req.file;
-        console.log(file);
-        
         try {
             const user = await User.findById({ _id: userId });
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
-            } else {
-                const { password }: UserType = req.body;
-                const isMatch = await bcrypt.compare(password, user.password);
-                if (isMatch) {
-                    const { firstName, lastName, email, mobile }: UserType = req.body;
-                    const updatedUser = await User.findOneAndUpdate({ _id: req.userId },
-                        { firstName, lastName, email, mobile }, { new: true });
-                    if (updatedUser) {
-                        if (req.file) {
-                            const file = req.file;
-                            console.log(file);
-                            const updatedImageUrl = await uploadImage(file);
-                            console.log(updatedImageUrl);
-                            updatedUser.imageUrl = updatedImageUrl;
-                        }
-                        await updatedUser.save();
-                        res.status(201).json(updatedUser);
-                    }
+            }
+
+            const { password }: UserType = req.body;
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ message: "Enter correct password" });
+            }
+
+            const { firstName, lastName, email, mobile }: UserType = req.body;
+            const updatedUser = await User.findOneAndUpdate({ _id: req.userId },
+                { firstName, lastName, email, mobile }, { new: true });
+
+            if (updatedUser) {
+                if (req.file) {
+                    const file = req.file as Express.Multer.File;
+                    const updatedImageUrl = await uploadImage(file);
+                    updatedUser.imageUrl = updatedImageUrl;
                 }
+                await updatedUser.save();
+                res.status(201).json(updatedUser);
+            } else {
+                res.status(500).json({ message: "Error updating profile" });
             }
 
         } catch (error) {

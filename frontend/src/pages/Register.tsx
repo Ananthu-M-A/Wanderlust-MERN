@@ -10,7 +10,7 @@ export type RegisterFormData = {
     lastName: string;
     email: string;
     mobile: string;
-    imageFile: FileList | null;
+    imageFile: FileList;
     imageUrl: string;
     password: string;
     confirmPassword: string;
