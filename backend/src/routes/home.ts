@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import Hotel from '../models/hotel';
 import { BookingType, SearchResponse, UserType } from '../shared/types';
 import { param, validationResult } from 'express-validator';
+import bcrypt from 'bcryptjs';
 import Stripe from "stripe";
 import verifyToken from '../middleware/auth';
 import User from '../models/user';
@@ -34,24 +35,41 @@ router.get("/load-account", verifyToken, async (req: Request, res: Response) => 
 
 router.put('/updateProfile', verifyToken, upload.single("imageFile"),
     async (req: Request, res: Response) => {
+        const userId = req.userId;
+        const file = req.file;
+        console.log(file);
+        
         try {
-            const updatedUser: UserType = req.body;
-            const user = await User.findOneAndUpdate({
-                _id: req.userId,
-            }, updatedUser, { new: true });
+            const user = await User.findById({ _id: userId });
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
+            } else {
+                const { password }: UserType = req.body;
+                const isMatch = await bcrypt.compare(password, user.password);
+                if (isMatch) {
+                    const { firstName, lastName, email, mobile }: UserType = req.body;
+                    const updatedUser = await User.findOneAndUpdate({ _id: req.userId },
+                        { firstName, lastName, email, mobile }, { new: true });
+                    if (updatedUser) {
+                        if (req.file) {
+                            const file = req.file;
+                            console.log(file);
+                            const updatedImageUrl = await uploadImage(file);
+                            console.log(updatedImageUrl);
+                            updatedUser.imageUrl = updatedImageUrl;
+                        }
+                        await updatedUser.save();
+                        res.status(201).json(updatedUser);
+                    }
+                }
             }
-            const file = req.file as Express.Multer.File;
-            const updatedImageUrl = await uploadImage(file);
-            user.imageUrl = updatedImageUrl;
-            await user.save();
 
-            res.status(201).json(user);
         } catch (error) {
+            console.log(error);
             res.status(500).json({ message: "Something went wrong" });
         }
     });
+
 
 
 

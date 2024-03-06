@@ -12,6 +12,7 @@ export type UserType = {
     firstName: string,
     lastName: string,
     isBlocked: boolean,
+    imageFile: FileList | null,
     imageUrl: string,
     role: string[],
 };

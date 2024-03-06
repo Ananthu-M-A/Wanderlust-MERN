@@ -8,14 +8,14 @@ import { useEffect } from "react";
 
 
 const Profile = () => {
-    const formMethods = useForm<RegisterFormData>();
-    const { register, handleSubmit, formState: { errors }, setValue  } = formMethods;
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { showToast } = useAppContext();
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<RegisterFormData>();
 
     const { data: user } = useQuery("loadAccount", apiClient.loadAccount,
         {
+            onSuccess: () => { },
             onError: () => { }
         }
     );
@@ -27,41 +27,26 @@ const Profile = () => {
             setValue('email', user.email);
             setValue('mobile', user.mobile);
             setValue('imageUrl', user.imageUrl);
+            setValue('imageFile', user.imageFile);
         }
     }, [user, setValue]);
 
     const mutation = useMutation(apiClient.updateProfile, {
         onSuccess: async () => {
-            showToast({ message: "Updated Profile!", type: "SUCCESS" });
+            showToast({ message: "Profile updated!", type: "SUCCESS" });
             await queryClient.invalidateQueries("validateToken");
-            navigate('/');
+            navigate('/home/account');
         },
         onError: (error: Error) => { showToast({ message: error.message, type: "ERROR" }) },
     });
 
-    const onSubmit = handleSubmit((formDataJson: RegisterFormData) => {
-        const formData = new FormData();
-        formData.append('email', formDataJson.email);
-        formData.append('firstName', formDataJson.firstName);
-        formData.append('lastName', formDataJson.lastName);
-        formData.append('mobile', formDataJson.mobile);
-        formData.append('password', formDataJson.password);
-        formData.append('confirmPassword', formDataJson.password);
-        formData.append('imageUrl', formDataJson.imageUrl);
-
-        if (formDataJson.imageFile) {
-            formData.append('imageFile', formDataJson.imageFile);
-        }
-
-        console.log(formData);
-        
-        mutation.mutate(formData);
+    const onSubmit = handleSubmit(async(data) => {
+        mutation.mutate(data);
     });
-
 
     return (
         <>
-            <form className="flex flex-col gap-5" onSubmit={onSubmit}>
+            <form className="flex flex-col gap-5" onSubmit={onSubmit} encType="multipart/form-data">
                 <h2 className="text-3xl font-bold">Profile</h2>
                 <div className="flex flex-col md:flex-row gap-5">
                     <label className="text-gray-700 text-sm font-bold flex-1">
@@ -108,11 +93,22 @@ const Profile = () => {
                             })}></input>
                         {errors.mobile && (<span className="text-red-500">{errors.mobile.message}</span>)}
                     </label>
+                    <label className="text-gray-700 text-sm font-bold flex-1">
+                        Profile Picture
+                        {/* <div className="grid grid-cols-6 gap-4">
+                            <div className="relative group">
+                                <img src={"/chatbot.avif"} className="min-h-full object-cover" />
+                            </div>
+                        </div> */}
+                        <input type="file" accept="image/*"
+                            className="w-full text-gray-700 font-normal"
+                            {...register("imageFile")} />
+                    </label>
                 </div>
                 <div className="flex flex-col md:flex-row gap-5">
                     <label className="text-gray-700 text-sm font-bold flex-1">
                         Password
-                        <input type="password" placeholder="Confirm password for updation"
+                        <input type="password"
                             className="border rounded w-full py-1 px-2 font-normal"
                             {...register("password", {
                                 required: "This feild is required",
@@ -124,18 +120,9 @@ const Profile = () => {
                         </input>
                         {errors.password && (<span className="text-red-500">{errors.password.message}</span>)}
                     </label>
-                    <label className="text-gray-700 text-sm font-bold flex-1">
-                        Profile Picture
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="border rounded w-full py-1 px-2 font-normal"
-                            {...register("imageFile")}
-                        />
-                    </label>
                 </div>
                 <span>
-                    <button type="submit" className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
+                    <button className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl mt-4">
                         Update Profile
                     </button>
                 </span>
