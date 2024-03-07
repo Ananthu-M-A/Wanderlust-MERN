@@ -49,7 +49,9 @@ export const register = async (formData: RegisterFormData) => {
 }
 
 
-export const updateProfile = async (formData: FormData) => {    
+export const updateProfile = async (formData: FormData) => {  
+    console.log(formData);
+      
     const response = await fetch(`${API_BASE_URL}/api/home/updateProfile`, {
         method: 'PUT',
         credentials: "include",

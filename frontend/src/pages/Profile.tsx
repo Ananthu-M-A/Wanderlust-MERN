@@ -46,7 +46,7 @@ const Profile = () => {
         formData.append("mobile", data.mobile);
         formData.append("password", data.password);
         formData.append("imageUrl", data.imageUrl)
-        if (data.imageFile[0]) {
+        if (data.imageFile) {
             formData.append("imageFile", data.imageFile[0]);
         }
 
@@ -112,14 +112,7 @@ const Profile = () => {
                         Profile Picture
                         <input type="file" accept="image/*"
                             className="w-full text-gray-700 font-normal border"
-                            {...register("imageFile", {
-                                validate: (imageFile) => {
-                                    if (imageFile?.length > 1) {
-                                        return "You can add only one image.";
-                                    }
-                                    return true;
-                                }
-                            })} />
+                            {...register("imageFile")} />
                         {errors.imageFile && (<span className="text-red-500">{errors.imageFile.message}</span>)}
                     </label>
                 </div>
