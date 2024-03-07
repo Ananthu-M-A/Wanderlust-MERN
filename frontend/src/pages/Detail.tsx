@@ -39,8 +39,8 @@ const Detail = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
-                {hotel.facilities.map((facility) => (
-                    <div className="border border-slate-300 rounded-sm p-3">
+                {hotel.facilities.map((facility, index) => (
+                    <div className="border border-slate-300 rounded-sm p-3" key={index}>
                         {facility}
                     </div>
                 ))}
@@ -49,7 +49,7 @@ const Detail = () => {
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr]">
                 <div className="whitespace-pre-line">{hotel.description}</div>
                 <div className="h-fit">
-                    <GuestInfoForm pricePerNight={hotel.pricePerNight} hotelId={hotel._id} />
+                    <GuestInfoForm roomTypes={hotel.roomTypes} hotelId={hotel._id} />
                 </div>
             </div>
         </div>

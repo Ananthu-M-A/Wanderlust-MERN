@@ -49,9 +49,9 @@ export const register = async (formData: RegisterFormData) => {
 }
 
 
-export const updateProfile = async (formData: FormData) => {  
+export const updateProfile = async (formData: FormData) => {
     console.log(formData);
-      
+
     const response = await fetch(`${API_BASE_URL}/api/home/updateProfile`, {
         method: 'PUT',
         credentials: "include",
@@ -295,11 +295,11 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 }
 
 export const createPaymentIntent =
-    async (hotelId: string, numberOfNights: string): Promise<PaymentIntentResponse> => {
+    async (hotelId: string, numberOfNights: string, roomCount: string, roomPrice: string): Promise<PaymentIntentResponse> => {
         const response = await fetch(`${API_BASE_URL}/api/home/${hotelId}/bookings/payment-intent`, {
             credentials: "include",
             method: "POST",
-            body: JSON.stringify({ numberOfNights }),
+            body: JSON.stringify({ numberOfNights, roomCount, roomPrice }),
             headers: {
                 "Content-Type": "application/json"
             },

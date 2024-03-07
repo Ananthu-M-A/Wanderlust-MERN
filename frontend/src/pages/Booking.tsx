@@ -14,18 +14,24 @@ const Booking = () => {
     const { hotelId } = useParams();
 
     const [numberOfNights, setNumberOfNights] = useState<number>(0);
+    const [roomCount, setRoomCount] = useState<number>(1);
+    const [roomPrice, setRoomPrice] = useState<number>(1);
 
     useEffect(() => {
         if (search.checkIn && search.checkOut) {
             const nights = Math.floor(search.checkOut.getTime() - search.checkIn.getTime()) / (1000 * 60 * 60 * 24);
             setNumberOfNights(nights < 1 ? 1 : nights);
         }
+        setRoomPrice(search.roomPrice);
+        setRoomCount(search.roomCount);
     }, [search.checkIn, search.checkOut])
 
     const { data: paymentIntentData } = useQuery("createPaymentIntent",
         () => apiClient.createPaymentIntent(
             hotelId as string,
-            numberOfNights.toString()
+            numberOfNights.toString(),
+            roomPrice.toString(),
+            roomCount.toString(),
         ),
         {
             enabled: !!hotelId && numberOfNights > 0
@@ -52,6 +58,7 @@ const Booking = () => {
             <BookingDetailSummary
                 checkIn={search.checkIn} checkOut={search.checkOut}
                 adultCount={search.adultCount} childCount={search.childCount}
+                roomType={search.roomType} roomPrice={search.roomPrice} roomCount={roomCount}
                 numberOfNights={numberOfNights} hotel={hotel} />
             {currentUser && paymentIntentData && (
                 <Elements stripe={stripePromise} options={{
