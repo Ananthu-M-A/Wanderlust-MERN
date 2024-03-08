@@ -77,15 +77,15 @@ router.get('/search', async (req: Request, res: Response) => {
     try {
         const query = constructSearchQuery(req.query);
         let sortOption = {};
-        // switch (req.query.sortOption) {
-        //     case "starRating":
-        //         sortOption = { starRating: -1 }; break;
-        //     case "pricePerNightAsc":
-        //         sortOption = { pricePerNight: 1 }; break;
-        //     case "pricePerNightDesc":
-        //         sortOption = { pricePerNight: -1 }; break;
+        switch (req.query.sortOption) {
+            case "starRating":
+                sortOption = { starRating: -1 }; break;
+            case "pricePerNightAsc":
+                sortOption = { price: 1 }; break;
+            case "pricePerNightDesc":
+                sortOption = { price: -1 }; break;
 
-        // }
+        }
 
         const pageSize = 5;
         const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
@@ -255,11 +255,11 @@ const constructSearchQuery = (queryParams: any) => {
         }
     }
 
-    // if (queryParams.maxPrice) {
-    //     constructedQuery.pricePerNight = {
-    //         $lte: parseInt(queryParams.maxPrice).toString(),
-    //     };
-    // }
+    if (queryParams.maxPrice) {
+        constructedQuery['roomTypes.price'] = {
+            $lte: parseInt(queryParams.maxPrice)
+        };
+    }
 
     return constructedQuery
 };
