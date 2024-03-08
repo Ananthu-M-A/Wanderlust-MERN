@@ -81,9 +81,9 @@ router.get('/search', async (req: Request, res: Response) => {
             case "starRating":
                 sortOption = { starRating: -1 }; break;
             case "pricePerNightAsc":
-                sortOption = { price: 1 }; break;
+                sortOption = { ['roomTypes.price']: 1 }; break;
             case "pricePerNightDesc":
-                sortOption = { price: -1 }; break;
+                sortOption = { ['roomTypes.price']: -1 }; break;
 
         }
 
