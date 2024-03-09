@@ -68,7 +68,12 @@ const SearchBar = () => {
                 <DatePicker
                     selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
                     minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
-                    onChange={(date) => { setCheckIn(date as Date); setCheckOut(date as Date); }}
+                    onChange={(date: Date) => {
+                        setCheckIn(date);
+                        const newDate = new Date(date.getTime());
+                        newDate.setDate(newDate.getDate() + 1);
+                        setCheckOut(newDate);
+                    }}
                     wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none"
                 />
             </div>
@@ -107,7 +112,7 @@ const SearchBar = () => {
                 </label>
                 <label className="items-center flex">
                     Count:
-                    <input type="number" min={0} max={20} value={roomCount}
+                    <input type="number" min={1} max={20} value={roomCount}
                         className="w-full p-1 focus:outline-none font-bold"
                         onChange={(event) => setRoomCount(parseInt(event.target.value))} />
                 </label>

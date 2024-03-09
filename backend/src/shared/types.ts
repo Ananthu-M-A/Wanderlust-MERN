@@ -35,6 +35,27 @@ export type HotelType = {
     isBlocked: boolean,
 };
 
+export type RestaurantType = {
+    _id: string,
+    name: string,
+    city: string,
+    country: string,
+    description: string,
+    cuisineType: string,
+    averageCost: number,
+    openingHours: {
+        day: string,
+        startTime: string,
+        endTime: string
+    }[],
+    facilities: string[],
+    rating: number,
+    imageUrls: string[],
+    lastUpdated: Date,
+    bookings: BookingType[],
+    isBlocked: boolean,
+};
+
 export type BookingType = {
     _id: string;
     userId: string;

@@ -75,7 +75,12 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                         <DatePicker
                             selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
                             minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
-                            onChange={(date) => { setValue("checkIn", date as Date); setValue("checkOut", date as Date); }}
+                            onChange={(date: Date) => {
+                                setValue("checkIn", date);
+                                const newDate = new Date(date.getTime());
+                                newDate.setDate(newDate.getDate() + 1);
+                                setValue("checkOut", newDate);
+                            }}
                             wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none" required
                         />
                     </div>
@@ -125,7 +130,7 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                         </label>
                         <label className="items-center flex">
                             Count:
-                            <input type="number" min={0} max={20} {...register("roomCount", {
+                            <input type="number" min={1} max={20} {...register("roomCount", {
                                 valueAsNumber: true
                             })}
                                 className="w-full p-1 focus:outline-none font-bold" />

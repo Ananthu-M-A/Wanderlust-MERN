@@ -34,7 +34,7 @@ const Search = () => {
     maxPrice: selectedPrice?.toString(),
     sortOption
   }
-  
+
   const { data: hotelData } = useQuery(["searchHotels", searchParams],
     () => apiClient.searchHotels(searchParams));
 
@@ -76,12 +76,12 @@ const Search = () => {
           <PriceFilter selectedPrice={selectedPrice} onChange={(value?: number) => setSelectedPrice(value)} />
         </div>
       </div>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-1">
         {(hotelData?.data.length !== 0) ?
           (<>
             <div className="flex justify-between items-center">
               <span className="text-xl font-bold">
-                {`${hotelData?.pagination.total} hotels found`}
+                {hotelData && `${hotelData?.pagination.total} hotels found`}
                 {search.destination ? ` in ${search.destination}` : ""}
               </span>
               <select value={sortOption} onChange={(event) => setSortOption(event.target.value)}
@@ -93,8 +93,8 @@ const Search = () => {
               </select>
             </div>
 
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-            <MyChatBot />
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <MyChatBot />
             </div>
 
             {hotelData?.data.map((hotel, index) => (

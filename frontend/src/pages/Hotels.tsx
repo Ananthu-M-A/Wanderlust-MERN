@@ -32,10 +32,6 @@ const Hotels = () => {
         await unblockHotel.mutateAsync(hotelId);
     };
 
-    if (!hotelData) {
-        return <span>No hotels in the list</span>
-    }
-
     return (
         <div className="space-y-5">
             <span className="flex justify-between">
@@ -45,7 +41,7 @@ const Hotels = () => {
                 </Link>
             </span>
             <div className="grid grid-cols-1 gap-8">
-                {hotelData?.map((hotel, index) => (
+                {(hotelData && hotelData.length > 0) ? hotelData.map((hotel, index) => (
                     <div key={index} className="flex flex-col justify-between border border-slate-300 rounded-lg p-8 gap-5">
                         <h2 className="text-2xl font-bold">{hotel.name}</h2>
                         <div className="whitespace-pre-line">{hotel.description}</div>
@@ -60,7 +56,7 @@ const Hotels = () => {
                             </div>
                             <div className="border border-slate-300 rounded-sm p-3 flex items-center">
                                 <BiMoney className="mr-1" />
-                                ₹{hotel.pricePerNight} per night
+                                ₹{hotel.roomTypes[0].price} per night
                             </div>
                             <div className="border border-slate-300 rounded-sm p-3 flex items-center">
                                 <BiHotel className="mr-1" />
@@ -97,7 +93,14 @@ const Hotels = () => {
                             </span>
                         </div>
                     </div>
-                ))}
+                )) : (
+                    <>
+                        <span className="">Hotels list is empty</span>
+                        <div className="w-80 mx-auto flex items-center justify-center">
+                            <img src="https://img.freepik.com/free-vector/detective-following-footprints-concept-illustration_114360-21835.jpg?t=st=1709021064~exp=1709024664~hmac=b9ac18bf2f3e27574638c5fa9f59ad646fe7013ad348bcfe5df4ab62b2d9f38f&w=740" alt="" />
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     )

@@ -12,6 +12,11 @@ const MyChatBot = () => {
   const [destination, setDestination] = useState<string>("")
   const [checkIn, setCheckIn] = useState<Date>(new Date());
   const [checkOut, setCheckOut] = useState<Date>(new Date());
+  // const [room, setRoom] = useState({
+  //   type: "",
+  //   price: 0,
+  //   count: 1
+  // });
 
   useEffect(() => {
     return () => { };
@@ -90,6 +95,14 @@ const MyChatBot = () => {
           <h6 className="text-lg">{`Rating: ${hotel[0].starRating}`}</h6>
           <h6 className="text-lg">{`Type: ${hotel[0].type}`}</h6>
           <h6 className="text-sm">{`Description: ${hotel[0].description}`}</h6>
+          <div>
+            {hotel[0].imageUrls.map((image: string) => (
+              <div className="mt-2 p-2">
+                <img src={image}
+                  className="rounded-md w-full h-full object-cover object-center" />
+              </div>
+            ))}
+          </div>
         </div>);
       },
       options: ["Confirm Destination", "Cancel Booking"],
@@ -111,6 +124,29 @@ const MyChatBot = () => {
         return "end";
       },
     },
+
+    // roomDetails: {
+    //   message: `Next, Select Room`,
+    //   options: [...hotel[0].roomTypes.map((room: RoomType) => room.type as string), "Cancel Booking"],
+    //   path: ({ userInput }: { userInput: string }) => {
+    //     if (userInput === "Cancel Booking") {
+    //       console.log(...hotel[0].roomTypes.map((room: any) => room.type));
+    //       return "end";
+    //     }
+    //     return "confirmRoomType";
+    //   },
+    // },
+
+    // confirmRoomType: {
+    //   message: `You've selected ${room}.`,
+    //   options: ["Continue", "Cancel Booking"],
+    //   path: ({ userInput }: { userInput: string }) => {
+    //     if (userInput === "Continue") {
+    //       return "checkIn";
+    //     }
+    //     return "end";
+    //   },
+    // },
 
     checkIn: {
       message: "Please select the check-in date",
@@ -193,7 +229,7 @@ const MyChatBot = () => {
       options: ["Confirm Booking", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Confirm Booking") {
-          return "end";
+
         }
         return "end";
       },
@@ -207,7 +243,6 @@ const MyChatBot = () => {
           return "start";
         }
         console.log(userName, destination, checkIn, checkOut);
-
       },
       chatDisabled: true,
     },
