@@ -4,6 +4,7 @@ import "react-chatbotify/dist/react-chatbotify.css";
 import * as apiClient from "../api-client";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { RoomType } from "../../../backend/src/shared/types";
 
 const MyChatBot = () => {
   const botName = "WanderLustBookingAssistant1.0";
@@ -12,11 +13,8 @@ const MyChatBot = () => {
   const [destination, setDestination] = useState<string>("")
   const [checkIn, setCheckIn] = useState<Date>(new Date());
   const [checkOut, setCheckOut] = useState<Date>(new Date());
-  // const [room, setRoom] = useState({
-  //   type: "",
-  //   price: 0,
-  //   count: 1
-  // });
+  const [roomType, setRoomType] = useState<string>("");
+  const [roomCount, setRoomCount] = useState<number>(0);
 
   useEffect(() => {
     return () => { };
@@ -83,6 +81,7 @@ const MyChatBot = () => {
         setDestination(userInput);
         return "hotelDetails";
       },
+      chatDisabled: true,
     },
 
     hotelDetails: {
@@ -112,6 +111,7 @@ const MyChatBot = () => {
         }
         return "end";
       },
+      chatDisabled: true,
     },
 
     confirmDestination: {
@@ -119,34 +119,61 @@ const MyChatBot = () => {
       options: ["Continue", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Continue") {
+          return "roomDetails";
+        }
+        return "end";
+      },
+      chatDisabled: true,
+    },
+
+    roomDetails: {
+      message: `Next, Select Room`,
+      options: ["Single", "Double", "Triple", "King", "Queen", "Cancel Booking"],
+      path: ({ userInput }: { userInput: string }) => {
+        if (userInput === "Cancel Booking") {
+          return "end";
+        }
+        setRoomType(userInput)
+        return "confirmRoomType";
+      },
+      chatDisabled: true,
+    },
+
+    confirmRoomType: {
+      message: `You've selected ${roomType}-bed room.`,
+      options: ["Continue", "Cancel Booking"],
+      path: ({ userInput }: { userInput: string }) => {
+        if (userInput === "Continue") {
+          return "totalRooms";
+        }
+        return "end";
+      },
+      chatDisabled: true,
+    },
+
+    totalRooms: {
+      message: `Enter number of rooms`,
+      path: ({ userInput }: { userInput: string }) => {
+        const temp = parseInt(userInput);
+        if (userInput === "Cancel Booking" || isNaN(temp)) {
+          return "end";
+        }
+        setRoomCount(temp);
+        return "confirmTotalRooms";
+      },
+    },
+
+    confirmTotalRooms: {
+      message: `You've selected ${roomCount} ${roomType}-bed rooms.`,
+      options: ["Continue", "Cancel Booking"],
+      path: ({ userInput }: { userInput: string }) => {
+        if (userInput === "Continue") {
           return "checkIn";
         }
         return "end";
       },
+      chatDisabled: true,
     },
-
-    // roomDetails: {
-    //   message: `Next, Select Room`,
-    //   options: [...hotel[0].roomTypes.map((room: RoomType) => room.type as string), "Cancel Booking"],
-    //   path: ({ userInput }: { userInput: string }) => {
-    //     if (userInput === "Cancel Booking") {
-    //       console.log(...hotel[0].roomTypes.map((room: any) => room.type));
-    //       return "end";
-    //     }
-    //     return "confirmRoomType";
-    //   },
-    // },
-
-    // confirmRoomType: {
-    //   message: `You've selected ${room}.`,
-    //   options: ["Continue", "Cancel Booking"],
-    //   path: ({ userInput }: { userInput: string }) => {
-    //     if (userInput === "Continue") {
-    //       return "checkIn";
-    //     }
-    //     return "end";
-    //   },
-    // },
 
     checkIn: {
       message: "Please select the check-in date",
@@ -170,6 +197,7 @@ const MyChatBot = () => {
         }
         return "end";
       },
+      chatDisabled: true,
     },
 
     confirmCheckInDate: {
@@ -181,6 +209,7 @@ const MyChatBot = () => {
         }
         return "end";
       },
+      chatDisabled: true,
     },
 
     checkOut: {
@@ -203,6 +232,7 @@ const MyChatBot = () => {
         }
         return "end";
       },
+      chatDisabled: true,
     },
 
     confirmCheckOutDate: {
@@ -214,16 +244,29 @@ const MyChatBot = () => {
         }
         return "end";
       },
+      chatDisabled: true,
     },
 
     verifyBookingDetails: {
       render: () => {
+        let roomPrice = 0;
         return (<div className="bg-black text-white rounded p-4 mt-2 ml-4 mr-4">
           <h6 className="mb-1">{`Now verify details`}</h6>
           <h6 className="text-lg font-bold">{`User Name: ${userName}`}</h6>
-          <h6 className="text-lg font-bold">{`Hotel: ${hotel[0].name}, ${hotel[0].city}, ${hotel[0].country}`}</h6>
-          <h6 className="text-lg font-bold">{`Check-in: ${checkIn.toLocaleDateString()}`}</h6>
-          <h6 className="text-lg font-bold">{`Check-in: ${checkOut.toLocaleDateString()}`}</h6>
+          <h6 className="text-lg font-bold">{`Hotel: ${hotel[0].name}`}</h6>
+          <h6 className="text-lg font-bold">{`Place: ${hotel[0].city}, ${hotel[0].country}`}</h6>
+          {hotel[0].roomTypes.map((room: RoomType) => {
+            if (room.type === roomType) {
+              roomPrice = room.price;
+              return <h6 className="text-lg font-bold">{`Rooms: ${roomType} Bed, ₹${room.price}, ${roomCount} Nos`}</h6>
+            }
+            return null;
+          })}
+          <h6 className="text-lg font-bold">{`Check-in: ${checkIn.toLocaleDateString()} 02:00:00 PM`}</h6>
+          <h6 className="text-lg font-bold">{`Check-out: ${checkOut.toLocaleDateString()} 12:00:00 PM`}</h6>
+          <h6 className="text-lg font-bold">
+            {`Total Cost: ₹${(Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000))) * roomCount * roomPrice}/-`}</h6>
+          <h6 className="mb-1">{`After clicking on "Confirm Booking", The bot will redirect you to the payment gateway page. Happy booking...`}</h6>
         </div>);
       },
       options: ["Confirm Booking", "Cancel Booking"],
@@ -233,6 +276,7 @@ const MyChatBot = () => {
         }
         return "end";
       },
+      chatDisabled: true,
     },
 
     end: {
@@ -242,7 +286,6 @@ const MyChatBot = () => {
         if (userInput === "Continue") {
           return "start";
         }
-        console.log(userName, destination, checkIn, checkOut);
       },
       chatDisabled: true,
     },
