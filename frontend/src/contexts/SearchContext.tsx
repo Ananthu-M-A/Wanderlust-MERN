@@ -9,6 +9,7 @@ type SearchContext = {
     roomType: string;
     roomCount: number;
     roomPrice: number;
+    totalCost: number;
     hotelId: string;
     saveSearchValues: (
         destination: string,
@@ -18,7 +19,8 @@ type SearchContext = {
         childCount: number,
         roomType: string,
         roomCount: number,
-        roomPrice: number) => void;
+        roomPrice: number,
+        totalCost: number) => void;
     clearSearchValues: (
         destination: string,
         checkIn: Date,
@@ -27,7 +29,8 @@ type SearchContext = {
         childCount: number,
         roomType: string,
         roomCount: number,
-        roomPrice: number) => void;
+        roomPrice: number,
+        totalCost: number) => void;
 };
 
 const SearchContext = React.createContext<SearchContext | undefined>(undefined);
@@ -57,7 +60,10 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         () => parseInt(sessionStorage.getItem("roomCount") || "1")
     );
     const [roomPrice, setRoomPrice] = useState<number>(
-        () => parseInt(sessionStorage.getItem("roomPrice") || "1")
+        () => parseInt(sessionStorage.getItem("roomPrice") || "0")
+    );
+    const [totalCost, setTotalCost] = useState<number>(
+        () => parseInt(sessionStorage.getItem("totalCost") || "0")
     );
     const [hotelId, setHotelId] = useState<string>(
         () => sessionStorage.getItem("hotelId") || ""
@@ -72,6 +78,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         roomType: string,
         roomCount: number,
         roomPrice: number,
+        totalCost: number,
         hotelId?: string) => {
 
         setDestination(destination);
@@ -82,6 +89,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         setRoomType(roomType);
         setRoomCount(roomCount);
         setRoomPrice(roomPrice);
+        setTotalCost(totalCost);
         if (hotelId) {
             setHotelId(hotelId);
         }
@@ -94,6 +102,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         sessionStorage.setItem("roomType", roomType);
         sessionStorage.setItem("roomCount", roomCount.toString());
         sessionStorage.setItem("roomPrice", roomPrice.toString());
+        sessionStorage.setItem("totalCost", totalCost.toString());
         if (hotelId) {
             sessionStorage.setItem("hotelId", hotelId);
         }
@@ -108,6 +117,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         roomType: string,
         roomCount: number,
         roomPrice: number,
+        totalCost: number,
         hotelId?: string) => {
 
         setDestination(destination);
@@ -118,6 +128,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         setRoomType(roomType);
         setRoomCount(roomCount);
         setRoomPrice(roomPrice);
+        setTotalCost(totalCost);
         if (hotelId) {
             setHotelId(hotelId);
         }
@@ -129,7 +140,8 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         sessionStorage.setItem("childCount", "0");
         sessionStorage.setItem("roomType", "");
         sessionStorage.setItem("roomCount", "1");
-        sessionStorage.setItem("roomPrice", "1");
+        sessionStorage.setItem("roomPrice", "0");
+        sessionStorage.setItem("totalCost", "0");
         if (hotelId) {
             sessionStorage.setItem("hotelId", hotelId);
         }
@@ -137,7 +149,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
 
     return (
         <SearchContext.Provider value={{
-            destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice,
+            destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost,
             hotelId, saveSearchValues, clearSearchValues
         }}>{children}
         </SearchContext.Provider>

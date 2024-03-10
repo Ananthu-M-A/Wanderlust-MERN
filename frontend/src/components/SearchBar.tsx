@@ -31,7 +31,7 @@ const SearchBar = () => {
     const [roomType, setRoomType] = useState<string>(search.roomType);
     const [roomCount, setRoomCount] = useState<number>(search.roomCount);
     const [roomPrice] = useState<number>(search.roomPrice);
-
+    const [totalCost] = useState<number>(search.totalCost);
 
     const handleSearchInputChange = (value: string) => {
         setSearchInput(value);
@@ -39,13 +39,13 @@ const SearchBar = () => {
 
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
-        search.saveSearchValues(destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice);
+        search.saveSearchValues(destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);
         navigate("/search");
     };
 
     const handleClear = (event: FormEvent) => {
         event.preventDefault();
-        search.clearSearchValues(destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice);
+        search.clearSearchValues(destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);
         navigate("/search");
         window.location.reload();
     };
@@ -58,7 +58,7 @@ const SearchBar = () => {
         setData(data);
         setPlace(place);
         const destination = place.split(", ");
-        search.saveSearchValues(destination[0], checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice);
+        search.saveSearchValues(destination[0], checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);
     };
 
     return (

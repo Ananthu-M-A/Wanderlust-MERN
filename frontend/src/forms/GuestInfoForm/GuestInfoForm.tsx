@@ -22,9 +22,8 @@ type GuestInfoFormData = {
 }
 
 const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
-    const [roomPrice, setRoomPrice] = useState<number>(0);
-    const [totalCost, setTotalCost] = useState<number>(0);
     const search = useSearchContext();
+    const [totalCost, setTotalCost] = useState<number>(0);
     const { isLoggedIn } = useAppContext();
     const navigate = useNavigate();
     const location = useLocation();
@@ -42,33 +41,43 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
 
     const checkIn = watch("checkIn");
     const checkOut = watch("checkOut");
+    const roomType = watch("roomType");
     const roomCount = watch("roomCount");
+    const roomPrice = watch("roomPrice");    
+    
     const nightsPerStay = Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000));
 
     useEffect(() => {
-        if (checkIn && checkOut) {
-            const newTotalCost = roomPrice * nightsPerStay * roomCount;
+        roomTypes.forEach(room => {
+            if (room.type === roomType) {
+                setValue("roomPrice", room.price);
+            }
+        });
+
+        if (checkIn && checkOut && roomCount && roomPrice && nightsPerStay) {
+            const newTotalCost = roomCount * nightsPerStay * roomPrice;
             setTotalCost(newTotalCost);
         }
-    }, [roomPrice, nightsPerStay, roomCount]);
+    }, [checkIn, checkOut, roomType, roomCount, roomPrice, nightsPerStay]);
+
 
     const minDate = new Date();
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 1);
 
     const onLoginClick = (data: GuestInfoFormData) => {
-        search.saveSearchValues("", data.checkIn, data.checkOut, data.adultCount, data.childCount, data.roomType, data.roomCount, roomPrice);
+        search.saveSearchValues("", data.checkIn, data.checkOut, data.adultCount, data.childCount, data.roomType, data.roomCount, roomPrice, totalCost);
         navigate("/login", { state: { from: location } });
     }
 
     const onSubmit = (data: GuestInfoFormData) => {
-        search.saveSearchValues("", data.checkIn, data.checkOut, data.adultCount, data.childCount, data.roomType, data.roomCount, roomPrice);
+        search.saveSearchValues("", data.checkIn, data.checkOut, data.adultCount, data.childCount, data.roomType, data.roomCount, roomPrice, totalCost);
         navigate(`/home/${hotelId}/booking`);
     }
 
     return (
         <div className="flex flex-col p-4 bg-blue-200 gap-4">
-            <h3 className="text-md font-bold">₹{(nightsPerStay < 1) ? (roomPrice*roomCount) : totalCost}</h3>
+            <h3 className="text-md font-bold">₹{(nightsPerStay < 1) ? (roomPrice * roomCount) : totalCost}</h3>
             <form onSubmit={isLoggedIn ? handleSubmit(onSubmit) : handleSubmit(onLoginClick)}>
                 <div className="grid grid-cols-1 gap-4 items-center">
                     <div>
@@ -118,7 +127,8 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                                 const selectedRoomType = e.target.value;
                                 const selectedRoom = roomTypes.find(roomType => roomType.type === selectedRoomType);
                                 if (selectedRoom) {
-                                    setRoomPrice(selectedRoom.price || 0);
+                                    setValue("roomType", selectedRoom.type);
+                                    setValue("roomPrice", selectedRoom.price || 0);
                                 }
                             }}>
                                 <option value="">Select Type</option>
@@ -136,12 +146,9 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                                 className="w-full p-1 focus:outline-none font-bold" />
                         </label>
                     </div>
-
-                    {isLoggedIn ? (
-                        <button className="text-blue-300 bg-black h-full p-2 font-bold hover:text-white text-xl">Book Now</button>
-                    ) : (
-                        <button className="text-blue-300 bg-black h-full p-2 font-bold hover:text-white text-xl">Log in to Book</button>
-                    )}
+                    <button className={`text-blue-300 bg-black h-full p-2 font-bold hover:text-white text-xl`}>
+                        {isLoggedIn ? 'Book Now' : 'Log in to Book'}
+                    </button>
                 </div>
             </form>
         </div>
