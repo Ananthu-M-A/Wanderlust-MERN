@@ -5,16 +5,23 @@ import * as apiClient from "../api-client";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { RoomType } from "../../../backend/src/shared/types";
+import { useSearchContext } from "../contexts/SearchContext";
+import { useNavigate } from "react-router-dom";
 
 const MyChatBot = () => {
   const botName = "WanderLustBookingAssistant1.0";
   const [hotel, setHotel] = useState<any[]>([]);
   const [userName, setUserName] = useState<string>("");
-  const [destination, setDestination] = useState<string>("")
+  const [destination, setDestination] = useState<string>("");
   const [checkIn, setCheckIn] = useState<Date>(new Date());
   const [checkOut, setCheckOut] = useState<Date>(new Date());
+  const [adultCount, setAdultCount] = useState<number>(1);
+  const [childCount, setChildCount] = useState<number>(1);
   const [roomType, setRoomType] = useState<string>("");
   const [roomCount, setRoomCount] = useState<number>(0);
+  const [hotelId, setHotelId] = useState<string>("");
+  const search = useSearchContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     return () => { };
@@ -107,6 +114,7 @@ const MyChatBot = () => {
       options: ["Confirm Destination", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Confirm Destination") {
+          setHotelId(hotel[0]._id);
           return "confirmDestination";
         }
         return "end";
@@ -116,6 +124,42 @@ const MyChatBot = () => {
 
     confirmDestination: {
       message: `You've selected ${destination}.`,
+      options: ["Continue", "Cancel Booking"],
+      path: ({ userInput }: { userInput: string }) => {
+        if (userInput === "Continue") {
+          return "adultCount";
+        }
+        return "end";
+      },
+      chatDisabled: true,
+    },
+
+    adultCount: {
+      message: `Enter number of adults(15+)`,
+      path: ({ userInput }: { userInput: string }) => {
+        const temp = parseInt(userInput);
+        if (userInput === "Cancel Booking" || isNaN(temp)) {
+          return "end";
+        }
+        setAdultCount(temp);
+        return "childCount";
+      },
+    },
+
+    childCount: {
+      message: `Enter number of children`,
+      path: ({ userInput }: { userInput: string }) => {
+        const temp = parseInt(userInput);
+        if (userInput === "Cancel Booking" || isNaN(temp)) {
+          return "end";
+        }
+        setChildCount(temp);
+        return "confirmGuests";
+      },
+    },
+
+    confirmGuests: {
+      message: `${adultCount} adults & ${childCount} children`,
       options: ["Continue", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Continue") {
@@ -250,29 +294,32 @@ const MyChatBot = () => {
     verifyBookingDetails: {
       render: () => {
         let roomPrice = 0;
-        return (<div className="bg-black text-white rounded p-4 mt-2 ml-4 mr-4">
-          <h6 className="mb-1">{`Now verify details`}</h6>
-          <h6 className="text-lg font-bold">{`User Name: ${userName}`}</h6>
-          <h6 className="text-lg font-bold">{`Hotel: ${hotel[0].name}`}</h6>
-          <h6 className="text-lg font-bold">{`Place: ${hotel[0].city}, ${hotel[0].country}`}</h6>
-          {hotel[0].roomTypes.map((room: RoomType) => {
-            if (room.type === roomType) {
-              roomPrice = room.price;
-              return <h6 className="text-lg font-bold">{`Rooms: ${roomType} Bed, ₹${room.price}, ${roomCount} Nos`}</h6>
-            }
-            return null;
-          })}
-          <h6 className="text-lg font-bold">{`Check-in: ${checkIn.toLocaleDateString()} 02:00:00 PM`}</h6>
-          <h6 className="text-lg font-bold">{`Check-out: ${checkOut.toLocaleDateString()} 12:00:00 PM`}</h6>
-          <h6 className="text-lg font-bold">
-            {`Total Cost: ₹${(Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000))) * roomCount * roomPrice}/-`}</h6>
-          <h6 className="mb-1">{`After clicking on "Confirm Booking", The bot will redirect you to the payment gateway page. Happy booking...`}</h6>
-        </div>);
+        hotel[0].roomTypes.map((room: RoomType) => {
+          if (room.type === roomType) {
+            roomPrice = room.price;
+          }
+        })
+        const totalCost = Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000)) * roomCount * roomPrice;
+        search.saveSearchValues(destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);
+        return (
+          <div className="bg-black text-white rounded p-4 mt-2 ml-4 mr-4">
+            <h6 className="mb-1">Now verify details</h6>
+            <h6 className="text-lg font-bold">{`User Name: ${userName}`}</h6>
+            <h6 className="text-lg font-bold">{`Hotel: ${hotel[0].name}`}</h6>
+            <h6 className="text-lg font-bold">{`Place: ${hotel[0].city}, ${hotel[0].country}`}</h6>
+            <h6 className="text-lg font-bold">{`Rooms: ${roomType} Bed, ₹${roomPrice}, ${roomCount} Nos`}</h6>
+            <h6 className="text-lg font-bold">{`Guests: ${adultCount} Adults & ${childCount} Children`}</h6>
+            <h6 className="text-lg font-bold">{`Check-in: ${checkIn.toLocaleDateString()} 02:00:00 PM`}</h6>
+            <h6 className="text-lg font-bold">{`Check-out: ${checkOut.toLocaleDateString()} 12:00:00 PM`}</h6>
+            <h6 className="text-lg font-bold">{`Total Cost: ₹${totalCost}/-`}</h6>
+            <h6 className="mb-1">{`After clicking on "Confirm Booking", The bot will redirect you to the payment gateway page. Happy booking...`}</h6>
+          </div>
+        );
       },
       options: ["Confirm Booking", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Confirm Booking") {
-
+          navigate(`/home/${hotelId}/booking`);
         }
         return "end";
       },
