@@ -10,10 +10,12 @@ import FacilitiesFilter from "../components/FacilitiesFilter";
 import PriceFilter from "../components/PriceFilter";
 import MyChatBot from "../components/MyChatBot";
 import "react-chatbotify/dist/react-chatbotify.css";
+import { useAppContext } from "../contexts/AppContext";
 
 
 const Search = () => {
   const search = useSearchContext();
+  const { isLoggedIn } = useAppContext();
   const [page, setPage] = useState<number>(1);
   const [selectedStars, setSelectedStars] = useState<string[]>([]);
   const [selectedHotelTypes, setSelectedHotelTypes] = useState<string[]>([]);
@@ -93,9 +95,9 @@ const Search = () => {
               </select>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            {isLoggedIn && <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
               <MyChatBot />
-            </div>
+            </div>}
 
             {hotelData?.data.map((hotel, index) => (
               <SearchResultsCard key={index} hotel={hotel} />

@@ -90,7 +90,7 @@ const Profile = () => {
                 <div className="flex flex-col md:flex-row gap-5">
                     <label className="text-gray-700 text-sm font-bold flex-1">
                         Email
-                        <input type="email"
+                        <input type="email" disabled
                             className="border rounded w-full py-1 px-2 font-normal"
                             {...register('email', {
                                 required: "This feild is required",
