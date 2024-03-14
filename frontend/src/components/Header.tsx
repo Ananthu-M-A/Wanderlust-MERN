@@ -11,11 +11,11 @@ const Header = () => {
   const { isAdminLoggedIn } = useAdminContext();
 
   const { data: user } = useQuery("loadAccount", apiClient.loadAccount,
-  {
+    {
       onSuccess: () => { },
       onError: () => { }
-  }
-);
+    }
+  );
 
   return (
     <div className="bg-black py-6">
@@ -45,6 +45,8 @@ const Header = () => {
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Dashboard</Link>
             <Link to="/admin/hotels"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Hotels</Link>
+            <Link to="/admin/restaurants"
+              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Restaurants</Link>
             <Link to="/admin/users"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Users</Link>
             <LogoutButton isAdmin={true} />

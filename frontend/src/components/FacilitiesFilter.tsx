@@ -1,4 +1,4 @@
-import { hotelFacilities } from "../config/hotel-options-config";
+import { hotelFacilities } from "../config/options-config";
 
 type Props = {
     selectedFacilities: string[];

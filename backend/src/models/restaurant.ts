@@ -7,15 +7,19 @@ const restaurantSchema = new mongoose.Schema<RestaurantType>({
     city: { type: String, required: true },
     country: { type: String, required: true },
     description: { type: String, required: true },
-    cuisineType: { type: String, required: true },
-    averageCost: { type: Number, required: true },
+    foodItems: [{
+        item: { type: String, required: true },
+        price: { type: Number, required: true },
+        availability: { type: String, required: true },
+    }],
+    type: { type: String, required: true},
+    starRating: { type: Number, required: true },
     openingHours: [{
         day: { type: String, required: true },
         startTime: { type: String, required: true },
         endTime: { type: String, required: true }
     }],
     facilities: [{ type: String, required: true }],
-    rating: { type: Number, required: true },
     imageUrls: [{ type: String, required: true }],
     lastUpdated: { type: Date, required: true },
     bookings: [bookingSchema],

@@ -9,11 +9,14 @@ import Hotels from "./pages/Hotels";
 import EditHotel from "./pages/EditHotel";
 import Search from "./pages/Search";
 import Detail from "./pages/Detail";
-import Booking from "./pages/Booking";
 import AdminLogin from "./pages/AdminLogin";
 import { useAdminContext } from "./contexts/AdminContext";
 import Users from "./pages/Users";
 import Account from "./pages/Profile";
+import Restaurants from "./pages/Restaurants";
+import AddRestaurant from "./pages/AddRestaurant";
+import EditRestaurant from "./pages/EditRestaurant";
+import OrderSuccessPage from "./pages/OrderResultPage";
 
 
 function App() {
@@ -55,14 +58,15 @@ function App() {
             </Layout>} />
 
           {isLoggedIn && <>
-            <Route path="/home/:hotelId/booking" element={
-              <Layout>
-                <Booking />
-              </Layout>} />
 
             <Route path="/home/account" element={
               <Layout>
                 <Account />
+              </Layout>} />
+
+            <Route path="/home/order-result-page" element={
+              <Layout>
+                <OrderSuccessPage />
               </Layout>} />
           </>}
 
@@ -70,6 +74,16 @@ function App() {
             <Route path="/admin/dashboard" element={
               <Layout>
                 <p>Admin Dashboard</p>
+              </Layout>} />
+
+            <Route path="/admin/add-restaurant" element={
+              <Layout>
+                <AddRestaurant />
+              </Layout>} />
+
+            <Route path="/admin/edit-restaurant/:restaurantId" element={
+              <Layout>
+                <EditRestaurant />
               </Layout>} />
 
             <Route path="/admin/add-hotel" element={
@@ -90,6 +104,11 @@ function App() {
             <Route path="/admin/hotels" element={
               <Layout>
                 <Hotels />
+              </Layout>} />
+
+            <Route path="/admin/restaurants" element={
+              <Layout>
+                <Restaurants />
               </Layout>} />
           </>}
 

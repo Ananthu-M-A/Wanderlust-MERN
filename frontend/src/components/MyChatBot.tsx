@@ -6,7 +6,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { RoomType } from "../../../backend/src/shared/types";
 import { useSearchContext } from "../contexts/SearchContext";
-import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import { useAppContext } from "../contexts/AppContext";
 
 const MyChatBot = () => {
   const botName = "WanderLustBookingAssistant1.0";
@@ -22,7 +23,8 @@ const MyChatBot = () => {
   const [hotelId, setHotelId] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const search = useSearchContext();
-  const navigate = useNavigate();
+  const { showToast } = useAppContext();
+  let roomPrice = 0, total = 0;
 
   useEffect(() => {
     return () => { };
@@ -34,6 +36,18 @@ const MyChatBot = () => {
     date.setFullYear(date.getFullYear() + 1);
     return date;
   }, []);
+
+  const { mutate } = useMutation(apiClient.createCheckoutSession, {
+    onMutate: (newPaymentData) => {
+      return newPaymentData
+    },
+    onSuccess: () => {
+      showToast({ message: "Booking Saved!", type: "SUCCESS" });
+    },
+    onError: () => {
+      showToast({ message: "Error saving booking!", type: "ERROR" });
+    }
+  })
 
   const options = {
     header: {
@@ -331,11 +345,9 @@ const MyChatBot = () => {
 
     verifyBookingDetails: {
       render: () => {
-        const roomPrice = hotel[0].roomTypes.find((room: RoomType) => room.type === roomType)?.price || 0;
-        const total = Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000)) * roomCount * roomPrice;
-
+        roomPrice = hotel[0].roomTypes.find((room: RoomType) => room.type === roomType)?.price || 0;
+        total = Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000)) * roomCount * roomPrice;
         search.saveSearchValues(destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, total);
-
         return (
           <div className="bg-black text-white rounded p-4 mt-2 ml-4 mr-4">
             <h6 className="mb-1">Now verify details</h6>
@@ -353,8 +365,13 @@ const MyChatBot = () => {
       },
       options: ["Confirm Booking", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
+        const nightsPerStay = Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000));
         if (userInput === "Confirm Booking") {
-          navigate(`/home/${hotelId}/booking`);
+          const paymentData = {
+            checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice,
+            hotelId, nightsPerStay
+          }
+          mutate(paymentData);
         }
         if (userInput === "Cancel Booking") {
           search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)

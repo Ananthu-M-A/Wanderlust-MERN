@@ -4,6 +4,18 @@ export type RoomType = {
     quantity: number;
 };
 
+export type FoodItem = {
+    item: string;
+    price: number;
+    availability: string;
+};
+
+export type OpeningHour = {
+    day: string;
+    startTime: string;
+    endTime: string;
+}
+
 export type UserType = {
     _id: string,
     email: string,
@@ -41,15 +53,11 @@ export type RestaurantType = {
     city: string,
     country: string,
     description: string,
-    cuisineType: string,
-    averageCost: number,
-    openingHours: {
-        day: string,
-        startTime: string,
-        endTime: string
-    }[],
+    foodItems: FoodItem[],
+    type: string,
+    openingHours: OpeningHour[],
     facilities: string[],
-    rating: number,
+    starRating: number,
     imageUrls: string[],
     lastUpdated: Date,
     bookings: BookingType[],

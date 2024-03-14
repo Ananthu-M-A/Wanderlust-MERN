@@ -7,6 +7,7 @@ import authRoutes from './routes/auth';
 import cookieParser from 'cookie-parser';
 import { v2 as cloudinary } from 'cloudinary';
 import hotelRoutes from './routes/hotels';
+import restaurantRoutes from './routes/restaurants';
 import homeRoutes from './routes/home';
 import adminAuthRoutes from './routes/adminAuth';
 import session from 'express-session';
@@ -47,6 +48,7 @@ app.use(session({
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/hotels", hotelRoutes);
+app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/home", homeRoutes);
 
 app.use("/api/adminAuth", adminAuthRoutes);

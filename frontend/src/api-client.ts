@@ -1,10 +1,13 @@
 import { LoginFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
-import { HotelType, PaymentIntentResponse, SearchResponse, UserType } from '../../backend/src/shared/types';
+import { HotelType, PaymentIntentResponse, RestaurantType, SearchResponse, UserType } from '../../backend/src/shared/types';
 import { BookingFormData } from "./forms/BookingForm/BookingForm";
+import { loadStripe } from "@stripe/stripe-js";
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const stripe = await loadStripe('pk_test_51OmXsJSFKXnVvS5mYKhovpdQ83qlQfCzxP9QRnOGMkwo60n8zQFqLa8fzfpaUVuaqmouwCH8NOcokyONxwPQUmHx00xxk61lmd');
+
 
 export const loadCurrentUser = async (): Promise<UserType> => {
     const response = await fetch(`${API_BASE_URL}/api/users/me`, {
@@ -150,6 +153,20 @@ export const addHotel = async (hotelFormData: FormData) => {
     return response.json();
 };
 
+export const addRestaurant = async (restaurantFormData: FormData) => {
+    const response = await fetch(`${API_BASE_URL}/api/restaurants`, {
+        method: 'POST',
+        credentials: "include",
+        body: restaurantFormData,
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to add Restaurant");
+    }
+
+    return response.json();
+};
+
 
 export const loadHotels = async (): Promise<HotelType[]> => {
     const response = await fetch(`${API_BASE_URL}/api/hotels`, {
@@ -158,6 +175,18 @@ export const loadHotels = async (): Promise<HotelType[]> => {
 
     if (!response.ok) {
         throw new Error("Failed to load hotels");
+    }
+
+    return response.json();
+};
+
+export const loadRestaurants = async (): Promise<RestaurantType[]> => {
+    const response = await fetch(`${API_BASE_URL}/api/restaurants`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to load restaurants");
     }
 
     return response.json();
@@ -186,15 +215,45 @@ export const unblockHotel = async (hotelId: string) => {
     }
 };
 
+export const blockRestaurant = async (restaurantId: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/restaurants/${restaurantId}/block`, {
+        method: "PUT",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to block restaurant");
+    }
+};
 
 
+export const unblockRestaurant = async (restaurantId: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/restaurants/${restaurantId}/unblock`, {
+        method: "PUT",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to unblock restaurant");
+    }
+};
 
 export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
     const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}`, {
         credentials: "include"
     })
     if (!response.ok) {
-        throw new Error("Failed to load hotels");
+        throw new Error("Failed to load hotel");
+    }
+    return response.json();
+}
+
+export const loadRestaurantById = async (restaurantId: string): Promise<RestaurantType> => {
+    const response = await fetch(`${API_BASE_URL}/api/restaurants/${restaurantId}`, {
+        credentials: "include"
+    })
+    if (!response.ok) {
+        throw new Error("Failed to load restaurant");
     }
     return response.json();
 }
@@ -207,7 +266,19 @@ export const updateHotelById = async (hotelFormData: FormData) => {
         credentials: "include"
     })
     if (!response.ok) {
-        throw new Error("Failed to update hotels");
+        throw new Error("Failed to update hotel");
+    }
+    return response.json();
+}
+
+export const updateRestaurantById = async (restaurantFormData: FormData) => {
+    const response = await fetch(`${API_BASE_URL}/api/restaurants/${restaurantFormData.get("restaurantId")}`, {
+        method: "PUT",
+        body: restaurantFormData,
+        credentials: "include"
+    })
+    if (!response.ok) {
+        throw new Error("Failed to update restaurant");
     }
     return response.json();
 }
@@ -325,6 +396,23 @@ export const createRoomBooking = async (formData: BookingFormData) => {
     }
     return response.json();
 };
+
+export const createCheckoutSession = async (paymentData: any) => {    
+    const response = await fetch(`${API_BASE_URL}/api/home/create-checkout-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(paymentData)
+    })
+    if (!response.ok) {
+        throw new Error("Error booking room");
+    }
+    const session = await response.json();
+    const result = stripe?.redirectToCheckout({
+        sessionId: session.id
+    })
+    console.log(result);
+}
 
 export const adminLogin = async (formData: LoginFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/adminAuth/adminLogin`, {

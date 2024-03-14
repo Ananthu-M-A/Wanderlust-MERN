@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import GoogleMap from "./GoogleMap";
-import { roomTypes } from "../config/hotel-options-config";
+import { roomTypes } from "../config/options-config";
 
 const SearchBar = () => {
     const search = useSearchContext();

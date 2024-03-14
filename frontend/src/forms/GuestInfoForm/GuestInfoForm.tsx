@@ -5,6 +5,9 @@ import { useAppContext } from "../../contexts/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RoomType } from "../../../../backend/src/shared/types";
 import { useEffect, useState } from "react";
+import * as apiClient from "../../api-client";
+import { useMutation } from "react-query";
+
 
 type Props = {
     hotelId: string;
@@ -23,6 +26,7 @@ type GuestInfoFormData = {
 
 const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
     const search = useSearchContext();
+    const { showToast } = useAppContext();
     const [totalCost, setTotalCost] = useState<number>(0);
     const { isLoggedIn } = useAppContext();
     const navigate = useNavigate();
@@ -43,8 +47,10 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
     const checkOut = watch("checkOut");
     const roomType = watch("roomType");
     const roomCount = watch("roomCount");
-    const roomPrice = watch("roomPrice");    
-    
+    const roomPrice = watch("roomPrice");
+    const adultCount = watch("adultCount");
+    const childCount = watch("childCount");
+
     const nightsPerStay = Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000));
 
     useEffect(() => {
@@ -58,6 +64,8 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
             const newTotalCost = roomCount * nightsPerStay * roomPrice;
             setTotalCost(newTotalCost);
         }
+        search.saveSearchValues("", checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);      
+
     }, [checkIn, checkOut, roomType, roomCount, roomPrice, nightsPerStay]);
 
 
@@ -70,9 +78,21 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
         navigate("/login", { state: { from: location } });
     }
 
-    const onSubmit = (data: GuestInfoFormData) => {
-        search.saveSearchValues("", data.checkIn, data.checkOut, data.adultCount, data.childCount, data.roomType, data.roomCount, roomPrice, totalCost);
-        navigate(`/home/${hotelId}/booking`);
+    const { mutate } = useMutation(apiClient.createCheckoutSession, {
+        onSuccess: () => {
+          showToast({ message: "Booking Saved!", type: "SUCCESS" });
+        },
+        onError: () => {
+          showToast({ message: "Error saving booking!", type: "ERROR" });
+        }
+      })
+
+    const onSubmit = async () => {  
+        const paymentData = {
+            checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice,
+            hotelId, nightsPerStay
+          }
+        mutate(paymentData);
     }
 
     return (

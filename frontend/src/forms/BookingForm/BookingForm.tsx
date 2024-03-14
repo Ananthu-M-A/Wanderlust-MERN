@@ -32,7 +32,6 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
     const elements = useElements();
     const search = useSearchContext();
     const { hotelId } = useParams();
-
     const { showToast } = useAppContext();
 
     useEffect(()=>{
