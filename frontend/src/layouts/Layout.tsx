@@ -13,7 +13,8 @@ const Layout = ({ children }: Props) => {
     const [showComponent, setShowComponent] = useState(true);
     useEffect(() => {
         if ((pathname.startsWith("/admin")) || (pathname === "/adminLogin") ||
-            (pathname === "/login") || (pathname === "/register") || (pathname === "/home/account")) {
+            (pathname === "/login") || (pathname === "/register") || (pathname === "/home/account") ||
+            (pathname === "/home/orders")) {
             setShowComponent(false);
         } else {
             setShowComponent(true);

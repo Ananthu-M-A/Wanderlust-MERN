@@ -17,6 +17,7 @@ import Restaurants from "./pages/Restaurants";
 import AddRestaurant from "./pages/AddRestaurant";
 import EditRestaurant from "./pages/EditRestaurant";
 import OrderSuccessPage from "./pages/OrderResultPage";
+import Orders from "./pages/Orders";
 
 
 function App() {
@@ -64,7 +65,12 @@ function App() {
                 <Account />
               </Layout>} />
 
-            <Route path="/home/order-result-page" element={
+            <Route path="/home/orders" element={
+              <Layout>
+                <Orders />
+              </Layout>} />
+
+            <Route path="/home/:bookingId/order-result-page" element={
               <Layout>
                 <OrderSuccessPage />
               </Layout>} />

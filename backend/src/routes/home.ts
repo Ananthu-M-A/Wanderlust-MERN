@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import Hotel from '../models/hotel';
-import { BookingType, SearchResponse, UserType } from '../shared/types';
+import { Hotel, Booking } from '../models/hotel';
+import { BookingType, HotelType, SearchResponse, UserType } from '../shared/types';
 import { param, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import Stripe from "stripe";
@@ -100,11 +100,59 @@ router.get('/search', async (req: Request, res: Response) => {
                 pages: Math.ceil(total / pageSize),
             }
         };
-
         res.json(response);
     } catch (error) {
         console.log("Error", error);
         res.status(500).json({ message: "Something went wrong" });
+    }
+});
+
+router.get('/load-orders', verifyToken,
+    async (req: Request, res: Response) => {
+        try {
+            const hotelsWithBookings = await Hotel.find({}).populate("bookings");
+            const allBookings: any[] = [];
+            hotelsWithBookings.forEach((hotel: HotelType) => {
+                hotel.bookings.forEach((booking: BookingType) => {
+                    allBookings.push(booking);
+                });
+            });
+            res.json(allBookings);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: "Error loading hotel" });
+        }
+    });
+
+router.get('/:userId/order-result-page', async (req: Request, res: Response) => {
+    try {
+        const sessionId = req.query.session_id;
+        const session = await stripe.checkout.sessions.retrieve(sessionId as any);
+        const paymentData = req.session.paymentData;
+        const paymentIntentId = session.payment_intent;
+        const hotel = await Hotel.findById(paymentData.hotelId);
+        const user = await User.findById(req.params.userId);
+        const newBooking = new Booking({
+            userId: req.params.userId,
+            bookingEmail: user?.email,
+            hotelName: hotel?.name,
+            hotelImageUrl: hotel?.imageUrls[0],
+            adultCount: paymentData.adultCount,
+            childCount: paymentData.childCount,
+            checkIn: paymentData.checkIn,
+            checkOut: paymentData.checkOut,
+            roomDetail: `${paymentData.roomType} Bed, ₹${paymentData.roomPrice}, ${paymentData.roomCount}Nos`,
+            totalCost: paymentData.roomPrice * paymentData.nightsPerStay * paymentData.roomCount,
+            paymentId: paymentIntentId,
+            bookingDate: new Date(),
+        });
+        await newBooking.save();
+        hotel?.bookings.push(newBooking);
+        await hotel?.save();
+        res.redirect(`http://localhost:5173/home/${newBooking._id}/order-result-page`)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Error booking hotel" });
     }
 });
 
@@ -129,6 +177,7 @@ router.get('/:id',
 router.post('/create-checkout-session', verifyToken,
     async (req: Request, res: Response) => {
         const paymentData = req.body;
+        req.session.paymentData = paymentData;
         const hotel = await Hotel.findById(paymentData.hotelId);
         const user = await User.findById(req.userId);
         const bookingData = [{
@@ -151,8 +200,8 @@ router.post('/create-checkout-session', verifyToken,
                 payment_method_types: ["card"],
                 line_items: bookingData,
                 mode: "payment",
-                success_url: "http://localhost:5173/home/order-result-page",
-                cancel_url: "http://localhost:5173/home/order-result-page",
+                success_url: `http://localhost:4000/api/home/${req.userId}/order-result-page?session_id={CHECKOUT_SESSION_ID}`,
+                cancel_url: "http://localhost:5173",
             });
             res.json({ id: session.id });
         } catch (error) {

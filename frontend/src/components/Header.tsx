@@ -5,10 +5,16 @@ import LogoutButton from '../components/LogoutButton';
 import { useAdminContext } from '../contexts/AdminContext';
 import { useQuery } from 'react-query';
 import * as apiClient from '../api-client';
+import { useState } from 'react';
 
 const Header = () => {
   const { isLoggedIn } = useAppContext();
   const { isAdminLoggedIn } = useAdminContext();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   const { data: user } = useQuery("loadAccount", apiClient.loadAccount,
     {
@@ -56,17 +62,24 @@ const Header = () => {
                 className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Login</Link>
             ) : (<>
               <span className='flex space-x-2'>
-                <Link to="/home/account">
-                  <div className="flex items-center justify-center">
-                    <div className="h-10 w-10 overflow-hidden bg-gray-300 flex-shrink-0">
-                      {user && <img className="h-full w-full object-cover" src={user.imageUrl} alt="Profile Picture" />}
-                    </div>
+                <div className="flex items-center justify-center relative">
+                  <div className="h-10 w-10 overflow-hidden bg-gray-300 flex-shrink-0" onClick={handleDropdownToggle}>
+                    {user && <img className="h-full w-full object-cover cursor-pointer" src={user.imageUrl} alt="Profile Picture" />}
                   </div>
-                </Link>
+                  {isDropdownOpen && (
+                    <div className="absolute top-12 right-0 z-10 bg-white border border-gray-200 rounded shadow-md">
+                      <ul onClick={()=>{setIsDropdownOpen(!isDropdownOpen)}}>
+                        <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+                          <Link to="/home/account">Profile</Link></li>
+                        <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+                          <Link to="/home/orders">Orders</Link></li>
+                        <LogoutButton isAdmin={false} />
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </span>
-              <span className='flex space-x-2'>
-                <LogoutButton isAdmin={false} />
-              </span></>)}
+            </>)}
           </>)}
         </span>
       </div>

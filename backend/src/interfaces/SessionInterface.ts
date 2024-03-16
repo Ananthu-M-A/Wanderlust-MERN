@@ -1,4 +1,5 @@
 import { SessionData } from 'express-session';
+import { BookingType } from '../shared/types';
 
 interface CustomSessionData extends SessionData {
     userSignupData?: {
@@ -29,6 +30,8 @@ interface CustomSessionData extends SessionData {
     admin: {
         _id: object;
     };
+
+    paymentData: BookingType;
 }
 
 declare module 'express-session' {

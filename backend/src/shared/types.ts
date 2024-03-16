@@ -65,16 +65,24 @@ export type RestaurantType = {
 };
 
 export type BookingType = {
+    hotelId(hotelId: any): unknown;
+    roomType: any;
+    roomPrice: any;
+    roomCount: any;
+    nightsPerStay: any;
     _id: string;
     userId: string;
-    firstName: string;
-    lastName: string;
-    email: string;
+    bookingEmail: string;
+    hotelName: string;
+    hotelImageUrl: string;
     adultCount: number;
     childCount: number;
     checkIn: Date;
     checkOut: Date;
+    roomDetail: string;
     totalCost: number;
+    bookingDate: Date;
+    paymentId: string
 };
 
 export type SearchResponse = {
@@ -84,11 +92,4 @@ export type SearchResponse = {
         page: number;
         pages: number;
     }
-}
-
-
-export type PaymentIntentResponse = {
-    paymentIntentId: string;
-    clientSecret: string;
-    totalCost: number;
 }

@@ -1,7 +1,6 @@
 import { LoginFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
-import { HotelType, PaymentIntentResponse, RestaurantType, SearchResponse, UserType } from '../../backend/src/shared/types';
-import { BookingFormData } from "./forms/BookingForm/BookingForm";
+import { BookingType, HotelType, RestaurantType, SearchResponse, UserType } from '../../backend/src/shared/types';
 import { loadStripe } from "@stripe/stripe-js";
 
 
@@ -365,39 +364,8 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
     return response.json();
 }
 
-export const createPaymentIntent =
-    async (hotelId: string, numberOfNights: string, roomCount: string, roomPrice: string): Promise<PaymentIntentResponse> => {
-        const response = await fetch(`${API_BASE_URL}/api/home/${hotelId}/bookings/payment-intent`, {
-            credentials: "include",
-            method: "POST",
-            body: JSON.stringify({ numberOfNights, roomCount, roomPrice }),
-            headers: {
-                "Content-Type": "application/json"
-            },
-        });
-        if (!response.ok) {
-            throw new Error("Error fetching payment intent");
-        }
-        return response.json();
-    };
 
-
-export const createRoomBooking = async (formData: BookingFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/home/${formData.hotelId}/bookings`, {
-        credentials: "include",
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-            "Content-Type": "application/json"
-        },
-    });
-    if (!response.ok) {
-        throw new Error("Error booking room");
-    }
-    return response.json();
-};
-
-export const createCheckoutSession = async (paymentData: any) => {    
+export const createCheckoutSession = async (paymentData: any) => {
     const response = await fetch(`${API_BASE_URL}/api/home/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -412,6 +380,16 @@ export const createCheckoutSession = async (paymentData: any) => {
         sessionId: session.id
     })
     console.log(result);
+}
+
+export const loadOrders = async (): Promise<BookingType[]> => {
+    const response = await fetch(`${API_BASE_URL}/api/home/load-orders`,{
+        credentials: "include"
+    });    
+    if (!response.ok) {
+        throw new Error("Failed to update hotels");
+    }
+    return response.json();
 }
 
 export const adminLogin = async (formData: LoginFormData) => {

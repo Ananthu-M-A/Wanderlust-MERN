@@ -28,7 +28,7 @@ const MyChatBot = () => {
 
   useEffect(() => {
     return () => { };
-  }, [])
+  }, [hotel, userName, destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, hotelId, roomPrice, total])
 
   const minDate = useMemo(() => new Date(), []);
   const maxDate = useMemo(() => {
@@ -42,9 +42,11 @@ const MyChatBot = () => {
       return newPaymentData
     },
     onSuccess: () => {
+      search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0);
       showToast({ message: "Booking Saved!", type: "SUCCESS" });
     },
     onError: () => {
+      search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0);
       showToast({ message: "Error saving booking!", type: "ERROR" });
     }
   })
