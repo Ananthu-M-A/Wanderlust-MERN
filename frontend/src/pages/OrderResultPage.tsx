@@ -20,7 +20,7 @@ const OrderResultPage = () => {
           <Link to="/search" className="text-blue-300 bg-black h-full p-2 font-bold hover:text-white text-xl">
             <span>Go Home</span>
           </Link>
-          <Link to="/home/orders" className="text-blue-300 bg-black h-full p-2 font-bold hover:text-white text-xl">
+          <Link to={`/home/orders/${bookingId}`} className="text-blue-300 bg-black h-full p-2 font-bold hover:text-white text-xl">
             <span>Orders</span>
           </Link>
         </div>

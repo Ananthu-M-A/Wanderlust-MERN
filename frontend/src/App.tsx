@@ -65,7 +65,7 @@ function App() {
                 <Account />
               </Layout>} />
 
-            <Route path="/home/orders" element={
+            <Route path="/home/orders/*" element={
               <Layout>
                 <Orders />
               </Layout>} />
