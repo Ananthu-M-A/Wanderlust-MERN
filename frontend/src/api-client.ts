@@ -408,6 +408,18 @@ export const adminLogin = async (formData: LoginFormData) => {
     }
 }
 
+export const loadOrdersTable = async (): Promise<BookingType[]> => {
+    const response = await fetch(`${API_BASE_URL}/api/hotels/load-orders-table`,{
+        credentials: "include"
+    });    
+    if (!response.ok) {
+        throw new Error("Failed to load hotels");
+    }
+    return response.json();
+}
+
+
+
 export const validateToken = async () => {
     const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {
         credentials: "include",

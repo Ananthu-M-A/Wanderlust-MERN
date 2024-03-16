@@ -38,7 +38,7 @@ const LogoutButton = ({ isAdmin }: Props) => {
     };
 
     return (
-        <button onClick={handleClick} className="px-4 py-2 cursor-pointer hover:bg-gray-100">Logout</button>
+        <button onClick={handleClick} className="flex items-center text-blue-500 px-3 font-bold hover:text-blue-800">Logout</button>
     )
 }
 

@@ -18,6 +18,8 @@ import AddRestaurant from "./pages/AddRestaurant";
 import EditRestaurant from "./pages/EditRestaurant";
 import OrderSuccessPage from "./pages/OrderResultPage";
 import Orders from "./pages/Orders";
+import OrdersTable from "./pages/OrdersTable";
+import Dashboard from "./pages/Dashboard";
 
 
 function App() {
@@ -79,7 +81,7 @@ function App() {
           {isAdminLoggedIn && <>
             <Route path="/admin/dashboard" element={
               <Layout>
-                <p>Admin Dashboard</p>
+                <Dashboard />
               </Layout>} />
 
             <Route path="/admin/add-restaurant" element={
@@ -117,6 +119,11 @@ function App() {
                 <Restaurants />
               </Layout>} />
           </>}
+
+          <Route path="/admin/orders" element={
+            <Layout>
+              <OrdersTable />
+            </Layout>} />
 
           <Route path="*" element={
             <Layout>

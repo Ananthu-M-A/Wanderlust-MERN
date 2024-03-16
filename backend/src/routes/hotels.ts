@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
 import { Hotel } from '../models/hotel';
-import { HotelType, RoomType } from '../shared/types';
+import { BookingType, HotelType, RoomType } from '../shared/types';
 import { body } from 'express-validator';
 import verifyAdminToken from '../middleware/adminAuth';
 import verifyToken from '../middleware/auth';
@@ -70,6 +70,23 @@ router.post('/', verifyAdminToken, [
         } catch (error) {
             console.log("Error creating hotel: ", error);
             res.status(500).json({ message: "Something went wrong" });
+        }
+    });
+
+router.get('/load-orders-table', verifyAdminToken,
+    async (req: Request, res: Response) => {
+        try {
+            const hotelsWithBookings = await Hotel.find({}).populate("bookings");
+            const allBookings: any[] = [];
+            hotelsWithBookings.forEach((hotel: HotelType) => {
+                hotel.bookings.forEach((booking: BookingType) => {
+                    allBookings.push(booking);
+                });
+            });
+            res.json(allBookings);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: "Error loading hotel" });
         }
     });
 

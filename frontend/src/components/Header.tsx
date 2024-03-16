@@ -31,24 +31,12 @@ const Header = () => {
           {isAdminLoggedIn && <p className='text-xl'>ADMIN</p>}
           {/* <image src='/logo.png' width={'200px'}/> */}
         </span>
-        {!isAdminLoggedIn && <>
-          <span className='flex space-x-2'>
-            <Link to="/login"
-              className='flex items-center text-blue-300 hover:text-white px-3 font-bold'>Hotels</Link>
-          </span>
-          <span className='flex space-x-2'>
-            <Link to="/login"
-              className='flex items-center text-blue-300 hover:text-white px-3 font-bold'>Restaurants</Link>
-          </span>
-          <span className='flex space-x-2'>
-            <Link to="/login"
-              className='flex items-center text-blue-300 hover:text-white px-3 font-bold'>Transits</Link>
-          </span>
-        </>}
         < span className='flex space-x-2'>
           {isAdminLoggedIn ? (<>
             <Link to="/admin/dashboard"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Dashboard</Link>
+            <Link to="/admin/orders"
+              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Orders</Link>
             <Link to="/admin/hotels"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Hotels</Link>
             <Link to="/admin/restaurants"
@@ -68,7 +56,7 @@ const Header = () => {
                   </div>
                   {isDropdownOpen && (
                     <div className="absolute top-12 right-0 z-10 bg-white border border-gray-200 rounded shadow-md">
-                      <ul onClick={()=>{setIsDropdownOpen(!isDropdownOpen)}}>
+                      <ul onClick={() => { setIsDropdownOpen(!isDropdownOpen) }}>
                         <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                           <Link to="/home/account">Profile</Link></li>
                         <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">

@@ -42,7 +42,6 @@ const MyChatBot = () => {
       return newPaymentData
     },
     onSuccess: () => {
-      search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0);
       showToast({ message: "Booking Saved!", type: "SUCCESS" });
     },
     onError: () => {
@@ -83,12 +82,32 @@ const MyChatBot = () => {
       message: `Hi there!, I'm ${botName}, Please enter your sweet name 😊`,
       path: ({ userInput }: { userInput: string }) => {
         setUserName(userInput);
-        return "welcome";
+        return "selectBooking";
       },
     },
 
-    welcome: {
-      message: `Hello ${userName}. You can start booking now, Enter hotel name or place...`,
+    selectBooking: {
+      message: `Hello ${userName}. You can start booking now, Select one...`,
+      options: ["Hotel", "Restaurant", "Transit"],
+      path: ({ userInput }: { userInput: string })=>{
+        if (userInput === "Hotel") {
+          return "searchHotel";
+        }
+        if (userInput === "Restaurant") {
+          return "searchRestaurant";
+        }
+        if (userInput === "Transit") {
+          return "searchTransit";
+        }
+        if (userInput === "Cancel Booking") {
+          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          return "end";
+        }
+      }
+    },
+
+    searchHotel: {
+      message: `Enter hotel name or place...`,
       path: async ({ userInput }: { userInput: string }) => {
         await handleSearchHotels(userInput, page);
         return "listHotel";
