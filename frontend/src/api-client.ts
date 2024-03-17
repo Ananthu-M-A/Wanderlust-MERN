@@ -1,6 +1,6 @@
 import { LoginFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
-import { BookingType, HotelType, RestaurantType, SearchResponse, UserType } from '../../backend/src/shared/types';
+import { BookingType, HotelType, RestaurantType, SearchHotelResponse, SearchRestaurantResponse, UserType } from '../../backend/src/shared/types';
 import { loadStripe } from "@stripe/stripe-js";
 
 
@@ -167,8 +167,11 @@ export const addRestaurant = async (restaurantFormData: FormData) => {
 };
 
 
-export const loadHotels = async (): Promise<HotelType[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/hotels`, {
+export const loadHotels = async (searchParams: SearchParams): Promise<SearchHotelResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("destination", searchParams.destination || "");
+    queryParams.append("page", searchParams.page || "");
+    const response = await fetch(`${API_BASE_URL}/api/hotels?${queryParams}`, {
         credentials: "include",
     });
 
@@ -179,8 +182,11 @@ export const loadHotels = async (): Promise<HotelType[]> => {
     return response.json();
 };
 
-export const loadRestaurants = async (): Promise<RestaurantType[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/restaurants`, {
+export const loadRestaurants = async (searchParams: SearchParams): Promise<SearchRestaurantResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("destination", searchParams.destination || "");
+    queryParams.append("page", searchParams.page || "");
+    const response = await fetch(`${API_BASE_URL}/api/restaurants?${queryParams}`, {
         credentials: "include",
     });
 
@@ -333,7 +339,7 @@ export type SearchParams = {
     sortOption?: string;
 }
 
-export const searchHotels = async (searchParams: SearchParams): Promise<SearchResponse> => {
+export const searchHotels = async (searchParams: SearchParams): Promise<SearchHotelResponse> => {
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("checkIn", searchParams.checkIn || "");

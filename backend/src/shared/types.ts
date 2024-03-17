@@ -85,8 +85,17 @@ export type BookingType = {
     paymentId: string
 };
 
-export type SearchResponse = {
+export type SearchHotelResponse = {
     data: HotelType[];
+    pagination: {
+        total: number;
+        page: number;
+        pages: number;
+    }
+}
+
+export type SearchRestaurantResponse = {
+    data: RestaurantType[];
     pagination: {
         total: number;
         page: number;

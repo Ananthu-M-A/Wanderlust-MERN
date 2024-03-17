@@ -1,16 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Link } from "react-router-dom";
 import * as apiClient from '../api-client';
-import { BsBuilding, BsMap } from "react-icons/bs";
-import { BiHotel, BiMoney, BiStar } from "react-icons/bi";
+import { useState } from "react";
+import Pagination from "../components/Pagination";
 
 const Hotels = () => {
-    const queryClient = useQueryClient();
-    const { data: hotelData } = useQuery("loadHotels", apiClient.loadHotels,
-        {
-            onError: () => { }
-        }
-    );
+    const [searchData, setSearchData] = useState("");
+    const [page, setPage] = useState<number>(1);
+    const queryClient = useQueryClient();    
+
+    const searchParams = {
+        destination: searchData,
+        page: page.toString(),
+    }
+
+    const { data: hotelData } = useQuery(["loadHotels", searchParams],
+        () => apiClient.loadHotels(searchParams));
 
     const blockHotel = useMutation<void, Error, string>(apiClient.blockHotel, {
         onSuccess: () => {
@@ -32,6 +37,10 @@ const Hotels = () => {
         await unblockHotel.mutateAsync(hotelId);
     };
 
+    const handleClear = () => {
+        setSearchData("");
+    }
+
     return (
         <div className="space-y-5">
             <span className="flex justify-between">
@@ -40,67 +49,71 @@ const Hotels = () => {
                     Add Hotel
                 </Link>
             </span>
-            <div className="grid grid-cols-1 gap-8">
-                {(hotelData && hotelData.length > 0) ? hotelData.map((hotel, index) => (
-                    <div key={index} className="flex flex-col justify-between border border-slate-300 rounded-lg p-8 gap-5">
-                        <h2 className="text-2xl font-bold">{hotel.name}</h2>
-                        <div className="whitespace-pre-line">{hotel.description}</div>
-                        <div className="grid grid-cols-5 gap-2">
-                            <div className="border border-slate-300 rounded-sm p-3 flex items-center">
-                                <BsMap className="mr-1" />
-                                {hotel.city}, {hotel.country}
-                            </div>
-                            <div className="border border-slate-300 rounded-sm p-3 flex items-center">
-                                <BsBuilding className="mr-1" />
-                                {hotel.type}
-                            </div>
-                            <div className="border border-slate-300 rounded-sm p-3 flex items-center">
-                                <BiMoney className="mr-1" />
-                                ₹{hotel.roomTypes[0].price} per night
-                            </div>
-                            <div className="border border-slate-300 rounded-sm p-3 flex items-center">
-                                <BiHotel className="mr-1" />
-                                {hotel.adultCount} adults, {hotel.childCount} children
-                            </div>
-                            <div className="border border-slate-300 rounded-sm p-3 flex items-center">
-                                <BiStar className="mr-1" />
-                                {hotel.starRating} Star Rating
-                            </div>
-                        </div>
-                        <div className="flex justify-end">
-                            <span className="mr-4">
-                                <Link to={`/admin/edit-hotel/${hotel._id}`}
-                                    className="flex bg-black text-blue-300 text-xl font-bold p-2 hover:text-white">
-                                    Details
-                                </Link>
-                            </span>
-                            <span>
-                                {hotel.isBlocked ? (
-                                    <button
-                                        onClick={() => handleUnblock(hotel._id)}
-                                        className="w-100 bg-blue-600 text-white h-full p-2 font-bold text-xl hover:bg-blue-500"
-                                    >
-                                        Unblock
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={() => handleBlock(hotel._id)}
-                                        className="w-100 bg-red-600 text-white h-full p-2 font-bold text-xl hover:bg-red-500"
-                                    >
-                                        Block
-                                    </button>
-                                )}
-                            </span>
-                        </div>
-                    </div>
-                )) : (
-                    <>
-                        <span className="">Hotels list is empty</span>
-                        <div className="w-80 mx-auto flex items-center justify-center">
-                            <img src="https://img.freepik.com/free-vector/detective-following-footprints-concept-illustration_114360-21835.jpg?t=st=1709021064~exp=1709024664~hmac=b9ac18bf2f3e27574638c5fa9f59ad646fe7013ad348bcfe5df4ab62b2d9f38f&w=740" alt="" />
-                        </div>
-                    </>
-                )}
+
+            <div className="overflow-x-auto">
+                <div className="flex flex-row items-center flex-1 bg-white p-2 border rounded mb-2">
+                    <input placeholder="Search hotels by name or place..." value={searchData}
+                        className="text-md w-full focus:outline-none"
+                        onChange={(event) => { setSearchData(event.target.value) }} />
+                    <button className="w-100 font-bold text-xl hover:text-blue-600"
+                        onClick={handleClear}>
+                        Clear
+                    </button>
+                </div>
+                <table className="table-auto w-full border-collapse border border-gray-800">
+                    <thead>
+                        <tr className="bg-gray-200">
+                            <th className="border border-gray-800 px-4 py-2">Hotel Name</th>
+                            <th className="border border-gray-800 px-4 py-2">Place</th>
+                            <th className="border border-gray-800 px-4 py-2">Hotel ID</th>
+                            <th className="border border-gray-800 px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(hotelData && hotelData.data.length > 0) ? hotelData.data.map((hotel) => (
+                            <tr key={hotel._id} className="bg-white">
+                                <td className="border border-gray-800 px-4 py-2">{hotel.name}</td>
+                                <td className="border border-gray-800 px-4 py-2">{`${hotel.city}, ${hotel.country}`}</td>
+                                <td className="border border-gray-800 px-4 py-2">{hotel._id}</td>
+                                <td className="border border-gray-800 px-4 py-2">
+                                    <div className="flex justify-center">
+                                        <span className="mr-4">
+                                            <Link to={`/admin/edit-hotel/${hotel._id}`}
+                                                className="flex text-black text-xl font-bold p-2">
+                                                View
+                                            </Link>
+                                        </span>
+                                        <span>
+                                            {hotel.isBlocked ? (
+                                                <button
+                                                    onClick={() => handleUnblock(hotel._id)}
+                                                    className="w-100 text-blue-600 h-full p-2 font-bold text-xl hover:text-red-600"
+                                                >
+                                                    Unblock
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleBlock(hotel._id)}
+                                                    className="w-100 text-red-600 h-full p-2 font-bold text-xl hover:text-blue-600"
+                                                >
+                                                    Block
+                                                </button>
+                                            )}
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        )) : (
+                            <>
+                                <span className="ml-2">Hotels list is empty</span>
+                            </>
+                        )}
+                    </tbody>
+                </table>
+                <Pagination
+                    page={hotelData?.pagination.page || 1}
+                    pages={hotelData?.pagination.pages || 1}
+                    onPageChange={(page) => setPage(page)} />
             </div>
         </div>
     )

@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
 import { Booking, Hotel } from '../models/hotel';
-import { BookingType, HotelType, RoomType } from '../shared/types';
+import { BookingType, HotelType, RoomType, SearchHotelResponse } from '../shared/types';
 import { body } from 'express-validator';
 import verifyAdminToken from '../middleware/adminAuth';
 
@@ -105,13 +105,28 @@ router.get('/load-orders-table', verifyAdminToken, async (req: Request, res: Res
 
 router.get('/', verifyAdminToken, async (req: Request, res: Response) => {
     try {
-        const hotels = await Hotel.find();
-        res.json(hotels);
+        const query = constructSearchQuery(req.query);
 
+        const pageSize = 10;
+        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
+        const skip = (pageNumber - 1) * pageSize;
+        const hotels = await Hotel.find(query).skip(skip).limit(pageSize);
+        const total = await Hotel.countDocuments({ ...query, isBlocked: false });
+        const response: SearchHotelResponse = {
+            data: hotels,
+            pagination: {
+                total,
+                page: pageNumber,
+                pages: Math.ceil(total / pageSize),
+            }
+        };
+        res.json(response);
     } catch (error) {
-        res.status(500).json({ message: "Error loading hotels" });
+        console.log("Error", error);
+        res.status(500).json({ message: "Something went wrong" });
     }
 });
+
 
 
 router.put('/:hotelId/block', verifyAdminToken, async (req: Request, res: Response) => {
@@ -173,6 +188,19 @@ router.put('/:hotelid', verifyAdminToken, upload.array("imageFiles"),
             res.status(500).json({ message: "Something went wrong" });
         }
     });
+
+const constructSearchQuery = (queryParams: any) => {
+    let constructedQuery: any = {};
+
+    if (queryParams.destination) {
+        constructedQuery.$or = [
+            { name: new RegExp(queryParams.destination, "i") },
+            { city: new RegExp(queryParams.destination, "i") },
+            { country: new RegExp(queryParams.destination, "i") },
+        ];
+    }
+    return constructedQuery
+};
 
 export default router;
 

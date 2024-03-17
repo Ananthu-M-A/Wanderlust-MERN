@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Hotel, Booking } from '../models/hotel';
-import { BookingType, HotelType, SearchResponse, UserType } from '../shared/types';
+import { BookingType, HotelType, SearchHotelResponse, UserType } from '../shared/types';
 import { param, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import Stripe from "stripe";
@@ -84,7 +84,6 @@ router.get('/search', async (req: Request, res: Response) => {
                 sortOption = { ['roomTypes.price']: 1 }; break;
             case "pricePerNightDesc":
                 sortOption = { ['roomTypes.price']: -1 }; break;
-
         }
 
         const pageSize = 5;
@@ -92,7 +91,7 @@ router.get('/search', async (req: Request, res: Response) => {
         const skip = (pageNumber - 1) * pageSize;
         const hotels = await Hotel.find({ ...query, isBlocked: false }).sort(sortOption).skip(skip).limit(pageSize);
         const total = await Hotel.countDocuments({ ...query, isBlocked: false });
-        const response: SearchResponse = {
+        const response: SearchHotelResponse = {
             data: hotels,
             pagination: {
                 total,

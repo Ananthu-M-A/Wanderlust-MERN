@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
-import { FoodItem, OpeningHour, RestaurantType, RoomType } from '../shared/types';
+import { FoodItem, OpeningHour, RestaurantType, RoomType, SearchRestaurantResponse } from '../shared/types';
 import { body } from 'express-validator';
 import verifyAdminToken from '../middleware/adminAuth';
 import Restaurant from '../models/restaurant';
@@ -24,8 +24,8 @@ router.post('/', verifyAdminToken, [
     async (req: Request, res: Response) => {
         try {
             const imageFiles = req.files as Express.Multer.File[];
-            const newRestaurant = req.body;     
-                   
+            const newRestaurant = req.body;
+
             const imageUrls = await uploadImages(imageFiles);
 
             const openingHours: OpeningHour[] = [];
@@ -38,7 +38,7 @@ router.post('/', verifyAdminToken, [
                     };
                     openingHours.push(openingHour);
                 }
-            }            
+            }
 
             const foodItems: FoodItem[] = [];
             for (let i = 0; i < 10; i++) {
@@ -83,15 +83,28 @@ router.post('/', verifyAdminToken, [
         }
     });
 
-
-
+    
 router.get('/', verifyAdminToken, async (req: Request, res: Response) => {
     try {
-        const restaurants = await Restaurant.find();
-        res.json(restaurants);
+        const query = constructSearchQuery(req.query);
 
+        const pageSize = 10;
+        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
+        const skip = (pageNumber - 1) * pageSize;
+        const hotels = await Restaurant.find(query).skip(skip).limit(pageSize);
+        const total = await Restaurant.countDocuments({ ...query, isBlocked: false });
+        const response: SearchRestaurantResponse = {
+            data: hotels,
+            pagination: {
+                total,
+                page: pageNumber,
+                pages: Math.ceil(total / pageSize),
+            }
+        };
+        res.json(response);
     } catch (error) {
-        res.status(500).json({ message: "Error loading restaurants" });
+        console.log("Error", error);
+        res.status(500).json({ message: "Something went wrong" });
     }
 });
 
@@ -155,6 +168,19 @@ router.put('/:restaurantid', verifyAdminToken, upload.array("imageFiles"),
             res.status(500).json({ message: "Something went wrong" });
         }
     });
+
+const constructSearchQuery = (queryParams: any) => {
+    let constructedQuery: any = {};
+
+    if (queryParams.destination) {
+        constructedQuery.$or = [
+            { name: new RegExp(queryParams.destination, "i") },
+            { city: new RegExp(queryParams.destination, "i") },
+            { country: new RegExp(queryParams.destination, "i") },
+        ];
+    }
+    return constructedQuery
+};
 
 export default router;
 
