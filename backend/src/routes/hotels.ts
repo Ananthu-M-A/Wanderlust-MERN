@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
-import { Hotel } from '../models/hotel';
+import { Booking, Hotel } from '../models/hotel';
 import { BookingType, HotelType, RoomType } from '../shared/types';
 import { body } from 'express-validator';
 import verifyAdminToken from '../middleware/adminAuth';
@@ -72,23 +72,35 @@ router.post('/', verifyAdminToken, [
         }
     });
 
-router.get('/load-orders-table', verifyAdminToken,
-    async (req: Request, res: Response) => {
-        try {
+
+router.get('/load-orders-table', verifyAdminToken, async (req: Request, res: Response) => {
+    try {
+        const { bookingId } = req.query;
+        let allBookings: BookingType[] = [];
+
+        if (bookingId) {
+            const booking = await Booking.findOne({ _id: bookingId });
+            if (booking) {
+                allBookings.push(booking);
+            }
+        } else {
             const hotelsWithBookings = await Hotel.find({}).populate("bookings");
-            const allBookings: any[] = [];
             hotelsWithBookings.forEach((hotel: HotelType) => {
                 hotel.bookings.forEach((booking: BookingType) => {
                     allBookings.push(booking);
                 });
             });
-            res.json(allBookings);
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: "Error loading hotel" });
         }
-    });
 
+        const sortedOrders = allBookings
+            .sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime())
+            .slice(0, 10);
+        res.json(sortedOrders);
+    } catch (error) {
+        console.error("Error loading bookings:", error);
+        res.status(500).json({ message: "Failed to load bookings" });
+    }
+});
 
 
 router.get('/', verifyAdminToken, async (req: Request, res: Response) => {

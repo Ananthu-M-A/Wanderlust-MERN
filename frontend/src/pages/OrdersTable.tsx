@@ -4,23 +4,21 @@ import { useEffect, useState } from 'react';
 
 const OrdersTable = () => {
     const [searchData, setSearchData] = useState<string>("");
-    useEffect(() => {
-
-    }, []);
-    const { data: bookings, refetch } = useQuery("loadOrders", apiClient.loadOrdersTable,
-        {
-            onSuccess: () => { },
-            onError: () => { },
-            refetchOnWindowFocus: false
-        }
+    const { data: bookings, refetch } = useQuery("loadOrdersTable", () => apiClient.loadOrdersTable(searchData),
+    {
+        refetchOnWindowFocus: false
+    }
     );
-
-    const handleClick = () => {
-        refetch();
+    
+    const handleClear = () => {
+        setSearchData("");
     }
 
-    const filteredBookings = searchData.trim() ? bookings?.filter(booking => ((booking._id === searchData) || (booking.hotelName === searchData))) : bookings;
-    const sortedFilteredBookings = [...(filteredBookings || [])].sort((b, a) => new Date(a.bookingDate).getTime() - new Date(b.bookingDate).getTime());
+    useEffect(() => {
+        refetch();
+    }, [searchData]);
+
+    const sortedFilteredBookings = searchData.trim() ? bookings?.filter(order => (order._id === searchData || order.hotelName === searchData)) : bookings;
 
     return (
         <div className="overflow-x-auto">
@@ -29,15 +27,15 @@ const OrdersTable = () => {
                     className="text-md w-full focus:outline-none"
                     onChange={(event) => { setSearchData(event.target.value) }} />
                 <button className="w-100 font-bold text-xl hover:text-blue-600"
-                    onClick={handleClick}>
-                    Search
+                    onClick={handleClear}>
+                    Clear
                 </button>
             </div>
             <table className="table-auto w-full border-collapse border border-gray-800">
                 <thead>
                     <tr className="bg-gray-200">
                         <th className="border border-gray-800 px-4 py-2">Booking ID</th>
-                        <th className="border border-gray-800 px-4 py-2">Hotel Name</th>
+                        <th className="border border-gray-800 px-4 py-2">Hotel Name (DoB)</th>
                         <th className="border border-gray-800 px-4 py-2">Check-in</th>
                         <th className="border border-gray-800 px-4 py-2">Check-out</th>
                         <th className="border border-gray-800 px-4 py-2">Adults</th>
@@ -49,7 +47,7 @@ const OrdersTable = () => {
                     {sortedFilteredBookings?.map(booking => (
                         <tr key={booking._id} className="bg-white">
                             <td className="border border-gray-800 px-4 py-2">{booking._id}</td>
-                            <td className="border border-gray-800 px-4 py-2">{booking.hotelName}</td>
+                            <td className="border border-gray-800 px-4 py-2">{booking.hotelName} ({(new Date(booking.bookingDate)).toDateString()})</td>
                             <td className="border border-gray-800 px-4 py-2">{(new Date(booking.checkIn)).toDateString()}</td>
                             <td className="border border-gray-800 px-4 py-2">{(new Date(booking.checkOut)).toDateString()}</td>
                             <td className="border border-gray-800 px-4 py-2">{booking.adultCount}</td>

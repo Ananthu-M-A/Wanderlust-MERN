@@ -413,14 +413,19 @@ export const adminLogin = async (formData: LoginFormData) => {
     }
 }
 
-export const loadOrdersTable = async (): Promise<BookingType[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/hotels/load-orders-table`,{
-        credentials: "include"
-    });    
-    if (!response.ok) {
-        throw new Error("Failed to load hotels");
+export const loadOrdersTable = async (query: string): Promise<BookingType[]> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/hotels/load-orders-table?bookingId=${query}`, {
+            credentials: "include"
+        });
+        if (!response.ok) {
+            throw new Error("Failed to load orders");
+        }
+        return response.json();
+    } catch (error) {
+        console.error("Error loading orders:", error);
+        throw new Error("Failed to load orders");
     }
-    return response.json();
 }
 
 

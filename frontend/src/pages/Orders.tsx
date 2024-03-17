@@ -11,7 +11,7 @@ const Orders = () => {
         refetchOnWindowFocus: false
     });
 
-    const handleSearchClear = () => {
+    const handleClear = () => {
         setSearchData("");
     }
 
@@ -35,7 +35,7 @@ const Orders = () => {
                     <button className="w-100 font-bold text-xl hover:text-blue-600 px-2">
                         Search
                     </button>
-                    <button className="w-100 font-bold text-xl hover:text-blue-600 px-2" onClick={handleSearchClear}>
+                    <button className="w-100 font-bold text-xl hover:text-blue-600 px-2" onClick={handleClear}>
                         Clear
                     </button>
                 </div>
