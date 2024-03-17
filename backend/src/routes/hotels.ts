@@ -5,7 +5,6 @@ import { Hotel } from '../models/hotel';
 import { BookingType, HotelType, RoomType } from '../shared/types';
 import { body } from 'express-validator';
 import verifyAdminToken from '../middleware/adminAuth';
-import verifyToken from '../middleware/auth';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
