@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
-import { Booking, Hotel } from '../models/hotel';
-import { BookingType, HotelType, RoomType, SearchHotelResponse } from '../shared/types';
+import Hotel from '../models/hotel';
+import { BookingType, HotelType, RoomType, SearchBookingResponse, SearchHotelResponse } from '../shared/types';
 import { body } from 'express-validator';
 import verifyAdminToken from '../middleware/adminAuth';
+import Booking from '../models/booking';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -73,32 +74,45 @@ router.post('/', verifyAdminToken, [
     });
 
 
-router.get('/load-orders-table', verifyAdminToken, async (req: Request, res: Response) => {
+router.get('/load-bookings-table', verifyAdminToken, async (req: Request, res:Response) => {
     try {
-        const { bookingId } = req.query;
-        let allBookings: BookingType[] = [];
-
-        if (bookingId) {
-            const booking = await Booking.findOne({ _id: bookingId });
-            if (booking) {
-                allBookings.push(booking);
-            }
-        } else {
-            const hotelsWithBookings = await Hotel.find({}).populate("bookings");
-            hotelsWithBookings.forEach((hotel: HotelType) => {
-                hotel.bookings.forEach((booking: BookingType) => {
-                    allBookings.push(booking);
-                });
-            });
+        const queries = req.query;
+        let query = {};
+        if (queries.bookingId && queries.bookingId.length === 24) {
+            query = { _id: queries.bookingId };
         }
+        const pageSize = 10;
+        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
+        const skip = (pageNumber - 1) * pageSize;
 
-        const sortedOrders = allBookings
-            .sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime())
-            .slice(0, 10);
-        res.json(sortedOrders);
+        const bookings = await Booking.find({ ...query }).skip(skip).limit(pageSize).populate("categoryId");
+        const total = await Booking.countDocuments({ ...query, isBlocked: false });
+
+        const response = {
+            data: bookings,
+            pagination: {
+                total,
+                page: pageNumber,
+                pages: Math.ceil(total / pageSize),
+            }
+        };
+
+        res.json(response);
     } catch (error) {
-        console.error("Error loading bookings:", error);
-        res.status(500).json({ message: "Failed to load bookings" });
+        console.log("Error in load-bookings-table:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+});
+
+
+router.get('/load-booking-details/:bookingId', verifyAdminToken, async (req: Request, res: Response) => {
+    try {
+        const { bookingId } = req.params;
+        const bookingDetails = await Booking.findOne({ _id: bookingId }).populate('categoryId');
+        res.json(bookingDetails);
+    } catch (error) {
+        console.log("Error", error);
+        res.status(500).json({ message: "Something went wrong" });
     }
 });
 
@@ -126,8 +140,6 @@ router.get('/', verifyAdminToken, async (req: Request, res: Response) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 });
-
-
 
 router.put('/:hotelId/block', verifyAdminToken, async (req: Request, res: Response) => {
     try {
@@ -191,7 +203,6 @@ router.put('/:hotelid', verifyAdminToken, upload.array("imageFiles"),
 
 const constructSearchQuery = (queryParams: any) => {
     let constructedQuery: any = {};
-
     if (queryParams.destination) {
         constructedQuery.$or = [
             { name: new RegExp(queryParams.destination, "i") },

@@ -17,9 +17,10 @@ import Restaurants from "./pages/Restaurants";
 import AddRestaurant from "./pages/AddRestaurant";
 import EditRestaurant from "./pages/EditRestaurant";
 import OrderSuccessPage from "./pages/OrderResultPage";
-import Orders from "./pages/Orders";
-import OrdersTable from "./pages/OrdersTable";
+import Orders from "./pages/Bookings";
+import OrdersTable from "./pages/BookingsTable";
 import Dashboard from "./pages/Dashboard";
+import BookingDetails from "./pages/Booking Details";
 
 
 function App() {
@@ -118,12 +119,18 @@ function App() {
               <Layout>
                 <Restaurants />
               </Layout>} />
+
+            <Route path="/admin/booking-details/:bookingId" element={
+              <Layout>
+                <BookingDetails />
+              </Layout>} />
+
+            <Route path="/admin/orders" element={
+              <Layout>
+                <OrdersTable />
+              </Layout>} />
           </>}
 
-          <Route path="/admin/orders" element={
-            <Layout>
-              <OrdersTable />
-            </Layout>} />
 
           <Route path="*" element={
             <Layout>

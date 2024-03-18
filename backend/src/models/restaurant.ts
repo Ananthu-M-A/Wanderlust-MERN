@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { RestaurantType } from "../shared/types";
-import { bookingSchema } from "./hotel";
 
 const restaurantSchema = new mongoose.Schema<RestaurantType>({
     name: { type: String, required: true },
@@ -22,7 +21,7 @@ const restaurantSchema = new mongoose.Schema<RestaurantType>({
     facilities: [{ type: String, required: true }],
     imageUrls: [{ type: String, required: true }],
     lastUpdated: { type: Date, required: true },
-    bookings: [bookingSchema],
+    // bookings: [bookingSchema],
     isBlocked: { type: Boolean, required: true },
 });
 

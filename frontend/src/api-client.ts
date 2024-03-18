@@ -1,6 +1,6 @@
 import { LoginFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
-import { BookingType, HotelType, RestaurantType, SearchHotelResponse, SearchRestaurantResponse, UserType } from '../../backend/src/shared/types';
+import { BookingType, HotelType, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../backend/src/shared/types';
 import { loadStripe } from "@stripe/stripe-js";
 
 
@@ -288,13 +288,17 @@ export const updateRestaurantById = async (restaurantFormData: FormData) => {
     return response.json();
 }
 
-export const loadUsers = async (): Promise<UserType[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/users`, {
+
+export const loadUsers = async (searchParams: SearchParams): Promise<SearchUserResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("destination", searchParams.destination || "");
+    queryParams.append("page", searchParams.page || "");
+    const response = await fetch(`${API_BASE_URL}/api/users?${queryParams}`, {
         credentials: "include",
     });
 
     if (!response.ok) {
-        throw new Error("Failed to load users");
+        throw new Error("Failed to load hotels");
     }
 
     return response.json();
@@ -388,20 +392,31 @@ export const createCheckoutSession = async (paymentData: any) => {
     console.log(result);
 }
 
-export const loadOrders = async (query: string): Promise<BookingType[]> => {
+export const loadBookings = async (query: string): Promise<BookingType[]> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/home/load-orders?bookingId=${query}`, {
+        const response = await fetch(`${API_BASE_URL}/api/home/load-bookings?bookingId=${query}`, {
             credentials: "include"
         });
         if (!response.ok) {
-            throw new Error("Failed to load orders");
+            throw new Error("Failed to load bookings");
         }
         return response.json();
     } catch (error) {
-        console.error("Error loading orders:", error);
-        throw new Error("Failed to load orders");
+        console.error("Error loading bookings:", error);
+        throw new Error("Failed to load bookings");
     }
 }
+
+export const cancelBooking = async (bookingId: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/home/cancel-booking/${bookingId}`, {
+        method: "PUT",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to unblock user");
+    }
+};
 
 export const adminLogin = async (formData: LoginFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/adminAuth/adminLogin`, {
@@ -419,9 +434,17 @@ export const adminLogin = async (formData: LoginFormData) => {
     }
 }
 
-export const loadOrdersTable = async (query: string): Promise<BookingType[]> => {
+export type BookingData = {
+    bookingId: string;
+    page: string;
+}
+
+export const loadBookingsTable = async (BookingData: BookingData): Promise<SearchBookingResponse> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/hotels/load-orders-table?bookingId=${query}`, {
+        const queryParams = new URLSearchParams();
+        queryParams.append("bookingId", BookingData.bookingId || "");
+        queryParams.append("page", BookingData.page || "");
+        const response = await fetch(`${API_BASE_URL}/api/hotels/load-bookings-table?${queryParams}`, {
             credentials: "include"
         });
         if (!response.ok) {
@@ -434,7 +457,20 @@ export const loadOrdersTable = async (query: string): Promise<BookingType[]> => 
     }
 }
 
-
+export const loadBookingDetails = async (bookingId: string) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/hotels/load-booking-details/${bookingId}`, {
+            credentials: "include"
+        });
+        if (!response.ok) {
+            throw new Error("Failed to load booking details");
+        }
+        return response.json();
+    } catch (error) {
+        console.error("Error loading orders:", error);
+        throw new Error("Failed to load orders");
+    }
+}
 
 export const validateToken = async () => {
     const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {

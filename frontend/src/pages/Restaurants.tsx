@@ -44,7 +44,7 @@ const Restaurants = () => {
     return (
         <div className="space-y-5">
             <span className="flex justify-between">
-                <h1 className="text-3xl font-bold">Hotels</h1>
+                <h1 className="text-3xl font-bold">Restaurants</h1>
                 <Link to="/admin/add-restaurant" className="flex bg-black text-blue-300 text-xl font-bold p-2 hover:text-white">
                     Add Restaurant
                 </Link>

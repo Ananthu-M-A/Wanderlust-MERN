@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { Hotel, Booking } from '../models/hotel';
+import Hotel from '../models/hotel';
 import { BookingType, HotelType, SearchHotelResponse, UserType } from '../shared/types';
 import { param, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
@@ -8,6 +8,7 @@ import verifyToken from '../middleware/auth';
 import User from '../models/user';
 import cloudinary from 'cloudinary';
 import multer from 'multer';
+import Booking from '../models/booking';
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
 const router = express.Router();
@@ -71,8 +72,6 @@ router.put('/updateProfile', verifyToken, upload.single("imageFile"),
     });
 
 
-
-
 router.get('/search', async (req: Request, res: Response) => {
     try {
         const query = constructSearchQuery(req.query);
@@ -106,48 +105,52 @@ router.get('/search', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/load-orders', verifyToken, async (req: Request, res: Response) => {
+router.get('/load-bookings', verifyToken, async (req: Request, res: Response) => {
     try {
-        const { bookingId } = req.query;        
+        const { bookingId } = req.query;
         let allBookings: BookingType[] = [];
 
-        if (bookingId) {
-            const booking = await Booking.findOne({ _id: bookingId });
-            if (booking) {
-                allBookings.push(booking);
-            }
+        if (bookingId && (bookingId?.length === 24)) {
+            const bookings = await Booking.find({ _id: bookingId }).populate("categoryId");
+            allBookings = bookings;
+
         } else {
-            const hotelsWithBookings = await Hotel.find({}).populate("bookings");
-            hotelsWithBookings.forEach((hotel: HotelType) => {
-                hotel.bookings.forEach((booking: BookingType) => {
-                    allBookings.push(booking);
-                });
-            });
+            const bookings = await Booking.find().populate("categoryId");
+            allBookings = bookings;
         }
 
-        const sortedOrders = allBookings
+        const sortedBookings = allBookings
             .sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime())
-            .slice(0, 4);        
-        res.json(sortedOrders);
+            .slice(0, 4);
+        res.json(sortedBookings);
     } catch (error) {
         console.error("Error loading bookings:", error);
         res.status(500).json({ message: "Failed to load bookings" });
     }
 });
 
-router.get('/:userId/order-result-page', async (req: Request, res: Response) => {
+router.put('/cancel-booking/:bookingId', verifyToken, async (req: Request, res: Response) => {
+    try {
+        const { bookingId } = req.params;
+        const date = new Date().toDateString();
+        const updateBooking = await Booking.findOneAndUpdate({ _id: bookingId }, { bookingStatus: `cancelled on ${date}` }, { new: true });
+        res.json(updateBooking);
+
+    } catch (error) {
+        console.error("Error cancelling booking:", error);
+        res.status(500).json({ message: "Failed to cancel bookings" });
+    }
+})
+
+router.get('/:userId/order-result-page', verifyToken, async (req: Request, res: Response) => {
     try {
         const sessionId = req.query.session_id;
         const session = await stripe.checkout.sessions.retrieve(sessionId as any);
         const paymentData = req.session.paymentData;
         const paymentIntentId = session.payment_intent;
-        const hotel = await Hotel.findById(paymentData.hotelId);
-        const user = await User.findById(req.params.userId);
         const newBooking = new Booking({
             userId: req.params.userId,
-            bookingEmail: user?.email,
-            hotelName: hotel?.name,
-            hotelImageUrl: hotel?.imageUrls[0],
+            categoryId: paymentData.hotelId,
             adultCount: paymentData.adultCount,
             childCount: paymentData.childCount,
             checkIn: paymentData.checkIn,
@@ -156,10 +159,9 @@ router.get('/:userId/order-result-page', async (req: Request, res: Response) => 
             totalCost: paymentData.roomPrice * paymentData.nightsPerStay * paymentData.roomCount,
             paymentId: paymentIntentId,
             bookingDate: new Date(),
+            bookingStatus: "active",
         });
         await newBooking.save();
-        hotel?.bookings.push(newBooking);
-        await hotel?.save();
         res.redirect(`http://localhost:5173/home/${newBooking._id}/order-result-page`)
     } catch (error) {
         console.log(error);

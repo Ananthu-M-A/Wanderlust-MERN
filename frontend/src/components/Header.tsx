@@ -36,7 +36,7 @@ const Header = () => {
             <Link to="/admin/dashboard"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Dashboard</Link>
             <Link to="/admin/orders"
-              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Orders</Link>
+              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Bookings</Link>
             <Link to="/admin/hotels"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Hotels</Link>
             <Link to="/admin/restaurants"

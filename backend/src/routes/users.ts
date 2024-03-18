@@ -7,6 +7,7 @@ import verifyToken from "../middleware/auth";
 import { SessionUserData } from '../interfaces/SessionInterface';
 import { transporter } from '../utils/NodeMailer';
 import verifyAdminToken from '../middleware/adminAuth';
+import { SearchUserResponse } from '../shared/types';
 
 const router = express.Router();
 
@@ -178,13 +179,37 @@ router.put('/:userId/unblock', verifyAdminToken, async (req: Request, res: Respo
 
 router.get('/', verifyAdminToken, async (req: Request, res: Response) => {
     try {
-        const users = (await User.find())
-            .filter((user) => !user.role.includes("admin"));
-        res.json(users);
+        const query = constructSearchQuery(req.query);
+        const pageSize = 10;
+        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
+        const skip = (pageNumber - 1) * pageSize;
+        const users = await User.find(query).skip(skip).limit(pageSize);
+        const total = await User.countDocuments({ ...query, isBlocked: false });
+        const response: SearchUserResponse = {
+            data: users,
+            pagination: {
+                total,
+                page: pageNumber,
+                pages: Math.ceil(total / pageSize),
+            }
+        };
+        res.json(response);
     } catch (error) {
-        res.status(500).json({ message: "Error loading users" });
+        console.log("Error", error);
+        res.status(500).json({ message: "Something went wrong" });
     }
 });
 
+const constructSearchQuery = (queryParams: any) => {
+    let constructedQuery: any = {};
+    if (queryParams.destination) {
+        constructedQuery.$or = [
+            { name: new RegExp(queryParams.destination, "i") },
+            { email: new RegExp(queryParams.destination, "i") },
+            { mobile: new RegExp(queryParams.destination, "i") },
+        ];
+    }
+    return constructedQuery
+};
 
 export default router;
