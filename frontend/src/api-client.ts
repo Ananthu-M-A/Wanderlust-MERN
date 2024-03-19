@@ -414,7 +414,7 @@ export const cancelBooking = async (bookingId: string) => {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to unblock user");
+        throw new Error("Failed to cancel booking");
     }
 };
 

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { HotelType } from "../shared/types";
 
 const hotelSchema = new mongoose.Schema<HotelType>({
@@ -10,6 +10,8 @@ const hotelSchema = new mongoose.Schema<HotelType>({
         type: { type: String, required: true },
         price: { type: Number, required: true },
         quantity: { type: Number, required: true },
+        currentAvailability: { type: Number },
+        lastUpdated: { type: Date }
     }],
     type: { type: String, required: true },
     adultCount: { type: Number, required: true },

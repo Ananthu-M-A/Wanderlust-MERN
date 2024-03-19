@@ -16,7 +16,7 @@ import Account from "./pages/Profile";
 import Restaurants from "./pages/Restaurants";
 import AddRestaurant from "./pages/AddRestaurant";
 import EditRestaurant from "./pages/EditRestaurant";
-import OrderSuccessPage from "./pages/OrderResultPage";
+import OrderSuccessPage from "./pages/BookingResultPage";
 import Orders from "./pages/Bookings";
 import OrdersTable from "./pages/BookingsTable";
 import Dashboard from "./pages/Dashboard";

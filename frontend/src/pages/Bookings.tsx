@@ -17,7 +17,9 @@ const Bookings = () => {
     }
 
     const handleCancel = async (bookingId: string) => {
-        await cancelBooking.mutateAsync(bookingId);
+        if (confirm(`Are you sure you want to cancel booking (#bookingId:${bookingId})?`)) {
+            await cancelBooking.mutateAsync(bookingId);
+        }
     }
 
     const cancelBooking = useMutation<void, Error, string>(apiClient.cancelBooking, {

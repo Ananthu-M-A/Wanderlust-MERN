@@ -28,6 +28,7 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
     const search = useSearchContext();
     const { showToast } = useAppContext();
     const [totalCost, setTotalCost] = useState<number>(0);
+    const [roomAvailability, setRoomAvailability] = useState<number>(0)
     const { isLoggedIn } = useAppContext();
     const navigate = useNavigate();
     const location = useLocation();
@@ -57,6 +58,7 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
         roomTypes.forEach(room => {
             if (room.type === roomType) {
                 setValue("roomPrice", room.price);
+                setRoomAvailability(room.currentAvailability);
             }
         });
 
@@ -64,7 +66,7 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
             const newTotalCost = roomCount * nightsPerStay * roomPrice;
             setTotalCost(newTotalCost);
         }
-        search.saveSearchValues("", checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);      
+        search.saveSearchValues("", checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);
 
     }, [checkIn, checkOut, roomType, roomCount, roomPrice, nightsPerStay]);
 
@@ -80,18 +82,18 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
 
     const { mutate } = useMutation(apiClient.createCheckoutSession, {
         onSuccess: () => {
-          showToast({ message: "Booking Saved!", type: "SUCCESS" });
+            showToast({ message: "Booking Saved!", type: "SUCCESS" });
         },
         onError: () => {
-          showToast({ message: "Error saving booking!", type: "ERROR" });
+            showToast({ message: "Error saving booking!", type: "ERROR" });
         }
-      })
+    })
 
-    const onSubmit = async () => {  
+    const onSubmit = async () => {
         const paymentData = {
             checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice,
             hotelId, nightsPerStay
-          }
+        }
         mutate(paymentData);
     }
 
@@ -149,10 +151,13 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                                 if (selectedRoom) {
                                     setValue("roomType", selectedRoom.type);
                                     setValue("roomPrice", selectedRoom.price || 0);
+                                    setValue("roomCount", 1)
+                                    setRoomAvailability(selectedRoom.currentAvailability);
                                 }
                             }}>
                                 <option value="">Select Type</option>
                                 {roomTypes.map((roomType, index) => (
+                                    (roomType.currentAvailability !== 0) && (roomType.price !== 0) &&
                                     <option key={index} value={roomType.type}>{roomType.type}</option>
                                 ))}
                             </select>
@@ -160,7 +165,7 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                         </label>
                         <label className="items-center flex">
                             Count:
-                            <input type="number" min={1} max={20} {...register("roomCount", {
+                            <input type="number" min={1} max={roomAvailability} {...register("roomCount", {
                                 valueAsNumber: true
                             })}
                                 className="w-full p-1 focus:outline-none font-bold" />

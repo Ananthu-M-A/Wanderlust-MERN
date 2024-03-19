@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import Hotel from '../models/hotel';
-import { BookingType, HotelType, SearchHotelResponse, UserType } from '../shared/types';
+import { BookingType, SearchHotelResponse, UserType } from '../shared/types';
 import { param, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import Stripe from "stripe";
@@ -137,6 +137,15 @@ router.put('/cancel-booking/:bookingId', verifyToken, async (req: Request, res: 
         const { bookingId } = req.params;
         const date = new Date().toDateString();
         const updateBooking = await Booking.findOneAndUpdate({ _id: bookingId }, { bookingStatus: `cancelled on ${date}` }, { new: true });
+        const booking = await Booking.findOne({ _id: bookingId });        
+        const roomType = booking?.roomDetail.slice(0,6);
+        const update = await Hotel.findOneAndUpdate(
+            { _id: booking?.hotelId, 'roomTypes.type': roomType },
+            { $inc: { 'roomTypes.$.currentAvailability': 1 } },
+            { new: true }
+        );
+        console.log(update);
+
         res.json(updateBooking);
 
     } catch (error) {
@@ -165,6 +174,12 @@ router.get('/:userId/order-result-page', verifyToken, async (req: Request, res: 
             bookingStatus: "active",
         });
         await newBooking.save();
+
+        await Hotel.findOneAndUpdate(
+            { _id: paymentData.hotelId, 'roomTypes.type': paymentData.roomType },
+            { $inc: { 'roomTypes.$.currentAvailability': -1 } },
+            { new: true }
+        );
 
         const user = await User.findOne({ _id: req.params.userId });
         const hotel = await Hotel.findOne({ _id: paymentData.hotelId });

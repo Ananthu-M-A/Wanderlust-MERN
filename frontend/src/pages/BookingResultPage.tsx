@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useSearchContext } from '../contexts/SearchContext';
 import { useEffect } from 'react';
 
-const OrderResultPage = () => {
+const BookingResultPage = () => {
   const { bookingId } = useParams();
   const search = useSearchContext();
   useEffect(()=>{
@@ -29,4 +29,4 @@ const OrderResultPage = () => {
   );
 };
 
-export default OrderResultPage;
+export default BookingResultPage;

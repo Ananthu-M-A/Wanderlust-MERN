@@ -35,7 +35,9 @@ router.post('/', verifyAdminToken, [
                     const roomType: RoomType = {
                         type: newHotel[`room[${i}].type`],
                         price: parseInt(newHotel[`room[${i}].price`]),
-                        quantity: parseInt(newHotel[`room[${i}].quantity`])
+                        quantity: parseInt(newHotel[`room[${i}].quantity`]),
+                        currentAvailability: parseInt(newHotel[`room[${i}].quantity`]),
+                        lastUpdated: new Date()
                     };
                     roomTypes.push(roomType);
                 }
@@ -55,7 +57,6 @@ router.post('/', verifyAdminToken, [
                 starRating: parseInt(newHotel.starRating),
                 imageUrls,
                 lastUpdated: new Date(),
-                bookings: [],
                 isBlocked: false
             };
 
@@ -74,7 +75,7 @@ router.post('/', verifyAdminToken, [
     });
 
 
-router.get('/load-bookings-table', verifyAdminToken, async (req: Request, res:Response) => {
+router.get('/load-bookings-table', verifyAdminToken, async (req: Request, res: Response) => {
     try {
         const queries = req.query;
         let query = {};

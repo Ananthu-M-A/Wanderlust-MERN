@@ -2,6 +2,8 @@ export type RoomType = {
     type: string;
     price: number;
     quantity: number;
+    currentAvailability: number;
+    lastUpdated: Date;
 };
 
 export type FoodItem = {
@@ -43,7 +45,6 @@ export type HotelType = {
     starRating: number,
     imageUrls: string[],
     lastUpdated: Date,
-    bookings: BookingType[];
     isBlocked: boolean,
 };
 
