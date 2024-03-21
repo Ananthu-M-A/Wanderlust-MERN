@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import Hotel from '../models/hotel';
-import { BookingType, SearchHotelResponse, UserType } from '../shared/types';
+import { BookingType, SearchHotelResponse, SearchRestaurantResponse, UserType } from '../shared/types';
 import { param, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import Stripe from "stripe";
@@ -12,6 +12,7 @@ import Booking from '../models/booking';
 import { transporter } from '../utils/NodeMailer';
 import PDFKit from 'pdfkit';
 import fs from 'fs';
+import Restaurant from '../models/restaurant';
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
 const router = express.Router();
@@ -94,6 +95,39 @@ router.get('/search', async (req: Request, res: Response) => {
         const hotels = await Hotel.find({ ...query, isBlocked: false }).sort(sortOption).skip(skip).limit(pageSize);
         const total = await Hotel.countDocuments({ ...query, isBlocked: false });
         const response: SearchHotelResponse = {
+            data: hotels,
+            pagination: {
+                total,
+                page: pageNumber,
+                pages: Math.ceil(total / pageSize),
+            }
+        };
+        res.json(response);
+    } catch (error) {
+        console.log("Error", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+});
+
+router.get('/search-restaurants', async (req: Request, res: Response) => {
+    try {
+        const query = constructSearchQuery(req.query);
+        let sortOption = {};
+        switch (req.query.sortOption) {
+            case "starRating":
+                sortOption = { starRating: -1 }; break;
+            case "pricePerNightAsc":
+                sortOption = { ['foodItems.price']: 1 }; break;
+            case "pricePerNightDesc":
+                sortOption = { ['foodItems.price']: -1 }; break;
+        }
+
+        const pageSize = 5;
+        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
+        const skip = (pageNumber - 1) * pageSize;
+        const hotels = await Restaurant.find({ ...query, isBlocked: false }).sort(sortOption).skip(skip).limit(pageSize);
+        const total = await Restaurant.countDocuments({ ...query, isBlocked: false });
+        const response: SearchRestaurantResponse = {
             data: hotels,
             pagination: {
                 total,

@@ -21,6 +21,7 @@ import BookingDetails from "./pages/Booking Details";
 import Bookings from "./pages/Bookings";
 import BookingResultPage from "./pages/BookingResultPage";
 import BookingsTable from "./pages/BookingsTable";
+// import SearchRestaurants from "./pages/SearchRestaurants";
 
 
 function App() {
@@ -40,6 +41,11 @@ function App() {
             <Layout>
               <Search />
             </Layout>} />
+
+          {/* <Route path="/search-restaurants" element={
+            <Layout>
+              <SearchRestaurants />
+            </Layout>} /> */}
 
           <Route path="/detail/:hotelId" element={
             <Layout>

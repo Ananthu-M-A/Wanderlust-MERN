@@ -55,6 +55,10 @@ const Header = () => {
             ) : (<>
               <span className='flex space-x-2'>
                 <div className="flex items-center justify-center relative">
+                  {/* <Link to="/search"
+                    className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Hotels</Link>
+                  <Link to="/search-restaurants"
+                    className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Restaurants</Link> */}
                   <div className="h-10 w-10 overflow-hidden bg-gray-300 flex-shrink-0" onClick={handleDropdownToggle}>
                     {user && <img className="h-full w-full object-cover cursor-pointer" src={user.imageUrl} alt="Profile Picture" />}
                   </div>
