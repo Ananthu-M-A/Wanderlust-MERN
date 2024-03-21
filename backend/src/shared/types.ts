@@ -91,6 +91,7 @@ export type BookingType = {
     paymentId: string;
     bookingDate: Date;
     bookingStatus: string;
+    cancellationDate: Date;
     page: string;
 };
 

@@ -60,7 +60,7 @@ const Bookings = () => {
                                 {(booking.bookingStatus === "active") ? (<button className="text-lg font-bold mb-2 text-blue-800 hover:text-blue-600"
                                     onClick={() => { handleCancel(booking._id) }}>
                                     Cancel
-                                </button>) : <>{booking.bookingStatus}</>}
+                                </button>) : <>{`${booking.bookingStatus} on ${booking.cancellationDate}`}</>}
                             </div>
                             <p>Booking ID: {booking._id}</p>
                             <p>Check-in: {new Date(booking.checkIn).toLocaleDateString()}</p>

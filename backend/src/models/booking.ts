@@ -17,6 +17,7 @@ const bookingSchema = new mongoose.Schema<BookingType>({
     paymentId: { type: String, required: true },
     bookingDate: { type: Date, required: true },
     bookingStatus: { type: String },
+    cancellationDate: { type: Date }
 })
 
 const Booking = mongoose.model<BookingType>("Booking", bookingSchema);

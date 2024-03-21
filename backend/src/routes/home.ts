@@ -112,7 +112,7 @@ router.get('/load-bookings', verifyToken, async (req: Request, res: Response) =>
     try {
         const { bookingId } = req.query;
         console.log(bookingId);
-        
+
         let allBookings: BookingType[] = [];
 
         if (bookingId && (bookingId?.length === 24)) {
@@ -139,7 +139,7 @@ router.put('/cancel-booking/:bookingId', verifyToken, async (req: Request, res: 
     try {
         const { bookingId } = req.params;
         const date = new Date().toDateString();
-        const updateBooking = await Booking.findOneAndUpdate({ _id: bookingId }, { bookingStatus: `cancelled on ${date}` }, { new: true });
+        const updateBooking = await Booking.findOneAndUpdate({ _id: bookingId }, { bookingStatus: 'cancelled', cancellationDate: date }, { new: true });
         res.json(updateBooking);
 
     } catch (error) {
@@ -274,6 +274,35 @@ router.get('/:id',
 router.post('/create-checkout-session', verifyToken,
     async (req: Request, res: Response) => {
         const paymentData = req.body;
+
+        const existingBookings = await Booking.find({
+            categoryId: paymentData.hotelId,
+            bookingStatus: { $ne: `cancelled` },
+            $or: [
+                { $and: [{ checkIn: { $lt: paymentData.checkOut } }, { checkOut: { $gt: paymentData.checkIn } }] },
+                { $and: [{ checkIn: { $gte: paymentData.checkIn } }, { checkOut: { $lte: paymentData.checkOut } }] }
+            ]
+        });  
+
+        let totalBookedRooms = 0;
+        existingBookings.forEach(booking => {
+            if (booking.roomDetails.roomType === paymentData.roomType) {
+                totalBookedRooms += booking.roomDetails.roomCount;
+            }
+        });
+        const hotelData = await Hotel.findOne({ _id: paymentData.hotelId });
+
+        if (hotelData) {
+            const roomData = hotelData.roomTypes.find(room => room.type === paymentData.roomType);
+            if (roomData) {
+                const remainingRooms = roomData.quantity - totalBookedRooms;
+                if (remainingRooms < paymentData.roomCount) {
+                    return res.status(500).json({ error: "Requirement unavailable" });
+                }
+            }
+        }
+
+
         req.session.paymentData = paymentData;
         const hotel = await Hotel.findById(paymentData.hotelId);
         const user = await User.findById(req.userId);
