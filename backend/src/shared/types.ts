@@ -2,8 +2,6 @@ export type RoomType = {
     type: string;
     price: number;
     quantity: number;
-    currentAvailability: number;
-    lastUpdated: Date;
 };
 
 export type FoodItem = {
@@ -16,6 +14,12 @@ export type OpeningHour = {
     day: string;
     startTime: string;
     endTime: string;
+}
+
+export type roomDetail = {
+    roomType: string;
+    roomPrice: number;
+    roomCount: number;
 }
 
 export type UserType = {
@@ -74,7 +78,11 @@ export type BookingType = {
     childCount: number;
     checkIn: Date;
     checkOut: Date;
-    roomDetail: string;
+    roomDetails: {
+        roomType: string;
+        roomPrice: number;
+        roomCount: number;
+    };
     roomType: string;
     roomPrice: number;
     roomCount: number;

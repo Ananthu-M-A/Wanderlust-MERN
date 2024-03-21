@@ -8,7 +8,11 @@ const bookingSchema = new mongoose.Schema<BookingType>({
     childCount: { type: Number },
     checkIn: { type: Date },
     checkOut: { type: Date },
-    roomDetail: { type: String },
+    roomDetails: {
+        roomType: { type: String },
+        roomPrice: { type: Number },
+        roomCount:{ type: Number },
+    },
     totalCost: { type: Number, required: true },
     paymentId: { type: String, required: true },
     bookingDate: { type: Date, required: true },

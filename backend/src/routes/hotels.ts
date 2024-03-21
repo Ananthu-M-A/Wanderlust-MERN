@@ -36,8 +36,6 @@ router.post('/', verifyAdminToken, [
                         type: newHotel[`room[${i}].type`],
                         price: parseInt(newHotel[`room[${i}].price`]),
                         quantity: parseInt(newHotel[`room[${i}].quantity`]),
-                        currentAvailability: parseInt(newHotel[`room[${i}].quantity`]),
-                        lastUpdated: new Date()
                     };
                     roomTypes.push(roomType);
                 }

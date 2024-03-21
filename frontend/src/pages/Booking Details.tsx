@@ -20,7 +20,7 @@ const BookingDetails = () => {
                         <p>Booking ID: {bookingDetails._id}</p>
                         <p>Check-in: {new Date(bookingDetails.checkIn).toLocaleDateString()}</p>
                         <p>Check-out: {new Date(bookingDetails.checkOut).toLocaleDateString()}</p>
-                        <p>Rooms Details: {bookingDetails.roomDetail}</p>
+                        <p>Rooms Details: {`${bookingDetails.roomDetails.roomType} Bed Rooms, ₹${bookingDetails.roomDetails.roomPrice}, ${bookingDetails.roomDetails.roomCount} Nos`}</p>
                         <p>Date of Booking: {new Date(bookingDetails.bookingDate).toLocaleDateString()}</p>
                         <p>Total Cost: ₹{bookingDetails.totalCost}</p>
                         <div className="w-full h-[300px] mt-2">

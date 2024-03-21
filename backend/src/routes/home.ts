@@ -111,6 +111,8 @@ router.get('/search', async (req: Request, res: Response) => {
 router.get('/load-bookings', verifyToken, async (req: Request, res: Response) => {
     try {
         const { bookingId } = req.query;
+        console.log(bookingId);
+        
         let allBookings: BookingType[] = [];
 
         if (bookingId && (bookingId?.length === 24)) {
@@ -132,20 +134,12 @@ router.get('/load-bookings', verifyToken, async (req: Request, res: Response) =>
     }
 });
 
+
 router.put('/cancel-booking/:bookingId', verifyToken, async (req: Request, res: Response) => {
     try {
         const { bookingId } = req.params;
         const date = new Date().toDateString();
         const updateBooking = await Booking.findOneAndUpdate({ _id: bookingId }, { bookingStatus: `cancelled on ${date}` }, { new: true });
-        const booking = await Booking.findOne({ _id: bookingId });        
-        const roomType = booking?.roomDetail.slice(0,6);
-        const update = await Hotel.findOneAndUpdate(
-            { _id: booking?.hotelId, 'roomTypes.type': roomType },
-            { $inc: { 'roomTypes.$.currentAvailability': 1 } },
-            { new: true }
-        );
-        console.log(update);
-
         res.json(updateBooking);
 
     } catch (error) {
@@ -160,6 +154,11 @@ router.get('/:userId/order-result-page', verifyToken, async (req: Request, res: 
         const session = await stripe.checkout.sessions.retrieve(sessionId as any);
         const paymentData = req.session.paymentData;
         const paymentIntentId = session.payment_intent;
+        const roomDetails = {
+            roomType: paymentData.roomType,
+            roomPrice: paymentData.roomPrice,
+            roomCount: paymentData.roomCount
+        }
         const newBooking = new Booking({
             userId: req.params.userId,
             categoryId: paymentData.hotelId,
@@ -167,19 +166,13 @@ router.get('/:userId/order-result-page', verifyToken, async (req: Request, res: 
             childCount: paymentData.childCount,
             checkIn: paymentData.checkIn,
             checkOut: paymentData.checkOut,
-            roomDetail: `${paymentData.roomType} Bed, ₹${paymentData.roomPrice}, ${paymentData.roomCount}Nos`,
+            roomDetails,
             totalCost: paymentData.roomPrice * paymentData.nightsPerStay * paymentData.roomCount,
             paymentId: paymentIntentId,
             bookingDate: new Date(),
             bookingStatus: "active",
         });
         await newBooking.save();
-
-        await Hotel.findOneAndUpdate(
-            { _id: paymentData.hotelId, 'roomTypes.type': paymentData.roomType },
-            { $inc: { 'roomTypes.$.currentAvailability': -1 } },
-            { new: true }
-        );
 
         const user = await User.findOne({ _id: req.params.userId });
         const hotel = await Hotel.findOne({ _id: paymentData.hotelId });
@@ -196,7 +189,7 @@ router.get('/:userId/order-result-page', verifyToken, async (req: Request, res: 
         doc.text(`Child Count: ${newBooking.childCount}`).moveDown();
         doc.text(`Check-In: ${newBooking.checkIn}`).moveDown();
         doc.text(`Check-Out: ${newBooking.checkOut}`).moveDown();
-        doc.text(`Room Detail: ${newBooking.roomDetail}`).moveDown();
+        doc.text(`Room Detail: ${newBooking.roomDetails.roomType} Bed Room, ₹${newBooking.roomDetails.roomPrice}, ${newBooking.roomDetails.roomCount} Nos`).moveDown();
         doc.text(`Total Cost: ₹${newBooking.totalCost}`).moveDown();
         doc.text(`Payment Status: Successfull`).moveDown();
         doc.text(`Booking Date: ${newBooking.bookingDate}`).moveDown();
@@ -214,7 +207,7 @@ Reservation ID: ${newBooking._id}
 Guest Name: ${user?.firstName} ${user?.lastName}
 Check-in Date: ${newBooking.checkIn}
 Check-out Date: ${newBooking.checkOut}
-Room Type: ${newBooking.roomDetail}
+Room Detail: ${newBooking.roomDetails.roomType}, ${newBooking.roomDetails.roomPrice}, ${newBooking.roomDetails.roomCount}
 Number of Guests: ${newBooking.adultCount + newBooking.childCount}
 
 Please review the information above to ensure everything is accurate. If there are any discrepancies or if you have any additional requests, please don't hesitate to contact us at http://localhost:5173/.

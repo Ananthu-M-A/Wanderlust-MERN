@@ -16,11 +16,11 @@ import Account from "./pages/Profile";
 import Restaurants from "./pages/Restaurants";
 import AddRestaurant from "./pages/AddRestaurant";
 import EditRestaurant from "./pages/EditRestaurant";
-import OrderSuccessPage from "./pages/BookingResultPage";
-import Orders from "./pages/Bookings";
-import OrdersTable from "./pages/BookingsTable";
 import Dashboard from "./pages/Dashboard";
 import BookingDetails from "./pages/Booking Details";
+import Bookings from "./pages/Bookings";
+import BookingResultPage from "./pages/BookingResultPage";
+import BookingsTable from "./pages/BookingsTable";
 
 
 function App() {
@@ -68,14 +68,14 @@ function App() {
                 <Account />
               </Layout>} />
 
-            <Route path="/home/orders/*" element={
+            <Route path="/home/bookings/*" element={
               <Layout>
-                <Orders />
+                <Bookings />
               </Layout>} />
 
             <Route path="/home/:bookingId/order-result-page" element={
               <Layout>
-                <OrderSuccessPage />
+                <BookingResultPage />
               </Layout>} />
           </>}
 
@@ -125,9 +125,9 @@ function App() {
                 <BookingDetails />
               </Layout>} />
 
-            <Route path="/admin/orders" element={
+            <Route path="/home/bookings" element={
               <Layout>
-                <OrdersTable />
+                <BookingsTable />
               </Layout>} />
           </>}
 

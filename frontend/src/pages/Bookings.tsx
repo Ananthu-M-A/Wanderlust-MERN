@@ -11,6 +11,7 @@ const Bookings = () => {
     const { data: bookings, refetch } = useQuery("loadBookings", () => apiClient.loadBookings(searchData), {
         refetchOnWindowFocus: false
     });
+    console.log(bookings);
 
     const handleClear = () => {
         setSearchData("");
@@ -55,7 +56,7 @@ const Bookings = () => {
                     {sortedFilteredBookings?.length ? sortedFilteredBookings.map((booking: any) => (
                         <div key={booking._id} className="bg-white rounded shadow p-4 hover:shadow-lg scroll">
                             <div className="flex justify-between">
-                                <h2 className="text-lg font-semibold mb-2">{booking.categoryId.name}</h2>
+                                <h2 className="text-lg font-semibold mb-2">{booking.categoryId && booking.categoryId.name}</h2>
                                 {(booking.bookingStatus === "active") ? (<button className="text-lg font-bold mb-2 text-blue-800 hover:text-blue-600"
                                     onClick={() => { handleCancel(booking._id) }}>
                                     Cancel
@@ -64,11 +65,11 @@ const Bookings = () => {
                             <p>Booking ID: {booking._id}</p>
                             <p>Check-in: {new Date(booking.checkIn).toLocaleDateString()}</p>
                             <p>Check-out: {new Date(booking.checkOut).toLocaleDateString()}</p>
-                            <p>Rooms Details: {booking.roomDetail}</p>
+                            <p>Rooms Details: {`${booking.roomDetails.roomType} Bed Rooms, ₹${booking.roomDetails.roomPrice}, ${booking.roomDetails.roomCount} Nos`}</p>
                             <p>Date of Booking: {new Date(booking.bookingDate).toLocaleDateString()}</p>
                             <p>Total Cost: ₹{booking.totalCost}</p>
                             <div className="w-full h-[300px] mt-2">
-                                <img src={booking.categoryId.imageUrls[0]} className="w-full h-full object-cover object-center" alt="Hotel" />
+                                <img src={booking.categoryId && booking.categoryId.imageUrls[0]} className="w-full h-full object-cover object-center" alt="Hotel" />
                             </div>
 
                         </div>

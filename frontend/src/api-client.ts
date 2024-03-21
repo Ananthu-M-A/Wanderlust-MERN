@@ -394,6 +394,8 @@ export const createCheckoutSession = async (paymentData: any) => {
 
 export const loadBookings = async (query: string): Promise<BookingType[]> => {
     try {
+        console.log(query);
+        
         const response = await fetch(`${API_BASE_URL}/api/home/load-bookings?bookingId=${query}`, {
             credentials: "include"
         });

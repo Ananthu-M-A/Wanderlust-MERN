@@ -5,7 +5,7 @@ import LogoutButton from '../components/LogoutButton';
 import { useAdminContext } from '../contexts/AdminContext';
 import { useQuery } from 'react-query';
 import * as apiClient from '../api-client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Header = () => {
   const { isLoggedIn } = useAppContext();
@@ -22,6 +22,10 @@ const Header = () => {
       onError: () => { }
     }
   );
+
+  useEffect(() => {
+
+  }, [user])
 
   return (
     <div className="bg-black py-6">
@@ -60,7 +64,7 @@ const Header = () => {
                         <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                           <Link to="/home/account">Profile</Link></li>
                         <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
-                          <Link to="/home/orders">Orders</Link></li>
+                          <Link to="/home/bookings">Bookings</Link></li>
                         <LogoutButton isAdmin={false} />
                       </ul>
                     </div>
