@@ -24,7 +24,6 @@ const Header = () => {
   );
 
   useEffect(() => {
-
   }, [user])
 
   return (

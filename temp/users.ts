@@ -1,13 +1,13 @@
 import express, { Request, Response } from 'express';
-import User from '../models/user';
+import User from '../backend/src/models/user';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { check, validationResult } from 'express-validator';
-import verifyToken from "../middleware/auth";
-import { SessionUserData } from '../interfaces/SessionInterface';
-import { transporter } from '../utils/NodeMailer';
-import verifyAdminToken from '../middleware/adminAuth';
-import { SearchUserResponse } from '../shared/types';
+import verifyToken from "../backend/src/middleware/auth";
+import { SessionUserData } from '../backend/src/interfaces/SessionInterface';
+import { transporter } from '../backend/src/utils/NodeMailer';
+import verifyAdminToken from '../backend/src/middleware/adminAuth';
+import { SearchUserResponse } from '../backend/src/shared/types';
 
 const router = express.Router();
 

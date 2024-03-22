@@ -9,7 +9,7 @@ const stripe = await loadStripe('pk_test_51OmXsJSFKXnVvS5mYKhovpdQ83qlQfCzxP9QRn
 
 
 export const loadCurrentUser = async (): Promise<UserType> => {
-    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/load-user`, {
         credentials: "include",
     });
 
@@ -21,7 +21,7 @@ export const loadCurrentUser = async (): Promise<UserType> => {
 
 
 export const loadAccount = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/home/load-account`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
         credentials: "include",
     });
 
@@ -33,7 +33,7 @@ export const loadAccount = async () => {
 
 
 export const register = async (formData: RegisterFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/users/register`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/register`, {
         method: 'POST',
         credentials: "include",
         headers: {
@@ -54,7 +54,7 @@ export const register = async (formData: RegisterFormData) => {
 export const updateProfile = async (formData: FormData) => {
     console.log(formData);
 
-    const response = await fetch(`${API_BASE_URL}/api/home/updateProfile`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/profile/update`, {
         method: 'PUT',
         credentials: "include",
         body: formData
@@ -70,7 +70,7 @@ export const updateProfile = async (formData: FormData) => {
 
 
 export const verifyRegistration = async (otp: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/users/verifyRegistration`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/verifyRegistration`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -88,7 +88,7 @@ export const verifyRegistration = async (otp: string) => {
 
 
 export const login = async (formData: LoginFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/login`, {
         method: 'POST',
         credentials: "include",
         headers: {
@@ -105,7 +105,7 @@ export const login = async (formData: LoginFormData) => {
 
 
 export const validateAdminToken = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/adminAuth/validate-admin-token`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/validate-token`, {
         credentials: "include",
     });
 
@@ -117,7 +117,7 @@ export const validateAdminToken = async () => {
 }
 
 export const logout = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/logout`, {
         method: "POST",
         credentials: "include",
     });
@@ -128,7 +128,7 @@ export const logout = async () => {
 
 
 export const adminLogout = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/adminAuth/adminLogout`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/logout`, {
         method: "POST",
         credentials: "include",
     });
@@ -139,7 +139,7 @@ export const adminLogout = async () => {
 
 
 export const addHotel = async (hotelFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/hotels`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/create-hotel`, {
         method: 'POST',
         credentials: "include",
         body: hotelFormData,
@@ -153,7 +153,7 @@ export const addHotel = async (hotelFormData: FormData) => {
 };
 
 export const addRestaurant = async (restaurantFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/restaurants`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/create-restaurant`, {
         method: 'POST',
         credentials: "include",
         body: restaurantFormData,
@@ -171,7 +171,7 @@ export const loadHotels = async (searchParams: SearchParams): Promise<SearchHote
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
-    const response = await fetch(`${API_BASE_URL}/api/hotels?${queryParams}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/hotels?${queryParams}`, {
         credentials: "include",
     });
 
@@ -186,7 +186,7 @@ export const loadRestaurants = async (searchParams: SearchParams): Promise<Searc
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
-    const response = await fetch(`${API_BASE_URL}/api/restaurants?${queryParams}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants?${queryParams}`, {
         credentials: "include",
     });
 
@@ -198,7 +198,7 @@ export const loadRestaurants = async (searchParams: SearchParams): Promise<Searc
 };
 
 export const blockHotel = async (hotelId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}/block`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}/block`, {
         method: "PUT",
         credentials: "include",
     });
@@ -210,7 +210,7 @@ export const blockHotel = async (hotelId: string) => {
 
 
 export const unblockHotel = async (hotelId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}/unblock`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}/unblock`, {
         method: "PUT",
         credentials: "include",
     });
@@ -221,7 +221,7 @@ export const unblockHotel = async (hotelId: string) => {
 };
 
 export const blockRestaurant = async (restaurantId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/restaurants/${restaurantId}/block`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/block`, {
         method: "PUT",
         credentials: "include",
     });
@@ -233,7 +233,7 @@ export const blockRestaurant = async (restaurantId: string) => {
 
 
 export const unblockRestaurant = async (restaurantId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/restaurants/${restaurantId}/unblock`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/unblock`, {
         method: "PUT",
         credentials: "include",
     });
@@ -244,7 +244,7 @@ export const unblockRestaurant = async (restaurantId: string) => {
 };
 
 export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
-    const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}`, {
         credentials: "include"
     })
     if (!response.ok) {
@@ -254,7 +254,7 @@ export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
 }
 
 export const loadRestaurantById = async (restaurantId: string): Promise<RestaurantType> => {
-    const response = await fetch(`${API_BASE_URL}/api/restaurants/${restaurantId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}`, {
         credentials: "include"
     })
     if (!response.ok) {
@@ -265,7 +265,7 @@ export const loadRestaurantById = async (restaurantId: string): Promise<Restaura
 
 
 export const updateHotelById = async (hotelFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelFormData.get("hotelId")}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelFormData.get("hotelId")}/update`, {
         method: "PUT",
         body: hotelFormData,
         credentials: "include"
@@ -277,7 +277,7 @@ export const updateHotelById = async (hotelFormData: FormData) => {
 }
 
 export const updateRestaurantById = async (restaurantFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/restaurants/${restaurantFormData.get("restaurantId")}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantFormData.get("restaurantId")}/update`, {
         method: "PUT",
         body: restaurantFormData,
         credentials: "include"
@@ -293,7 +293,7 @@ export const loadUsers = async (searchParams: SearchParams): Promise<SearchUserR
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
-    const response = await fetch(`${API_BASE_URL}/api/users?${queryParams}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users?${queryParams}`, {
         credentials: "include",
     });
 
@@ -306,7 +306,7 @@ export const loadUsers = async (searchParams: SearchParams): Promise<SearchUserR
 
 
 export const blockUser = async (userId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/users/${userId}/block`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/block`, {
         method: "PUT",
         credentials: "include",
     });
@@ -318,7 +318,7 @@ export const blockUser = async (userId: string) => {
 
 
 export const unblockUser = async (userId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/users/${userId}/unblock`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/unblock`, {
         method: "PUT",
         credentials: "include",
     });
@@ -358,7 +358,7 @@ export const searchHotels = async (searchParams: SearchParams): Promise<SearchHo
     searchParams.types?.forEach((type) => queryParams.append("types", type));
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
-    const response = await fetch(`${API_BASE_URL}/api/home/search?${queryParams}`);
+    const response = await fetch(`${API_BASE_URL}/api/user/home/search-hotels?${queryParams}`);
     if (!response.ok) {
         throw new Error("Error searching hotels");
     }
@@ -394,7 +394,7 @@ export const searchRestaurants = async (searchParams: SearchRestaurantParams): P
     searchParams.types?.forEach((type) => queryParams.append("types", type));
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
-    const response = await fetch(`${API_BASE_URL}/api/home/search-restaurants?${queryParams}`);
+    const response = await fetch(`${API_BASE_URL}/api/user/home/search-restaurants?${queryParams}`);
     if (!response.ok) {
         throw new Error("Error searching hotels");
     }
@@ -403,7 +403,7 @@ export const searchRestaurants = async (searchParams: SearchRestaurantParams): P
 
 
 export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => {
-    const response = await fetch(`${API_BASE_URL}/api/home/${hotelId}`);
+    const response = await fetch(`${API_BASE_URL}/api/user/home/search-hotels/${hotelId}`);
     if (!response.ok) {
         throw new Error("Failed to update hotels");
     }
@@ -412,7 +412,7 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 
 
 export const createCheckoutSession = async (paymentData: any) => {
-    const response = await fetch(`${API_BASE_URL}/api/home/create-checkout-session`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -432,7 +432,7 @@ export const loadBookings = async (query: string): Promise<BookingType[]> => {
     try {
         console.log(query);
         
-        const response = await fetch(`${API_BASE_URL}/api/home/load-bookings?bookingId=${query}`, {
+        const response = await fetch(`${API_BASE_URL}/api/user/booking/bookings?bookingId=${query}`, {
             credentials: "include"
         });
         if (!response.ok) {
@@ -446,7 +446,7 @@ export const loadBookings = async (query: string): Promise<BookingType[]> => {
 }
 
 export const cancelBooking = async (bookingId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/home/cancel-booking/${bookingId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/booking/${bookingId}/cancel`, {
         method: "PUT",
         credentials: "include",
     });
@@ -457,7 +457,7 @@ export const cancelBooking = async (bookingId: string) => {
 };
 
 export const adminLogin = async (formData: LoginFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/adminAuth/adminLogin`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
         method: 'POST',
         credentials: "include",
         headers: {
@@ -482,7 +482,7 @@ export const loadBookingsTable = async (BookingData: BookingData): Promise<Searc
         const queryParams = new URLSearchParams();
         queryParams.append("bookingId", BookingData.bookingId || "");
         queryParams.append("page", BookingData.page || "");
-        const response = await fetch(`${API_BASE_URL}/api/hotels/load-bookings-table?${queryParams}`, {
+        const response = await fetch(`${API_BASE_URL}/api/admin/bookings?${queryParams}`, {
             credentials: "include"
         });
         if (!response.ok) {
@@ -497,7 +497,7 @@ export const loadBookingsTable = async (BookingData: BookingData): Promise<Searc
 
 export const loadBookingDetails = async (bookingId: string) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/hotels/load-booking-details/${bookingId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
             credentials: "include"
         });
         if (!response.ok) {
@@ -511,7 +511,7 @@ export const loadBookingDetails = async (bookingId: string) => {
 }
 
 export const validateToken = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/validate-token`, {
         credentials: "include",
     });
 

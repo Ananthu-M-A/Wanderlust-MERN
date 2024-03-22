@@ -1,18 +1,18 @@
 import express, { Request, Response } from 'express';
-import Hotel from '../models/hotel';
-import { BookingType, SearchHotelResponse, SearchRestaurantResponse, UserType } from '../shared/types';
+import Hotel from '../backend/src/models/hotel';
+import { BookingType, SearchHotelResponse, SearchRestaurantResponse, UserType } from '../backend/src/shared/types';
 import { param, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import Stripe from "stripe";
-import verifyToken from '../middleware/auth';
-import User from '../models/user';
+import verifyToken from '../backend/src/middleware/auth';
+import User from '../backend/src/models/user';
 import cloudinary from 'cloudinary';
 import multer from 'multer';
-import Booking from '../models/booking';
-import { transporter } from '../utils/NodeMailer';
+import Booking from '../backend/src/models/booking';
+import { transporter } from '../backend/src/utils/NodeMailer';
 import PDFKit from 'pdfkit';
 import fs from 'fs';
-import Restaurant from '../models/restaurant';
+import Restaurant from '../backend/src/models/restaurant';
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
 const router = express.Router();

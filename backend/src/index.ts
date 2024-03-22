@@ -2,15 +2,17 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import "dotenv/config";
 import mongoose from 'mongoose';
-import userRoutes from './routes/users';
-import authRoutes from './routes/auth';
 import cookieParser from 'cookie-parser';
 import { v2 as cloudinary } from 'cloudinary';
-import hotelRoutes from './routes/hotels';
-import restaurantRoutes from './routes/restaurants';
-import homeRoutes from './routes/home';
-import adminAuthRoutes from './routes/adminAuth';
 import session from 'express-session';
+import authRouter from './routes/auth.route';
+import adminRouter from './routes/admin.route';
+import usersRouter from './routes/users.route';
+import hotelsRouter from './routes/hotels.route';
+import bookingsRouter from './routes/bookings.route';
+import profileRouter from './routes/profile.route';
+import homeRouter from './routes/home.route';
+import bookingRouter from './routes/booking.route';
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -45,14 +47,15 @@ app.use(session({
     },
 }));
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/hotels", hotelRoutes);
-app.use("/api/restaurants", restaurantRoutes);
-app.use("/api/home", homeRoutes);
+app.use("/api/user", authRouter);
+app.use("/api/user/profile", profileRouter);
+app.use("/api/user/home", homeRouter);
+app.use("/api/user/booking", bookingRouter);
 
-app.use("/api/adminAuth", adminAuthRoutes);
-
+app.use("/api/admin", adminRouter);
+app.use("/api/admin/users", usersRouter);
+app.use("/api/admin/hotels", hotelsRouter);
+app.use("/api/admin/bookings", bookingsRouter);
 
 app.listen(4000, () => {
     console.log("Server started on port 4000.");
