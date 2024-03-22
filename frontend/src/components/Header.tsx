@@ -39,7 +39,7 @@ const Header = () => {
           {isAdminLoggedIn ? (<>
             <Link to="/admin/dashboard"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Dashboard</Link>
-            <Link to="/admin/orders"
+            <Link to="/admin/bookings"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Bookings</Link>
             <Link to="/admin/hotels"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Hotels</Link>

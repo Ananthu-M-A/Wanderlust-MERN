@@ -131,7 +131,7 @@ function App() {
                 <BookingDetails />
               </Layout>} />
 
-            <Route path="/home/bookings" element={
+            <Route path="/admin/bookings" element={
               <Layout>
                 <BookingsTable />
               </Layout>} />
