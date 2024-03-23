@@ -1,5 +1,5 @@
 import express from 'express';
-import verifyAdminToken from '../middleware/auth';
+import verifyAdminToken from '../middleware/adminAuth';
 import { check } from 'express-validator';
 import { adminAuthorization, adminLogin, adminLogout } from '../controllers/admin.controller';
 const adminRouter = express.Router();

@@ -18,6 +18,7 @@ const MyChatBot = () => {
   const [destination, setDestination] = useState<string>("");
   const [checkIn, setCheckIn] = useState<Date>(new Date());
   const [checkOut, setCheckOut] = useState<Date>(new Date());
+  const [dateOfBooking, setDateOfBooking] = useState<Date>(new Date());
   const [adultCount, setAdultCount] = useState<number>(1);
   const [childCount, setChildCount] = useState<number>(1);
   const [guestCount, setGuestCount] = useState<number>(1);
@@ -29,7 +30,7 @@ const MyChatBot = () => {
   const [page, setPage] = useState<number>(1);
   const search = useSearchContext();
   const { showToast } = useAppContext();
-  let roomPrice = 0, foodPrice = 0,  total = 0;
+  let roomPrice = 0, foodPrice = 0, total = 0;
 
   useEffect(() => {
     return () => { };
@@ -525,7 +526,7 @@ const MyChatBot = () => {
       options: ["Continue", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Continue") {
-          return "verifyBookingDetails";
+          return "verifyBookingDetailsH";
         }
         if (userInput === "Cancel Booking") {
           search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
@@ -539,12 +540,11 @@ const MyChatBot = () => {
       message: "Please select the booking date",
       render: () => (
         <DatePicker
-          selected={checkIn} selectsStart
-          minDate={minDate} startDate={checkIn}
-          maxDate={maxDate} endDate={checkOut}
-          placeholderText="Check-in Date"
+          selected={dateOfBooking} selectsStart
+          startDate={dateOfBooking}
+          placeholderText="Date of Booking"
           onChange={(date) => {
-            setCheckIn(date as Date); setCheckOut(date as Date);
+            setDateOfBooking(date as Date);
           }}
           wrapperClassName="min-w-full"
           className="bg-blue-900 hover:bg-blue-700 text-white items-center ml-4 mt-3 rounded p-2 focus:outline-none cursor-pointer text-center"
@@ -553,7 +553,7 @@ const MyChatBot = () => {
       options: ["Confirm booking Date", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Confirm booking Date") {
-          return "confirmBookingDateH";
+          return "confirmBookingDate";
         }
         if (userInput === "Cancel Booking") {
           search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
@@ -564,7 +564,7 @@ const MyChatBot = () => {
     },
 
     confirmBookingDate: {
-      message: `You've selected ${checkIn.toLocaleDateString()}.`,
+      message: `You've selected ${dateOfBooking.toLocaleDateString()}.`,
       options: ["Continue", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Continue") {
@@ -616,43 +616,37 @@ const MyChatBot = () => {
       chatDisabled: true,
     },
 
-    // verifyBookingDetailsR: {
-    //   render: () => {
-    //     foodPrice = restaurant[0].foodItems.find((food: FoodItem) => food.item === foodItem)?.price || 0;
-    //     total = Math.floor(() / (24 * 60 * 60 * 1000)) * roomCount * roomPrice;
-    //     search.saveSearchValues(destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, total);
-    //     return (
-    //       <div className="bg-black text-white rounded p-4 mt-2 ml-4 mr-4">
-    //         <h6 className="mb-1">Now verify details</h6>
-    //         <h6 className="text-lg font-bold">{`User Name: ${userName}`}</h6>
-    //         <h6 className="text-lg font-bold">{`Hotel: ${restaurant[0].name}`}</h6>
-    //         <h6 className="text-lg font-bold">{`Place: ${restaurant[0].city}, ${restaurant[0].country}`}</h6>
-    //         <h6 className="text-lg font-bold">{`Rooms: ${roomType} Bed, ₹${roomPrice}, ${roomCount} Nos`}</h6>
-    //         <h6 className="text-lg font-bold">{`Guests: ${adultCount} Adults & ${childCount} Children`}</h6>
-    //         <h6 className="text-lg font-bold">{`Check-in: ${checkIn.toLocaleDateString()} 02:00:00 PM`}</h6>
-    //         <h6 className="text-lg font-bold">{`Check-out: ${checkOut.toLocaleDateString()} 12:00:00 PM`}</h6>
-    //         <h6 className="text-lg font-bold">{`Total Cost: ₹${total}/-`}</h6>
-    //         <h6 className="mb-1">{`After clicking on "Confirm Booking", The bot will redirect you to the payment gateway page. Happy booking...`}</h6>
-    //       </div>
-    //     );
-    //   },
-    //   options: ["Confirm Booking", "Cancel Booking"],
-    //   path: ({ userInput }: { userInput: string }) => {
-    //     const nightsPerStay = Math.floor((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000));
-    //     if (userInput === "Confirm Booking") {
-    //       const paymentData = {
-    //         checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice,
-    //         hotelId, nightsPerStay
-    //       }
-    //       mutate(paymentData);
-    //     }
-    //     if (userInput === "Cancel Booking") {
-    //       search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
-    //       return "end";
-    //     }
-    //   },
-    //   chatDisabled: true,
-    // },
+    verifyBookingDetailsR: {
+      render: () => {
+        foodPrice = restaurant[0].foodItems.find((food: FoodItem) => food.item === foodItem)?.price || 0;
+        total = Math.floor(foodPrice * guestCount);
+        return (
+          <div className="bg-black text-white rounded p-4 mt-2 ml-4 mr-4">
+            <h6 className="mb-1">Now verify details</h6>
+            <h6 className="text-lg font-bold">{`User Name: ${userName}`}</h6>
+            <h6 className="text-lg font-bold">{`Hotel: ${restaurant[0].name}`}</h6>
+            <h6 className="text-lg font-bold">{`Place: ${restaurant[0].city}, ${restaurant[0].country}`}</h6>
+            <h6 className="text-lg font-bold">{`Food: ${foodItem}`}</h6>
+            <h6 className="text-lg font-bold">{`Guests: ${guestCount} Guests`}</h6>
+            <h6 className="text-lg font-bold">{`Date of Booking: ${dateOfBooking.toLocaleDateString()} 12:00:00 PM`}</h6>
+            <h6 className="text-lg font-bold">{`Total Cost: ₹${total}/-`}</h6>
+            <h6 className="mb-1">{`After clicking on "Confirm Booking", The bot will redirect you to the payment gateway page. Happy booking...`}</h6>
+          </div>
+        );
+      },
+      options: ["Confirm Booking", "Cancel Booking"],
+      path: ({ userInput }: { userInput: string }) => {
+        if (userInput === "Confirm Booking") {
+          const paymentData = { dateOfBooking, guestCount, foodItem, restaurantId }
+          mutate(paymentData);
+        }
+        if (userInput === "Cancel Booking") {
+          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          return "end";
+        }
+      },
+      chatDisabled: true,
+    },
 
 
     end: {
