@@ -1,5 +1,5 @@
 import express from 'express';
-import verifyToken from '../middleware/auth';
+import verifyToken from '../middleware/user.auth.middleware';
 import { loadProfile, updateProfile } from '../controllers/profile.controller';
 import multer from 'multer';
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import verifyAdminToken from '../middleware/adminAuth';
+import verifyAdminToken from '../middleware/admin.auth.middleware';
 import { blockRestaurant, createRestaurant, loadRestaurant, loadRestaurants, unblockRestaurant, updateRestaurant } from '../controllers/restaurants.controller';
 import { body } from 'express-validator';
 import multer, { Multer } from 'multer';
@@ -11,8 +11,8 @@ const upload: Multer = multer({
     limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-restaurantsRouter.get('/restaurants', verifyAdminToken, loadRestaurants);
-restaurantsRouter.post('/restaurants/create-restaurant',
+restaurantsRouter.get('/', verifyAdminToken, loadRestaurants);
+restaurantsRouter.post('/create-restaurant',
     [
         body("name").notEmpty().withMessage('Name is required'),
         body("city").notEmpty().withMessage('City is required'),
@@ -23,11 +23,11 @@ restaurantsRouter.post('/restaurants/create-restaurant',
     ],
     upload.array("imageFiles", 3),
     verifyAdminToken, createRestaurant);
-restaurantsRouter.get('/restaurants/:restaurantId', verifyAdminToken, loadRestaurant);
-restaurantsRouter.put('/restaurants/:restaurantId/update',
+restaurantsRouter.get('/:restaurantId', verifyAdminToken, loadRestaurant);
+restaurantsRouter.put('/:restaurantId/update',
     upload.array("imageFiles"),
     verifyAdminToken, updateRestaurant);
-restaurantsRouter.put('/restaurants/:restaurantId/block', verifyAdminToken, blockRestaurant);
-restaurantsRouter.put('/restaurants/:restaurantId/unblock', verifyAdminToken, unblockRestaurant);
+restaurantsRouter.put('/:restaurantId/block', verifyAdminToken, blockRestaurant);
+restaurantsRouter.put('/:restaurantId/unblock', verifyAdminToken, unblockRestaurant);
 
 export default restaurantsRouter;

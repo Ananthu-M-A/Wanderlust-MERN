@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import Hotel from "../models/hotel";
+import Hotel from "../models/hotel.model";
 import { SearchHotelResponse, SearchRestaurantResponse } from "../shared/types";
-import Restaurant from "../models/restaurant";
+import Restaurant from "../models/restaurant.model";
 import { validationResult } from "express-validator";
 
 export const searchHotels = async (req: Request, res: Response) => {
@@ -31,24 +31,24 @@ export const searchHotels = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error) {
-        console.log("Error", error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in searching hotels", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
 export const loadHotelDetails = async (req: Request, res: Response) => {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     const id = req.params.hotelId.toString();
-    try {
         const hotel = await Hotel.findById(id);
         res.json(hotel);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Error loading hotel" });
+    } catch (error: any) {
+        console.log("Error in loading hotel details", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
@@ -79,9 +79,9 @@ export const searchRestaurants = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error) {
-        console.log("Error", error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in searching restaurants", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 

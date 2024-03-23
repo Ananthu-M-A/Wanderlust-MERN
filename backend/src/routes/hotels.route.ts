@@ -1,5 +1,5 @@
 import express from 'express';
-import verifyAdminToken from '../middleware/adminAuth';
+import verifyAdminToken from '../middleware/admin.auth.middleware';
 import { blockHotel, createHotel, loadHotel, loadHotels, unblockHotel, updateHotel } from '../controllers/hotels.controller';
 import { body } from 'express-validator';
 import multer, { Multer } from 'multer';

@@ -1,27 +1,26 @@
 import { Request, Response } from "express";
-import User from "../models/user";
+import User from "../models/user.model";
 import { UserType } from "../shared/types";
 import bcrypt from 'bcryptjs';
-import cloudinary from 'cloudinary';
-
+import { uploadImage } from "../utils/CloudinaryUploader";
 
 export const loadProfile = async (req: Request, res: Response) => {
-    const userId = req.userId;
     try {
+    const userId = req.userId;
         const user = await User.findById(userId);
         if (!user) {
             return res.status(400).json({ message: "User not found!" })
         }
         res.json(user);
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        console.log("Error in loading user profile", error.message);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
-    const userId = req.userId;
     try {
+    const userId = req.userId;
         const user = await User.findById({ _id: userId });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -49,16 +48,10 @@ export const updateProfile = async (req: Request, res: Response) => {
             res.status(500).json({ message: "Error updating profile" });
         }
 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in updating user profile", error.message);
+        res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
 
-async function uploadImage(imageFile: Express.Multer.File) {
-    const imageBase64 = Buffer.from(imageFile.buffer).toString("base64");
-    let dataURI = "data:" + imageFile.mimetype + ";base64," + imageBase64;
-    const res = await cloudinary.v2.uploader.upload(dataURI);
-    return res.url;
-}

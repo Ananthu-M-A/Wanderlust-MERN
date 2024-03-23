@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import cloudinary from 'cloudinary';
 import { FoodItem, OpeningHour, RestaurantType, SearchRestaurantResponse } from '../shared/types';
-import Restaurant from '../models/restaurant';
+import Restaurant from '../models/restaurant.model';
+import { uploadImages } from '../utils/CloudinaryUploader';
 
 export const loadRestaurants = async (req: Request, res: Response) => {
     try {
@@ -21,9 +21,9 @@ export const loadRestaurants = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error) {
-        console.log("Error", error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in loading restaurants table", error.message);
+        res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
@@ -83,21 +83,22 @@ export const createRestaurant = async (req: Request, res: Response) => {
 
         const savedRestaurant = await saveRestaurant(newRestaurantData);
         res.status(201).json(savedRestaurant);
-    } catch (error) {
-        console.log("Error creating restaurant: ", error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in creating restaurant", error.message);
+        res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
 export const loadRestaurant = async (req: Request, res: Response) => {
-    const id = req.params.id.toString();
     try {
+        const id = req.params.id.toString();
         const restaurant = await Restaurant.findOne({
             _id: id,
         });
         res.json(restaurant);
-    } catch (error) {
-        res.status(500).json({ message: "Error loading restaurants" });
+    } catch (error: any) {
+        console.log("Error in loading restaurant details", error.message);
+        res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
@@ -120,8 +121,9 @@ export const updateRestaurant = async (req: Request, res: Response) => {
         await restaurant.save();
 
         res.status(201).json(restaurant);
-    } catch (error) {
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in updating restaurant", error.message);
+        res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
@@ -130,8 +132,9 @@ export const blockRestaurant = async (req: Request, res: Response) => {
         const restaurantId = req.params.restaurantId;
         const restaurant = (await Restaurant.findOneAndUpdate({ _id: restaurantId }, { isBlocked: true }, { new: true }))
         res.json(restaurant);
-    } catch (error) {
-        res.status(500).json({ message: "Error updating restaurant" });
+    } catch (error: any) {
+        console.log("Error in blocking restaurant", error.message);
+        res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
@@ -140,8 +143,9 @@ export const unblockRestaurant = async (req: Request, res: Response) => {
         const restaurantId = req.params.restaurantId;
         const restaurant = (await Restaurant.findOneAndUpdate({ _id: restaurantId }, { isBlocked: false }, { new: true }))
         res.json(restaurant);
-    } catch (error) {
-        res.status(500).json({ message: "Error updating restaurant" });
+    } catch (error: any) {
+        console.log("Error in unblocking restaurant", error.message);
+        res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
@@ -157,15 +161,3 @@ const constructSearchQuery = (queryParams: any) => {
     }
     return constructedQuery
 };
-
-async function uploadImages(imageFiles: Express.Multer.File[]) {
-    const uploadImages = imageFiles.map(async (image) => {
-        const imageBase64 = Buffer.from(image.buffer).toString("base64");
-        let dataURI = "data:" + image.mimetype + ";base64," + imageBase64;
-        const res = await cloudinary.v2.uploader.upload(dataURI);
-        return res.url;
-    });
-
-    const imageUrls = await Promise.all(uploadImages);
-    return imageUrls;
-}

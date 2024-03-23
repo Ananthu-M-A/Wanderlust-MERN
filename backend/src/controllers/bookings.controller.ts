@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Booking from '../models/booking';
+import Booking from '../models/booking.model';
 
 export const loadBookings = async (req: Request, res: Response) => {
     try {
@@ -25,9 +25,9 @@ export const loadBookings = async (req: Request, res: Response) => {
         };
 
         res.json(response);
-    } catch (error) {
-        console.log("Error in load-bookings-table:", error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in loading user bookings table", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
@@ -36,8 +36,8 @@ export const loadBookingDetails = async (req: Request, res: Response) => {
         const { bookingId } = req.params;
         const bookingDetails = await Booking.findOne({ _id: bookingId }).populate('categoryId');
         res.json(bookingDetails);
-    } catch (error) {
-        console.log("Error", error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in loading user booking details", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };

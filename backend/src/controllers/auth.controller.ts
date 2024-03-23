@@ -1,19 +1,19 @@
 import { Request, Response } from 'express';
-import User from '../models/user';
+import User from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { transporter } from '../utils/NodeMailer';
 import { SessionUserData } from '../interfaces/SessionInterface';
+import { sendBookingMail } from '../utils/NodeMailer';
 
 
 export const userRegistration = async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ message: errors.array() })
-    }
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ message: errors.array() })
+        }
         let user = await User.findOne({
             email: req.body.email,
         });
@@ -38,28 +38,14 @@ export const userRegistration = async (req: Request, res: Response) => {
 
         req.session.userSignupData = { email, mobile, password, firstName, lastName, otp, otpExpiry };
 
-        const mailOptions = {
-            from: process.env.NODE_MAILER_EMAIL,
-            to: req.session.userSignupData.email,
-            subject: 'OTP Verification',
-            text: `Your OTP is: ${otp}`
-        };
-
-        transporter.sendMail(mailOptions, (error: any, info: any) => {
-            if (error) {
-                console.log(error);
-                const errorMsg = "Error sending OTP Email.";
-                res.status(400).json({ message: errorMsg });
-            } else {
-                console.log('OTP email sent:', info.response);
-            }
-        });
-
+        const subject = `OTP Verification - [WANDERLUST]`;
+        const bookingMail = `Your OTP is: ${otp}`;
+        sendBookingMail(res, req.session.userSignupData.email, subject, bookingMail);
         res.status(200).json({ status: "Success", message: "Registration Initiated!" });
 
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({ message: 'Internal Server Error' });
+    } catch (error: any) {
+        console.log("Error in user registration", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
@@ -106,19 +92,19 @@ export const verifyRegistration = async (req: Request, res: Response) => {
             console.log("Invalid OTP");
             res.status(400).json({ message: "Invalid OTP" });
         }
-    } catch (error) {
-        console.log("OTP verification failed", error);
-        return res.status(400).json({ message: "Error creating account.." });
+    } catch (error: any) {
+        console.log("Error verifying registration", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
 export const userLogin = async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ message: errors.array() })
-    }
-    const { email, password } = req.body;
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ message: errors.array() })
+        }
+        const { email, password } = req.body;
         let user = await User.findOne({
             email: email,
         });
@@ -145,22 +131,32 @@ export const userLogin = async (req: Request, res: Response) => {
             maxAge: 86400000
         });
         return res.status(200).json({ userId: user._id });
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        console.log("Error in user login", error.message);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
 export const userAuthorization = (req: Request, res: Response) => {
-    res.status(200).send({ userId: req.userId });
+    try {
+        res.status(200).send({ userId: req.userId });
+    } catch (error: any) {
+        console.log("Error authorizing user", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
+    }
 };
 
 
 export const userLogout = (req: Request, res: Response) => {
-    res.cookie("auth_token", "", {
-        expires: new Date(0),
-    });
-    res.send();
+    try {
+        res.cookie("auth_token", "", {
+            expires: new Date(0),
+        });
+        res.send();
+    } catch (error: any) {
+        console.log("Error in user logout", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
+    }
 };
 
 export const loadUser = async (req: Request, res: Response) => {
@@ -171,8 +167,8 @@ export const loadUser = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "User not found!" })
         }
         res.json(user);
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        console.log("Error loading user", error.message);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };

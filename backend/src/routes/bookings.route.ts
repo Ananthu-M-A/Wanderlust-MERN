@@ -1,5 +1,5 @@
 import express from 'express';
-import verifyAdminToken from '../middleware/adminAuth';
+import verifyAdminToken from '../middleware/admin.auth.middleware';
 import { loadBookingDetails, loadBookings } from '../controllers/bookings.controller';
 
 const bookingsRouter = express.Router();

@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
-import User from '../models/user';
+import User from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import { SessionUserData } from '../interfaces/SessionInterface';
 
 export const adminLogin = async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ message: errors.array() })
-    }
-    const { email, password } = req.body;
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ message: errors.array() })
+        }
+        const { email, password } = req.body;
         let admin = await User.findOne({
             email: email,
         });
@@ -33,19 +33,29 @@ export const adminLogin = async (req: Request, res: Response) => {
             maxAge: 86400000
         });
         return res.status(200).json({ adminId: admin._id });
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        console.log("Error in admin login", error.message);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
 export const adminAuthorization = (req: Request, res: Response) => {
-    res.status(200).send({ adminId: req.adminId });
+    try {
+        res.status(200).send({ adminId: req.adminId });
+    } catch (error: any) {
+        console.log("Error in authorizing admin", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
+    }
 };
 
 export const adminLogout = (req: Request, res: Response) => {
-    res.cookie("admin_token", "", {
-        expires: new Date(0),
-    });
-    res.send();
+    try {
+        res.cookie("admin_token", "", {
+            expires: new Date(0),
+        });
+        res.send();
+    } catch (error: any) {
+        console.log("Error in admin logout", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
+    }
 };

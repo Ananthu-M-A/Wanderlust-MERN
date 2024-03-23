@@ -20,6 +20,7 @@ interface CustomSessionData extends SessionData {
     user: {
         _id: object;
     };
+    userId: object;
     status: string;
     adminLoginData?: {
         adminName: string;
@@ -30,7 +31,7 @@ interface CustomSessionData extends SessionData {
     admin: {
         _id: object;
     };
-
+    adminId: object;
     paymentData: BookingType;
 }
 

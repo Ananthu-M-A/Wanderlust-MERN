@@ -1,10 +1,10 @@
 import express from 'express';
-import verifyToken from "../middleware/auth";
+import verifyToken from "../middleware/user.auth.middleware";
 import { bookings, cancelBooking, checkout, loadCheckoutResult } from '../controllers/booking.controller';
 const bookingRouter = express.Router();
 
 bookingRouter.post('/checkout', verifyToken, checkout);
-bookingRouter.get('/:userId/payment-result', verifyToken, loadCheckoutResult);
+bookingRouter.get('/payment-result', verifyToken, loadCheckoutResult);
 bookingRouter.get('/bookings', verifyToken, bookings);
 bookingRouter.put('/:bookingId/cancel', verifyToken, cancelBooking);
 

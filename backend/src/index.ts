@@ -1,9 +1,8 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import "dotenv/config";
-import mongoose from 'mongoose';
+import { connectDb } from './utils/MongoDB';
 import cookieParser from 'cookie-parser';
-import { v2 as cloudinary } from 'cloudinary';
 import session from 'express-session';
 import authRouter from './routes/auth.route';
 import adminRouter from './routes/admin.route';
@@ -13,21 +12,8 @@ import bookingsRouter from './routes/bookings.route';
 import profileRouter from './routes/profile.route';
 import homeRouter from './routes/home.route';
 import bookingRouter from './routes/booking.route';
+import restaurantsRouter from './routes/restaurants.route';
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-const connectDb = async () => {
-    try {
-        const connect = await mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string);
-        console.log("Database is connected");
-    } catch (error: any) {
-        console.log(error.message);
-    }
-}
 connectDb();
 
 const app = express();
@@ -35,7 +21,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 }));
 app.use(session({
@@ -55,8 +41,9 @@ app.use("/api/user/booking", bookingRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/admin/users", usersRouter);
 app.use("/api/admin/hotels", hotelsRouter);
+app.use("/api/admin/restaurants", restaurantsRouter);
 app.use("/api/admin/bookings", bookingsRouter);
 
-app.listen(4000, () => {
+app.listen(process.env.PORT, () => {
     console.log("Server started on port 4000.");
 });

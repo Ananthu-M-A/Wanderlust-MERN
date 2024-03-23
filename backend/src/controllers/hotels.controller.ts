@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import cloudinary from 'cloudinary';
-import Hotel from '../models/hotel';
+import Hotel from '../models/hotel.model';
 import { HotelType, RoomType, SearchHotelResponse } from '../shared/types';
+import { uploadImages } from '../utils/CloudinaryUploader';
 
 export const loadHotels = async (req: Request, res: Response) => {
     try {
@@ -21,9 +21,9 @@ export const loadHotels = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error) {
-        console.log("Error", error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in loading hotels table", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
@@ -71,21 +71,22 @@ export const createHotel = async (req: Request, res: Response) => {
 
         const savedHotel = await saveHotel(newHotelData);
         res.status(201).json(savedHotel);
-    } catch (error) {
-        console.log("Error creating hotel: ", error);
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in creating hotel", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
 export const loadHotel = async (req: Request, res: Response) => {
-    const hotelId = req.params.hotelId.toString();
     try {
+        const hotelId = req.params.hotelId.toString();
         const hotel = await Hotel.findOne({
             _id: hotelId,
         });
         res.json(hotel);
-    } catch (error) {
-        res.status(500).json({ message: "Error loading hotels" });
+    } catch (error: any) {
+        console.log("Error in loading hotel details", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
@@ -108,8 +109,9 @@ export const updateHotel = async (req: Request, res: Response) => {
         await hotel.save();
 
         res.status(201).json(hotel);
-    } catch (error) {
-        res.status(500).json({ message: "Something went wrong" });
+    } catch (error: any) {
+        console.log("Error in updating hotels", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
@@ -118,8 +120,9 @@ export const blockHotel = async (req: Request, res: Response) => {
         const hotelId = req.params.hotelId;
         const hotel = (await Hotel.findOneAndUpdate({ _id: hotelId }, { isBlocked: true }, { new: true }))
         res.json(hotel);
-    } catch (error) {
-        res.status(500).json({ message: "Error updating hotel" });
+    } catch (error: any) {
+        console.log("Error in blocking hotel", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
@@ -128,8 +131,9 @@ export const unblockHotel = async (req: Request, res: Response) => {
         const hotelId = req.params.hotelId;
         const hotel = (await Hotel.findOneAndUpdate({ _id: hotelId }, { isBlocked: false }, { new: true }))
         res.json(hotel);
-    } catch (error) {
-        res.status(500).json({ message: "Error updating hotel" });
+    } catch (error: any) {
+        console.log("Error in unblocking hotel", error.message);
+        return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
@@ -144,15 +148,3 @@ const constructSearchQuery = (queryParams: any) => {
     }
     return constructedQuery
 };
-
-async function uploadImages(imageFiles: Express.Multer.File[]) {
-    const uploadImages = imageFiles.map(async (image) => {
-        const imageBase64 = Buffer.from(image.buffer).toString("base64");
-        let dataURI = "data:" + image.mimetype + ";base64," + imageBase64;
-        const res = await cloudinary.v2.uploader.upload(dataURI);
-        return res.url;
-    });
-
-    const imageUrls = await Promise.all(uploadImages);
-    return imageUrls;
-}
