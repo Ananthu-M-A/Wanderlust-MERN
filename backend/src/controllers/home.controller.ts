@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import Hotel from "../models/hotel.model";
-import { SearchHotelResponse, SearchRestaurantResponse } from "../shared/types";
+import { SearchHotelResponse, SearchRestaurantResponse } from "../../../types/types";
 import Restaurant from "../models/restaurant.model";
 import { validationResult } from "express-validator";
+import { bookingBotSearchQuery, constructSearchHotelQuery } from "../utils/SearchQuery";
 
 export const searchHotels = async (req: Request, res: Response) => {
     try {
-        const query = constructSearchQuery(req.query);
+        const query = constructSearchHotelQuery(req.query);
         let sortOption = {};
         switch (req.query.sortOption) {
             case "starRating":
@@ -31,8 +32,8 @@ export const searchHotels = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error: any) {
-        console.log("Error in searching hotels", error.message);
+    } catch (error) {
+        console.log("Error in searching hotels", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -46,15 +47,15 @@ export const loadHotelDetails = async (req: Request, res: Response) => {
     const id = req.params.hotelId.toString();
         const hotel = await Hotel.findById(id);
         res.json(hotel);
-    } catch (error: any) {
-        console.log("Error in loading hotel details", error.message);
+    } catch (error) {
+        console.log("Error in loading hotel details", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
 export const searchRestaurants = async (req: Request, res: Response) => {
     try {
-        const query = constructSearchQuery(req.query);
+        const query = bookingBotSearchQuery(req.query);
         let sortOption = {};
         switch (req.query.sortOption) {
             case "starRating":
@@ -79,66 +80,8 @@ export const searchRestaurants = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error: any) {
-        console.log("Error in searching restaurants", error.message);
+    } catch (error) {
+        console.log("Error in searching restaurants", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
-};
-
-
-
-const constructSearchQuery = (queryParams: any) => {
-    let constructedQuery: any = {};
-
-    if (queryParams.destination) {
-        constructedQuery.$or = [
-            { city: new RegExp(queryParams.destination, "i") },
-            { country: new RegExp(queryParams.destination, "i") },
-            { name: new RegExp(queryParams.destination, "i") },
-        ];
-    }
-
-    if (queryParams.adultCount) {
-        constructedQuery.adultCount = {
-            $gte: parseInt(queryParams.adultCount)
-        };
-    }
-
-    if (queryParams.childCount) {
-        constructedQuery.childCount = {
-            $gte: parseInt(queryParams.childCount)
-        };
-    }
-
-    if (queryParams.facilities) {
-        constructedQuery.facilities = {
-            $all: Array.isArray(queryParams.facilities)
-                ? queryParams.facilities
-                : [queryParams.facilities]
-        };
-    }
-
-    if (queryParams.types) {
-        constructedQuery.type = {
-            $in: Array.isArray(queryParams.types)
-                ? queryParams.types
-                : [queryParams.types]
-        }
-    }
-
-    if (queryParams.stars) {
-        constructedQuery.starRating = {
-            $in: Array.isArray(queryParams.stars)
-                ? queryParams.stars
-                : [queryParams.stars]
-        }
-    }
-
-    if (queryParams.maxPrice) {
-        constructedQuery['roomTypes.price'] = {
-            $lte: parseInt(queryParams.maxPrice)
-        };
-    }
-
-    return constructedQuery
 };

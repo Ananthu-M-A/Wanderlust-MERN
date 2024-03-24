@@ -43,8 +43,8 @@ export const userRegistration = async (req: Request, res: Response) => {
         sendBookingMail(res, req.session.userSignupData.email, subject, bookingMail);
         res.status(200).json({ status: "Success", message: "Registration Initiated!" });
 
-    } catch (error: any) {
-        console.log("Error in user registration", error.message);
+    } catch (error) {
+        console.log("Error in user registration", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -92,8 +92,8 @@ export const verifyRegistration = async (req: Request, res: Response) => {
             console.log("Invalid OTP");
             res.status(400).json({ message: "Invalid OTP" });
         }
-    } catch (error: any) {
-        console.log("Error verifying registration", error.message);
+    } catch (error) {
+        console.log("Error verifying registration", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -131,8 +131,8 @@ export const userLogin = async (req: Request, res: Response) => {
             maxAge: 86400000
         });
         return res.status(200).json({ userId: user._id });
-    } catch (error: any) {
-        console.log("Error in user login", error.message);
+    } catch (error) {
+        console.log("Error in user login", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -140,8 +140,8 @@ export const userLogin = async (req: Request, res: Response) => {
 export const userAuthorization = (req: CustomRequest, res: Response) => {
     try {
         res.status(200).send({ userId: req.userId });
-    } catch (error: any) {
-        console.log("Error authorizing user", error.message);
+    } catch (error) {
+        console.log("Error authorizing user", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -153,8 +153,8 @@ export const userLogout = (req: Request, res: Response) => {
             expires: new Date(0),
         });
         res.send();
-    } catch (error: any) {
-        console.log("Error in user logout", error.message);
+    } catch (error) {
+        console.log("Error in user logout", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -167,8 +167,8 @@ export const loadUser = async (req: CustomRequest, res: Response) => {
             return res.status(400).json({ message: "User not found!" })
         }
         res.json(user);
-    } catch (error: any) {
-        console.log("Error loading user", error.message);
+    } catch (error) {
+        console.log("Error loading user", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };

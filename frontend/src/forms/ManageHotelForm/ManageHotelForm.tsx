@@ -4,7 +4,7 @@ import TypesSection from "./TypesSection";
 import FacilitiesSection from "./FacilitiesSection";
 import GuestSection from "./GuestSection";
 import ImagesSection from "./ImagesSection";
-import { HotelType, RoomType } from "../../../../backend/src/shared/types";
+import { HotelType, RoomType } from "../../../../types/types";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import RoomsAndPriceSection from "./RoomsAndPriceSection";

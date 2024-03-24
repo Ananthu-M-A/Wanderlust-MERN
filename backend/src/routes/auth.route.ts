@@ -2,6 +2,7 @@ import express from 'express';
 import { userRegistration, verifyRegistration, userLogin, userAuthorization, userLogout, loadUser } from '../controllers/auth.controller';
 import verifyToken from '../middleware/user.auth.middleware';
 import { validateLogin, validateRegister } from '../utils/FormValidator';
+
 const authRouter = express.Router();
 
 authRouter.post("/register", validateRegister, userRegistration);

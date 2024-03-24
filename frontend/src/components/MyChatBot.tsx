@@ -4,7 +4,7 @@ import "react-chatbotify/dist/react-chatbotify.css";
 import * as apiClient from "../api-client";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FoodItem, OpeningHour, RoomType } from "../../../backend/src/shared/types";
+import { FoodItem, OpeningHour, RoomType } from "../../../types/types";
 import { useSearchContext } from "../contexts/SearchContext";
 import { useMutation } from "react-query";
 import { useAppContext } from "../contexts/AppContext";

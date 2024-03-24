@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import { useSearchContext } from "../../contexts/SearchContext";
 import { useAppContext } from "../../contexts/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RoomType } from "../../../../backend/src/shared/types";
+import { RoomType } from "../../../../types/types";
 import { useEffect, useState } from "react";
 import * as apiClient from "../../api-client";
 import { useMutation } from "react-query";

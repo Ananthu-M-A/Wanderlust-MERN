@@ -4,7 +4,7 @@ import Booking from "../models/booking.model";
 import Hotel from "../models/hotel.model";
 import User from "../models/user.model";
 import { sendBookingMail } from '../utils/NodeMailer';
-import { BookingType } from "../shared/types";
+import { BookingType } from "../../../types/types";
 import { createPDF } from "../utils/PDF Creator";
 import { createBookingMail } from "../utils/BookingMailCreator";
 import { Attachment } from "nodemailer/lib/mailer";
@@ -54,8 +54,8 @@ export const checkout = async (req: Request, res: Response) => {
                 const description = `
             Rooms: ${paymentData.roomType} Bed, ₹${paymentData.roomPrice}, ${paymentData.roomCount}Nos, 
             Guests: ${paymentData.adultCount} Adults, ${paymentData.childCount} Children, 
-            Check-In: ${paymentData.checkIn.toDateString},
-            Check-Out: ${paymentData.checkOut.toDateString}`;
+            Check-In: ${paymentData.checkIn.toLocaleString()},
+            Check-Out: ${paymentData.checkOut.toLocaleString()}`;
                 const unit_amount = paymentData.roomPrice * paymentData.nightsPerStay * 100;
                 const quantity = paymentData.roomCount;
                 const success_url = `${process.env.BACKEND_URL}/api/user/booking/payment-result?session_id={CHECKOUT_SESSION_ID}`;
@@ -107,8 +107,8 @@ export const checkout = async (req: Request, res: Response) => {
             // }
         }
 
-    } catch (error: any) {
-        console.log("Error in booking", error.message);
+    } catch (error) {
+        console.log("Error in booking", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -153,8 +153,8 @@ export const loadCheckoutResult = async (req: CustomRequest, res: Response) => {
             res.redirect(`${process.env.FRONTEND_URL}/home/${newBooking._id}/order-result-page`)
         }
 
-    } catch (error: any) {
-        console.log("Error in saving booking data", error.message);
+    } catch (error) {
+        console.log("Error in saving booking data", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -177,8 +177,8 @@ export const bookings = async (req: Request, res: Response) => {
             .sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime())
             .slice(0, 4);
         res.json(sortedBookings);
-    } catch (error: any) {
-        console.log("Error in loading user bookings", error.message);
+    } catch (error) {
+        console.log("Error in loading user bookings", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -190,8 +190,8 @@ export const cancelBooking = async (req: Request, res: Response) => {
         const updateBooking = await Booking.findOneAndUpdate({ _id: bookingId }, { bookingStatus: 'cancelled', cancellationDate: date }, { new: true });
         res.json(updateBooking);
 
-    } catch (error: any) {
-        console.log("Error in cancelling user booking", error.message);
+    } catch (error) {
+        console.log("Error in cancelling user booking", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };

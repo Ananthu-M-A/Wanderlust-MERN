@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
-import { SearchUserResponse } from "../shared/types";
+import { SearchUserResponse } from "../../../types/types";
 
 export const loadUsers = async (req: Request, res: Response) => {
     try {
@@ -19,8 +19,8 @@ export const loadUsers = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error: any) {
-        console.log("Error in loading users table", error.message);
+    } catch (error) {
+        console.log("Error in loading users table", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
@@ -30,8 +30,8 @@ export const blockUser = async (req: Request, res: Response) => {
         const userId = req.params.userId;
         const users = (await User.findOneAndUpdate({ _id: userId }, { isBlocked: true }, { new: true }))
         res.json(users);
-    } catch (error: any) {
-        console.log("Error in blocking user", error.message);
+    } catch (error) {
+        console.log("Error in blocking user", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
@@ -41,8 +41,8 @@ export const unblockUser = async (req: Request, res: Response) => {
         const userId = req.params.userId;
         const users = (await User.findOneAndUpdate({ _id: userId }, { isBlocked: false }, { new: true }))
         res.json(users);
-    } catch (error: any) {
-        console.log("Error in unblocking user", error.message);
+    } catch (error) {
+        console.log("Error in unblocking user", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };

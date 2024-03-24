@@ -20,7 +20,7 @@ export const sendBookingMail = (res: Response, recipientEmail: string, subject: 
       attachments
     };
 
-    transporter.sendMail(mailOptions, (error: any, info: any) => {
+    transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
         const errorMsg = "Error sending email";
@@ -30,7 +30,7 @@ export const sendBookingMail = (res: Response, recipientEmail: string, subject: 
       }
     });
 
-  } catch (error: any) {
-    console.log("Error sending email", error.message);
+  } catch (error) {
+    console.log("Error sending email", error);
   }
 }

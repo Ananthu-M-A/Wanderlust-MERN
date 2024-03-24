@@ -1,6 +1,6 @@
 import PDFKit from 'pdfkit';
 import fs from 'fs';
-import { BookingType, HotelType, UserType } from '../shared/types';
+import { BookingType, HotelType, UserType } from '../../../types/types';
 
 export const createPDF = (newBooking: BookingType, user: UserType | null, hotel: HotelType) => {
     try {
@@ -25,7 +25,7 @@ export const createPDF = (newBooking: BookingType, user: UserType | null, hotel:
 
         return stream;
 
-    } catch (error: any) {
-        console.log("Error creating PDF", error.message);
+    } catch (error) {
+        console.log("Error creating PDF", error);
     }
 }

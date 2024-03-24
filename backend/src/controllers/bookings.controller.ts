@@ -25,8 +25,8 @@ export const loadBookings = async (req: Request, res: Response) => {
         };
 
         res.json(response);
-    } catch (error: any) {
-        console.log("Error in loading user bookings table", error.message);
+    } catch (error) {
+        console.log("Error in loading user bookings table", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -36,8 +36,8 @@ export const loadBookingDetails = async (req: Request, res: Response) => {
         const { bookingId } = req.params;
         const bookingDetails = await Booking.findOne({ _id: bookingId }).populate('categoryId');
         res.json(bookingDetails);
-    } catch (error: any) {
-        console.log("Error in loading user booking details", error.message);
+    } catch (error) {
+        console.log("Error in loading user booking details", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };

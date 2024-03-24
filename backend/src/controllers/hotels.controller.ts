@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import Hotel from '../models/hotel.model';
-import { HotelType, RoomType, SearchHotelResponse } from '../shared/types';
+import { HotelType, RoomType, SearchHotelResponse } from '../../../types/types';
 import { uploadImages } from '../utils/CloudinaryUploader';
+import { constructSearchHotelQuery } from '../utils/SearchQuery';
 
 export const loadHotels = async (req: Request, res: Response) => {
     try {
-        const query = constructSearchQuery(req.query);
+        const query = constructSearchHotelQuery(req.query);
 
         const pageSize = 10;
         const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
@@ -21,8 +22,8 @@ export const loadHotels = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error: any) {
-        console.log("Error in loading hotels table", error.message);
+    } catch (error) {
+        console.log("Error in loading hotels table", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -71,8 +72,8 @@ export const createHotel = async (req: Request, res: Response) => {
 
         const savedHotel = await saveHotel(newHotelData);
         res.status(201).json(savedHotel);
-    } catch (error: any) {
-        console.log("Error in creating hotel", error.message);
+    } catch (error) {
+        console.log("Error in creating hotel", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -84,8 +85,8 @@ export const loadHotel = async (req: Request, res: Response) => {
             _id: hotelId,
         });
         res.json(hotel);
-    } catch (error: any) {
-        console.log("Error in loading hotel details", error.message);
+    } catch (error) {
+        console.log("Error in loading hotel details", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -109,8 +110,8 @@ export const updateHotel = async (req: Request, res: Response) => {
         await hotel.save();
 
         res.status(201).json(hotel);
-    } catch (error: any) {
-        console.log("Error in updating hotels", error.message);
+    } catch (error) {
+        console.log("Error in updating hotels", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -120,8 +121,8 @@ export const blockHotel = async (req: Request, res: Response) => {
         const hotelId = req.params.hotelId;
         const hotel = (await Hotel.findOneAndUpdate({ _id: hotelId }, { isBlocked: true }, { new: true }))
         res.json(hotel);
-    } catch (error: any) {
-        console.log("Error in blocking hotel", error.message);
+    } catch (error) {
+        console.log("Error in blocking hotel", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -131,20 +132,9 @@ export const unblockHotel = async (req: Request, res: Response) => {
         const hotelId = req.params.hotelId;
         const hotel = (await Hotel.findOneAndUpdate({ _id: hotelId }, { isBlocked: false }, { new: true }))
         res.json(hotel);
-    } catch (error: any) {
-        console.log("Error in unblocking hotel", error.message);
+    } catch (error) {
+        console.log("Error in unblocking hotel", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
 
-const constructSearchQuery = (queryParams: any) => {
-    let constructedQuery: any = {};
-    if (queryParams.destination) {
-        constructedQuery.$or = [
-            { name: new RegExp(queryParams.destination, "i") },
-            { city: new RegExp(queryParams.destination, "i") },
-            { country: new RegExp(queryParams.destination, "i") },
-        ];
-    }
-    return constructedQuery
-};

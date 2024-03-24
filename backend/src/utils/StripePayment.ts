@@ -26,8 +26,8 @@ export const sessionPayment =
             });
             res.json({ id: session.id });
 
-        } catch (error: any) {
-            console.log("Error in creating session payment", error.message);
+        } catch (error) {
+            console.log("Error in creating session payment", error);
         }
     }
 
@@ -36,7 +36,7 @@ export const retrievePaymentId = async (sessionId: any) => {
         const session = await stripe.checkout.sessions.retrieve(sessionId);
         const paymentIntentId = session.payment_intent;
         return paymentIntentId;
-    } catch (error: any) {
-        console.log("Error retrieving payment id", error.message);
+    } catch (error) {
+        console.log("Error retrieving payment id", error);
     }
 }

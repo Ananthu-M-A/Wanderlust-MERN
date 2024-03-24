@@ -1,6 +1,6 @@
 import { LoginFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
-import { BookingType, HotelType, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../backend/src/shared/types';
+import { BookingType, HotelType, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
 import { loadStripe } from "@stripe/stripe-js";
 
 

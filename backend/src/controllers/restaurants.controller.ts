@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
-import { FoodItem, OpeningHour, RestaurantType, SearchRestaurantResponse } from '../shared/types';
+import { FoodItem, OpeningHour, RestaurantType, SearchRestaurantResponse } from '../../../types/types';
 import Restaurant from '../models/restaurant.model';
 import { uploadImages } from '../utils/CloudinaryUploader';
+import { bookingBotSearchQuery } from '../utils/SearchQuery';
 
 export const loadRestaurants = async (req: Request, res: Response) => {
     try {
-        const query = constructSearchQuery(req.query);
+        const query = bookingBotSearchQuery(req.query);
 
         const pageSize = 10;
         const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
@@ -21,8 +22,8 @@ export const loadRestaurants = async (req: Request, res: Response) => {
             }
         };
         res.json(response);
-    } catch (error: any) {
-        console.log("Error in loading restaurants table", error.message);
+    } catch (error) {
+        console.log("Error in loading restaurants table", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
@@ -83,8 +84,8 @@ export const createRestaurant = async (req: Request, res: Response) => {
 
         const savedRestaurant = await saveRestaurant(newRestaurantData);
         res.status(201).json(savedRestaurant);
-    } catch (error: any) {
-        console.log("Error in creating restaurant", error.message);
+    } catch (error) {
+        console.log("Error in creating restaurant", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
@@ -96,8 +97,8 @@ export const loadRestaurant = async (req: Request, res: Response) => {
             _id: id,
         });
         res.json(restaurant);
-    } catch (error: any) {
-        console.log("Error in loading restaurant details", error.message);
+    } catch (error) {
+        console.log("Error in loading restaurant details", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
@@ -121,8 +122,8 @@ export const updateRestaurant = async (req: Request, res: Response) => {
         await restaurant.save();
 
         res.status(201).json(restaurant);
-    } catch (error: any) {
-        console.log("Error in updating restaurant", error.message);
+    } catch (error) {
+        console.log("Error in updating restaurant", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
@@ -132,8 +133,8 @@ export const blockRestaurant = async (req: Request, res: Response) => {
         const restaurantId = req.params.restaurantId;
         const restaurant = (await Restaurant.findOneAndUpdate({ _id: restaurantId }, { isBlocked: true }, { new: true }))
         res.json(restaurant);
-    } catch (error: any) {
-        console.log("Error in blocking restaurant", error.message);
+    } catch (error) {
+        console.log("Error in blocking restaurant", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
@@ -143,21 +144,8 @@ export const unblockRestaurant = async (req: Request, res: Response) => {
         const restaurantId = req.params.restaurantId;
         const restaurant = (await Restaurant.findOneAndUpdate({ _id: restaurantId }, { isBlocked: false }, { new: true }))
         res.json(restaurant);
-    } catch (error: any) {
-        console.log("Error in unblocking restaurant", error.message);
+    } catch (error) {
+        console.log("Error in unblocking restaurant", error);
         res.status(500).json({ message: "Something went wrong!" });
     }
-};
-
-const constructSearchQuery = (queryParams: any) => {
-    let constructedQuery: any = {};
-
-    if (queryParams.destination) {
-        constructedQuery.$or = [
-            { name: new RegExp(queryParams.destination, "i") },
-            { city: new RegExp(queryParams.destination, "i") },
-            { country: new RegExp(queryParams.destination, "i") },
-        ];
-    }
-    return constructedQuery
 };

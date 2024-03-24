@@ -1,12 +1,11 @@
 import { SessionData } from 'express-session';
-import { BookingType } from '../shared/types';
+import { BookingType } from '../../../types/types';
 import { Request } from 'express';
 
 export interface CustomRequest extends Request {
     userId: string;
     adminId: string;
 }
-
 
 interface CustomSessionData extends SessionData {
     userSignupData?: {

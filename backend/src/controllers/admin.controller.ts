@@ -33,8 +33,8 @@ export const adminLogin = async (req: Request, res: Response) => {
             maxAge: 86400000
         });
         return res.status(200).json({ adminId: admin._id });
-    } catch (error: any) {
-        console.log("Error in admin login", error.message);
+    } catch (error) {
+        console.log("Error in admin login", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -42,8 +42,8 @@ export const adminLogin = async (req: Request, res: Response) => {
 export const adminAuthorization = (req: CustomRequest, res: Response) => {
     try {
         res.status(200).send({ adminId: req.adminId });
-    } catch (error: any) {
-        console.log("Error in authorizing admin", error.message);
+    } catch (error) {
+        console.log("Error in authorizing admin", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };
@@ -54,8 +54,8 @@ export const adminLogout = (req: Request, res: Response) => {
             expires: new Date(0),
         });
         res.send();
-    } catch (error: any) {
-        console.log("Error in admin logout", error.message);
+    } catch (error) {
+        console.log("Error in admin logout", error);
         return res.status(500).send({ message: "Something went wrong!" });
     }
 };

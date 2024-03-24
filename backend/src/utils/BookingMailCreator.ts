@@ -1,4 +1,4 @@
-import { BookingType, HotelType, UserType } from "../shared/types";
+import { BookingType, HotelType, UserType } from "../../../types/types";
 
 export const createBookingMail = (newBooking: BookingType, user: UserType, hotel: HotelType) => {
     const emailContent = `
