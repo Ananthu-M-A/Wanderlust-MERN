@@ -9,7 +9,7 @@ const restaurantSchema = new mongoose.Schema<RestaurantType>({
     foodItems: [{
         item: { type: String, required: true },
         price: { type: Number, required: true },
-        availability: { type: String, required: true },
+        quantity: { type: Number, required: true },
     }],
     type: { type: String, required: true},
     starRating: { type: Number, required: true },
@@ -21,7 +21,6 @@ const restaurantSchema = new mongoose.Schema<RestaurantType>({
     facilities: [{ type: String, required: true }],
     imageUrls: [{ type: String, required: true }],
     lastUpdated: { type: Date, required: true },
-    // bookings: [bookingSchema],
     isBlocked: { type: Boolean, required: true },
 });
 

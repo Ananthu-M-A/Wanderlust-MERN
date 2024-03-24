@@ -49,11 +49,11 @@ export const createRestaurant = async (req: Request, res: Response) => {
 
         const foodItems: FoodItem[] = [];
         for (let i = 0; i < 10; i++) {
-            if (newRestaurant[`food[${i}].item`] && newRestaurant[`food[${i}].price`] && newRestaurant[`food[${i}].availability`]) {
+            if (newRestaurant[`food[${i}].item`] && newRestaurant[`food[${i}].price`] && newRestaurant[`food[${i}].quantity`]) {
                 const foodItem: FoodItem = {
                     item: newRestaurant[`food[${i}].item`],
                     price: newRestaurant[`food[${i}].price`],
-                    availability: newRestaurant[`food[${i}].availability`]
+                    quantity: newRestaurant[`food[${i}].quantity`]
                 };
                 foodItems.push(foodItem);
             }
@@ -92,7 +92,7 @@ export const createRestaurant = async (req: Request, res: Response) => {
 
 export const loadRestaurant = async (req: Request, res: Response) => {
     try {
-        const id = req.params.id.toString();
+        const id = req.params.restaurantId.toString();
         const restaurant = await Restaurant.findOne({
             _id: id,
         });

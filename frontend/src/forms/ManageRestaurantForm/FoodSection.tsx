@@ -17,7 +17,7 @@ const FoodSection = () => {
                     Price
                 </div>
                 <div className="text-gray-700 text-sm font-semibold">
-                    Current Status
+                    Quantity
                 </div>
             </div>
             {foodList.map((food, index) => (
@@ -29,18 +29,15 @@ const FoodSection = () => {
                         {errors.foodItems && (<span className="text-red-500">{errors.foodItems.message}</span>)}
                     </div>
                     <div>
-                        <input type="number"
+                        <input type="number" defaultValue={0}
                             {...register(`foodItems.${index}.price`, { required: "This field is required" })}
                             className="border rounded w-full py-2 px-3 font-normal" />
                         {errors.foodItems && (<span className="text-red-500">{errors.foodItems.message}</span>)}
                     </div>
                     <div className="flex items-center justify-center sm:justify-start">
-                        <input type="radio" value={"Available"}
-                            {...register(`foodItems.${index}.availability`, { required: "This field is required" })}/>
-                        <h6 className="p-2">Available</h6>
-                        <input type="radio" value={"Not Available"}
-                            {...register(`foodItems.${index}.availability`, { required: "This field is required" })}/>
-                        <h6 className="p-2">Not Available</h6>
+                        <input type="number" defaultValue={0}
+                            {...register(`foodItems.${index}.quantity`, { required: "This field is required" })}
+                            className="border rounded w-full py-2 px-3 font-normal" />
                         {errors.foodItems && (<span className="text-red-500">{errors.foodItems.message}</span>)}
                     </div>
                 </div>

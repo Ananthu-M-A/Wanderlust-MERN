@@ -12,7 +12,7 @@ export const loadBookings = async (req: Request, res: Response) => {
         const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
         const skip = (pageNumber - 1) * pageSize;
 
-        const bookings = await Booking.find({ ...query }).skip(skip).limit(pageSize).populate("categoryId");
+        const bookings = await Booking.find({ ...query }).skip(skip).limit(pageSize).populate("hotelId").populate("restaurantId");
         const total = await Booking.countDocuments({ ...query, isBlocked: false });
 
         const response = {
@@ -34,7 +34,7 @@ export const loadBookings = async (req: Request, res: Response) => {
 export const loadBookingDetails = async (req: Request, res: Response) => {
     try {
         const { bookingId } = req.params;
-        const bookingDetails = await Booking.findOne({ _id: bookingId }).populate('categoryId');
+        const bookingDetails = await Booking.findOne({ _id: bookingId }).populate("hotelId").populate("restaurantId");
         res.json(bookingDetails);
     } catch (error) {
         console.log("Error in loading user booking details", error);

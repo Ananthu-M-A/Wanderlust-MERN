@@ -33,18 +33,17 @@ const Dashboard = () => {
                         <tr className="bg-gray-200">
                             <th className="border border-gray-800 px-4 py-2">Booking ID</th>
                             <th className="border border-gray-800 px-4 py-2">Hotel Name</th>
-                            <th className="border border-gray-800 px-4 py-2">Check-in</th>
-                            <th className="border border-gray-800 px-4 py-2">Check-out</th>
+                            <th className="border border-gray-800 px-4 py-2">Date of Booking</th>
                             <th className="border border-gray-800 px-4 py-2">Total Cost</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {bookings?.data.slice(0, 5).map(booking => (
+                        {bookings && bookings.data.slice(0, 5).map(booking => (
                             <tr key={booking._id} className="bg-white">
                                 <td className="border border-gray-800 px-4 py-2">{booking._id}</td>
-                                <td className="border border-gray-800 px-4 py-2">{booking.categoryId.name}</td>
-                                <td className="border border-gray-800 px-4 py-2">{(new Date(booking.checkIn)).toDateString()}</td>
-                                <td className="border border-gray-800 px-4 py-2">{(new Date(booking.checkOut)).toDateString()}</td>
+                                {booking.hotelId && <td className="border border-gray-800 px-4 py-2">{booking.hotelId.name}</td>}
+                                {booking.restaurantId && <td className="border border-gray-800 px-4 py-2">{booking.restaurantId.name}</td>}
+                                <td className="border border-gray-800 px-4 py-2">{(new Date(booking.bookingDate)).toDateString()}</td>
                                 <td className="border border-gray-800 px-4 py-2">${booking.totalCost.toFixed(2)}</td>
                             </tr>
                         ))}

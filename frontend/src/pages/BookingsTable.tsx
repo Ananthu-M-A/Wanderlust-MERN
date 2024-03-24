@@ -40,7 +40,8 @@ const BookingsTable = () => {
                     <thead>
                         <tr className="bg-gray-200">
                             <th className="border border-gray-800 px-4 py-2">Booking ID</th>
-                            <th className="border border-gray-800 px-4 py-2">Hotel Name (DoB)</th>
+                            <th className="border border-gray-800 px-4 py-2">Hotel Name</th>
+                            <th className="border border-gray-800 px-4 py-2">DoB</th>
                             <th className="border border-gray-800 px-4 py-2">Total Cost</th>
                             <th className="border border-gray-800 px-4 py-2">Action</th>
                         </tr>
@@ -49,7 +50,14 @@ const BookingsTable = () => {
                         {(bookings && bookings.data.length > 0) ? bookings.data.map(booking => (
                             <tr key={booking._id} className="bg-white">
                                 <td className="border border-gray-800 px-4 py-2">{booking._id}</td>
-                                <td className="border border-gray-800 px-4 py-2">{booking.categoryId.name} ({(new Date(booking.bookingDate)).toDateString()})</td>
+                                {booking.hotelId ?
+                                    <td className="border border-gray-800 px-4 py-2">
+                                        {booking.hotelId.name}
+                                    </td> :
+                                    <td className="border border-gray-800 px-4 py-2">
+                                        {booking.restaurantId.name}
+                                    </td>}
+                                <td className="border border-gray-800 px-4 py-2">{new Date(booking.bookingDate).toDateString()}</td>
                                 <td className="border border-gray-800 px-4 py-2">{booking.totalCost}</td>
                                 <td className="border border-gray-800 px-4 py-2">
                                     <div className="flex justify-center">

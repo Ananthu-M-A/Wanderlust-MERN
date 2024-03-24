@@ -14,7 +14,7 @@ export const userRegistration = async (req: Request, res: Response) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ message: errors.array() })
         }
-        let user = await User.findOne({
+        const user = await User.findOne({
             email: req.body.email,
         });
         if (user) {
@@ -105,7 +105,7 @@ export const userLogin = async (req: Request, res: Response) => {
             return res.status(400).json({ message: errors.array() })
         }
         const { email, password } = req.body;
-        let user = await User.findOne({
+        const user = await User.findOne({
             email: email,
         });
         if (!user || user.role.includes("admin")) {

@@ -7,7 +7,7 @@ export type RoomType = {
 export type FoodItem = {
     item: string;
     price: number;
-    availability: string;
+    quantity: number;
 };
 
 export type OpeningHour = {
@@ -72,14 +72,14 @@ export type RestaurantType = {
 export type BookingType = {
     _id: string;
     userId: Object;
-    categoryId: Object;
-    hotelId: string;
+    hotelId: Object;
+    restaurantId: Object;
     adultCount: number;
     childCount: number;
     guestCount: number;
     checkIn: Date;
     checkOut: Date;
-    bookedDate: Date;
+    dateOfBooking: Date;
     roomDetails: {
         roomType: string;
         roomPrice: number;
@@ -89,7 +89,14 @@ export type BookingType = {
     roomPrice: number;
     roomCount: number;
     nightsPerStay: number;
-    foodDetails: string;
+    foodDetails: {
+        foodItem: string;
+        foodPrice: number;
+        foodCount: number;
+    };
+    foodItem: string;
+    foodPrice: number;
+    foodCount: number;
     totalCost: number;
     paymentId: string;
     bookingDate: Date;

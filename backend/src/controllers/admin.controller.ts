@@ -12,7 +12,7 @@ export const adminLogin = async (req: Request, res: Response) => {
             return res.status(400).json({ message: errors.array() })
         }
         const { email, password } = req.body;
-        let admin = await User.findOne({
+        const admin = await User.findOne({
             email: email,
         });
         if (!admin || !admin.role.includes("admin")) {

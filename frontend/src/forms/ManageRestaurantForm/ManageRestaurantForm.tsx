@@ -12,7 +12,7 @@ import FoodSection from "./FoodSection";
 export type FoodItem = {
     item: string;
     price: number;
-    availability: string;
+    quantity: number;
 };
 
 export type RestaurantFormData = {
@@ -57,7 +57,7 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
         formDataJson.foodItems.forEach((foodItem, index) => {
             formData.append(`food[${index}].item`, foodItem.item);
             formData.append(`food[${index}].price`, foodItem.price.toString());
-            formData.append(`food[${index}].availability`, foodItem.availability);
+            formData.append(`food[${index}].quantity`, foodItem.quantity.toString());
         });
         formData.append("type", formDataJson.type);
         formData.append("starRating", formDataJson.starRating.toString());

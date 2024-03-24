@@ -56,20 +56,36 @@ const Bookings = () => {
                     {sortedFilteredBookings?.length ? sortedFilteredBookings.map((booking: any) => (
                         <div key={booking._id} className="bg-white rounded shadow p-4 hover:shadow-lg scroll">
                             <div className="flex justify-between">
-                                <h2 className="text-lg font-semibold mb-2">{booking.categoryId && booking.categoryId.name}</h2>
+                                {booking.hotelId && (<>
+                                    <h2 className="text-lg font-semibold mb-2">{booking.hotelId.name}
+                                        <h6 className="text-sm font-semibold text-gray-600">Hotel</h6>
+                                    </h2>
+                                </>)}
+                                {booking.restaurantId && (<>
+                                    <h2 className="text-lg font-semibold mb-2">{booking.restaurantId.name}
+                                        <h6 className="text-sm font-semibold text-gray-600">Restaurant</h6>
+                                    </h2>
+                                </>)}
                                 {(booking.bookingStatus === "active") ? (<button className="text-lg font-bold mb-2 text-blue-800 hover:text-blue-600"
                                     onClick={() => { handleCancel(booking._id) }}>
                                     Cancel
                                 </button>) : <>{`${booking.bookingStatus} on ${booking.cancellationDate}`}</>}
                             </div>
                             <p>Booking ID: {booking._id}</p>
-                            <p>Check-in: {new Date(booking.checkIn).toLocaleDateString()}</p>
-                            <p>Check-out: {new Date(booking.checkOut).toLocaleDateString()}</p>
-                            <p>Rooms Details: {`${booking.roomDetails.roomType} Bed Rooms, ₹${booking.roomDetails.roomPrice}, ${booking.roomDetails.roomCount} Nos`}</p>
+                            {booking.roomDetails && <>
+                                <p>Check-in: {new Date(booking.checkIn).toLocaleDateString()}</p>
+                                <p>Check-out: {new Date(booking.checkOut).toLocaleDateString()}</p>
+                                <p>Rooms Details: {`${booking.roomDetails.roomType} Bed Rooms, ₹${booking.roomDetails.roomPrice}, ${booking.roomDetails.roomCount} Nos`}</p>
+                            </>}
+                            {booking.foodDetails && <>
+                                <p>Booked Date: {booking.dateOfBooking}</p>
+                                <p>Food Details: {`${booking.foodDetails.foodItem} of price ₹${booking.foodDetails.foodPrice} for ${booking.foodDetails.foodCount} guests`}</p>
+                            </>}
                             <p>Date of Booking: {new Date(booking.bookingDate).toLocaleDateString()}</p>
                             <p>Total Cost: ₹{booking.totalCost}</p>
                             <div className="w-full h-[300px] mt-2">
-                                <img src={booking.categoryId && booking.categoryId.imageUrls[0]} className="w-full h-full object-cover object-center" alt="Hotel" />
+                                {booking.hotelId && <img src={booking.hotelId.imageUrls[0]} className="w-full h-full object-cover object-center" alt="Hotel" />}
+                                {booking.restaurantId && <img src={booking.restaurantId.imageUrls[0]} className="w-full h-full object-cover object-center" alt="Restaurant" />}
                             </div>
 
                         </div>

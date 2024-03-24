@@ -225,7 +225,7 @@ const MyChatBot = () => {
               <tr className="border p-2">
                 <td className="border p-2">{food.item}</td>
                 <td className="border p-2">{food.price}</td>
-                <td className="border p-2">{food.availability}</td>
+                <td className="border p-2">{food.quantity}</td>
               </tr>
             ))}
           </table>
@@ -637,7 +637,7 @@ const MyChatBot = () => {
       options: ["Confirm Booking", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Confirm Booking") {
-          const paymentData = { dateOfBooking, guestCount, foodItem, restaurantId }
+          const paymentData = { dateOfBooking, guestCount, foodItem, foodPrice, restaurantId }
           mutate(paymentData);
         }
         if (userInput === "Cancel Booking") {

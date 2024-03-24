@@ -186,7 +186,7 @@ export const loadRestaurants = async (searchParams: SearchParams): Promise<Searc
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
-    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants?${queryParams}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants?z${queryParams}`, {
         credentials: "include",
     });
 

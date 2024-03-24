@@ -1,8 +1,8 @@
 import PDFKit from 'pdfkit';
 import fs from 'fs';
-import { BookingType, HotelType, UserType } from '../../../types/types';
+import { BookingType, HotelType, RestaurantType, UserType } from '../../../types/types';
 
-export const createPDF = (newBooking: BookingType, user: UserType | null, hotel: HotelType) => {
+export const createPDF = (newBooking: BookingType, user: UserType, hotel?: HotelType, restaurant?: RestaurantType) => {
     try {
         const doc = new PDFKit();
 
@@ -11,12 +11,15 @@ export const createPDF = (newBooking: BookingType, user: UserType | null, hotel:
 
         doc.fontSize(12).text('Booking Receipt', { align: 'center' }).moveDown();
         doc.fontSize(10).text(`Guest Name: ${user?.firstName} ${user?.lastName}`).moveDown();
-        doc.text(`Hotel Name: ${hotel?.name}`).moveDown();
-        doc.text(`Adult Count: ${newBooking.adultCount}`).moveDown();
-        doc.text(`Child Count: ${newBooking.childCount}`).moveDown();
-        doc.text(`Check-In: ${newBooking.checkIn}`).moveDown();
-        doc.text(`Check-Out: ${newBooking.checkOut}`).moveDown();
-        doc.text(`Room Detail: ${newBooking.roomDetails.roomType} Bed Room, ₹${newBooking.roomDetails.roomPrice}, ${newBooking.roomDetails.roomCount} Nos`).moveDown();
+        hotel && doc.text(`Hotel Name: ${hotel?.name}`).moveDown();
+        restaurant && doc.text(`Restaurant Name: ${restaurant?.name}`).moveDown();
+        hotel && doc.text(`Adult Count: ${newBooking.adultCount}`).moveDown();
+        hotel && doc.text(`Child Count: ${newBooking.childCount}`).moveDown();
+        hotel && doc.text(`Check-In: ${newBooking.checkIn}`).moveDown();
+        hotel && doc.text(`Check-Out: ${newBooking.checkOut}`).moveDown();
+        restaurant && doc.text(`Booked Date: ${newBooking.dateOfBooking}`).moveDown();
+        hotel && doc.text(`Room Details: ${newBooking.roomDetails.roomType} Bed Room, ₹${newBooking.roomDetails.roomPrice}, ${newBooking.roomDetails.roomCount} Nos`).moveDown();
+        restaurant && doc.text(`Food Details: ${newBooking.foodDetails.foodItem} of price ₹${newBooking.foodDetails.foodPrice} for ${newBooking.guestCount} guests`).moveDown();
         doc.text(`Total Cost: ₹ ${newBooking.totalCost}`).moveDown();
         doc.text(`Payment Status: Successfull`).moveDown();
         doc.text(`Booking Date: ${newBooking.bookingDate}`).moveDown();
