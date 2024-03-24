@@ -3,7 +3,7 @@ import User from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
-import { SessionUserData } from '../interfaces/SessionInterface';
+import { CustomRequest } from '../interfaces/SessionInterface';
 
 export const adminLogin = async (req: Request, res: Response) => {
     try {
@@ -39,7 +39,7 @@ export const adminLogin = async (req: Request, res: Response) => {
     }
 };
 
-export const adminAuthorization = (req: Request, res: Response) => {
+export const adminAuthorization = (req: CustomRequest, res: Response) => {
     try {
         res.status(200).send({ adminId: req.adminId });
     } catch (error: any) {

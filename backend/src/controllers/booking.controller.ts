@@ -11,50 +11,100 @@ import { Attachment } from "nodemailer/lib/mailer";
 import { SessionUserData } from '../interfaces/SessionInterface';
 import { retrievePaymentId, sessionPayment } from "../utils/StripePayment";
 
+interface CustomRequest extends Request {
+    userId: string;
+}
+
 export const checkout = async (req: Request, res: Response) => {
     try {
-        const paymentData = req.body;
-        const existingBookings = await Booking.find({
-            categoryId: paymentData.hotelId,
-            bookingStatus: { $ne: `cancelled` },
-            $or: [
-                { $and: [{ checkIn: { $lt: paymentData.checkOut } }, { checkOut: { $gt: paymentData.checkIn } }] },
-                { $and: [{ checkIn: { $gte: paymentData.checkIn } }, { checkOut: { $lte: paymentData.checkOut } }] }
-            ]
-        });
+        const { hotelId, restaurantId } = req.body;
+        if (hotelId) {
+            const paymentData = req.body;
+            const existingBookings = await Booking.find({
+                categoryId: paymentData.hotelId,
+                bookingStatus: { $ne: `cancelled` },
+                $or: [
+                    { $and: [{ checkIn: { $lt: paymentData.checkOut } }, { checkOut: { $gt: paymentData.checkIn } }] },
+                    { $and: [{ checkIn: { $gte: paymentData.checkIn } }, { checkOut: { $lte: paymentData.checkOut } }] }
+                ]
+            });
 
-        let totalBookedRooms = 0;
-        existingBookings.forEach(booking => {
-            if (booking.roomDetails.roomType === paymentData.roomType) {
-                totalBookedRooms += booking.roomDetails.roomCount;
-            }
-        });
-        const hotelData = await Hotel.findOne({ _id: paymentData.hotelId });
+            let totalBookedRooms = 0;
+            existingBookings.forEach(booking => {
+                if (booking.roomDetails.roomType === paymentData.roomType) {
+                    totalBookedRooms += booking.roomDetails.roomCount;
+                }
+            });
+            const hotelData = await Hotel.findOne({ _id: paymentData.hotelId });
 
-        if (hotelData) {
-            const roomData = hotelData.roomTypes.find(room => room.type === paymentData.roomType);
-            if (roomData) {
-                const remainingRooms = roomData.quantity - totalBookedRooms;
-                if (remainingRooms < paymentData.roomCount) {
-                    return res.status(500).json({ error: "Requirement unavailable" });
+            if (hotelData) {
+                const roomData = hotelData.roomTypes.find(room => room.type === paymentData.roomType);
+                if (roomData) {
+                    const remainingRooms = roomData.quantity - totalBookedRooms;
+                    if (remainingRooms < paymentData.roomCount) {
+                        return res.status(500).json({ error: "Requirement unavailable" });
+                    }
                 }
             }
-        }
 
-        req.session.paymentData = paymentData;
-        const hotel = await Hotel.findById(paymentData.hotelId);
-        if (hotel) {
-            const name = `${hotel.name}, ${hotel.city}, ${hotel.country}`;
-            const description = `
+            req.session.paymentData = paymentData;
+            const hotel = await Hotel.findById(paymentData.hotelId);
+            if (hotel) {
+                const name = `${hotel.name}, ${hotel.city}, ${hotel.country}`;
+                const description = `
             Rooms: ${paymentData.roomType} Bed, ₹${paymentData.roomPrice}, ${paymentData.roomCount}Nos, 
             Guests: ${paymentData.adultCount} Adults, ${paymentData.childCount} Children, 
             Check-In: ${paymentData.checkIn.toDateString},
             Check-Out: ${paymentData.checkOut.toDateString}`;
-            const unit_amount = paymentData.roomPrice * paymentData.nightsPerStay * 100;
-            const quantity = paymentData.roomCount;
-            const success_url = `${process.env.BACKEND_URL}/api/user/booking/payment-result?session_id={CHECKOUT_SESSION_ID}`;
-            const cancel_url = `${process.env.FRONTEND_URL}`;
-            sessionPayment(req, res, name, description, unit_amount, quantity, success_url, cancel_url);
+                const unit_amount = paymentData.roomPrice * paymentData.nightsPerStay * 100;
+                const quantity = paymentData.roomCount;
+                const success_url = `${process.env.BACKEND_URL}/api/user/booking/payment-result?session_id={CHECKOUT_SESSION_ID}`;
+                const cancel_url = `${process.env.FRONTEND_URL}`;
+                sessionPayment(req, res, name, description, unit_amount, quantity, success_url, cancel_url);
+            }
+        } else if (restaurantId) {
+            // const paymentData = req.body;
+            // const existingBookings = await Booking.find({
+            //     categoryId: paymentData.restaurantId,
+            //     bookingStatus: { $ne: `cancelled` },
+            //     $or: [
+            //         { $and: [{ bookedDate: { $lt: paymentData.dateOfBooking } }, { checkOut: { $gt: paymentData.dateOfBooking } }] },
+            //     ]
+            // });
+
+            // let totalBookedRooms = 0;
+            // existingBookings.forEach(booking => {
+            //     if (booking.roomDetails.roomType === paymentData.roomType) {
+            //         totalBookedRooms += booking.roomDetails.roomCount;
+            //     }
+            // });
+            // const hotelData = await Hotel.findOne({ _id: paymentData.hotelId });
+
+            // if (hotelData) {
+            //     const roomData = hotelData.roomTypes.find(room => room.type === paymentData.roomType);
+            //     if (roomData) {
+            //         const remainingRooms = roomData.quantity - totalBookedRooms;
+            //         if (remainingRooms < paymentData.roomCount) {
+            //             return res.status(500).json({ error: "Requirement unavailable" });
+            //         }
+            //     }
+            // }
+
+            // req.session.paymentData = paymentData;
+            // const hotel = await Hotel.findById(paymentData.hotelId);
+            // if (hotel) {
+            //     const name = `${hotel.name}, ${hotel.city}, ${hotel.country}`;
+            //     const description = `
+            // Rooms: ${paymentData.roomType} Bed, ₹${paymentData.roomPrice}, ${paymentData.roomCount}Nos, 
+            // Guests: ${paymentData.adultCount} Adults, ${paymentData.childCount} Children, 
+            // Check-In: ${paymentData.checkIn.toDateString},
+            // Check-Out: ${paymentData.checkOut.toDateString}`;
+            //     const unit_amount = paymentData.roomPrice * paymentData.nightsPerStay * 100;
+            //     const quantity = paymentData.roomCount;
+            //     const success_url = `${process.env.BACKEND_URL}/api/user/booking/payment-result?session_id={CHECKOUT_SESSION_ID}`;
+            //     const cancel_url = `${process.env.FRONTEND_URL}`;
+            //     sessionPayment(req, res, name, description, unit_amount, quantity, success_url, cancel_url);
+            // }
         }
 
     } catch (error: any) {
@@ -63,7 +113,7 @@ export const checkout = async (req: Request, res: Response) => {
     }
 };
 
-export const loadCheckoutResult = async (req: Request, res: Response) => {
+export const loadCheckoutResult = async (req: CustomRequest, res: Response) => {
     try {
         const sessionId = req.query.session_id;
         const paymentIntentId = await retrievePaymentId(sessionId);

@@ -60,7 +60,8 @@ const Profile = () => {
                 <h2 className="text-3xl font-bold">Profile</h2>
                 <div className="flex items-center justify-center">
                     <div className="h-20 w-20 overflow-hidden bg-gray-300 rounded-full border-4 flex-shrink-0">
-                        {user && <img className="h-full w-full object-cover" src={user.imageUrl} alt="Profile Picture" />}
+                        {user && <img className="h-full w-full object-cover"
+                            src={user.imageUrl ? user.imageUrl : `https://imgs.search.brave.com/2KQdMpY4bONwTDqYNqr58Dzd9X_s001WHDag-YFcRXE/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuc3RpY2twbmcu/Y29tL3RodW1icy81/ODVlNGJmM2NiMTFi/MjI3NDkxYzMzOWEu/cG5n`} alt="Profile Picture" />}
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-5">

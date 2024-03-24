@@ -76,8 +76,10 @@ export type BookingType = {
     hotelId: string;
     adultCount: number;
     childCount: number;
+    guestCount: number;
     checkIn: Date;
     checkOut: Date;
+    bookedDate: Date;
     roomDetails: {
         roomType: string;
         roomPrice: number;
@@ -87,6 +89,7 @@ export type BookingType = {
     roomPrice: number;
     roomCount: number;
     nightsPerStay: number;
+    foodDetails: string;
     totalCost: number;
     paymentId: string;
     bookingDate: Date;

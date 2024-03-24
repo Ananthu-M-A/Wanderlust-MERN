@@ -59,7 +59,8 @@ const Header = () => {
                   <Link to="/search-restaurants"
                     className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Restaurants</Link> */}
                   <div className="h-10 w-10 overflow-hidden bg-gray-300 flex-shrink-0" onClick={handleDropdownToggle}>
-                    {user && <img className="h-full w-full object-cover cursor-pointer" src={user.imageUrl} alt="Profile Picture" />}
+                    {user && <img className="h-full w-full object-cover cursor-pointer"
+                      src={user.imageUrl ? user.imageUrl : `/user.png`} alt="Profile Picture" />}
                   </div>
                   {isDropdownOpen && (
                     <div className="absolute top-12 right-0 z-10 bg-white border border-gray-200 rounded shadow-md">
