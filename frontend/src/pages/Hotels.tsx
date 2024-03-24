@@ -3,11 +3,15 @@ import { Link } from "react-router-dom";
 import * as apiClient from '../api-client';
 import { useState } from "react";
 import Pagination from "../components/Pagination";
+import ConfirmModal from "../components/ConfirmModal";
 
 const Hotels = () => {
     const [searchData, setSearchData] = useState("");
     const [page, setPage] = useState<number>(1);
-    const queryClient = useQueryClient();    
+    const queryClient = useQueryClient();
+    const [showModal, setShowModal] = useState(false);
+    const [hotelId, setHotelId] = useState("");
+    const [blockStatus, setBlockStatus] = useState(false);
 
     const searchParams = {
         destination: searchData,
@@ -30,11 +34,15 @@ const Hotels = () => {
     });
 
     const handleBlock = async (hotelId: string) => {
-        await blockHotel.mutateAsync(hotelId);
+        setHotelId(hotelId);
+        setBlockStatus(false);
+        setShowModal(true);
     };
 
     const handleUnblock = async (hotelId: string) => {
-        await unblockHotel.mutateAsync(hotelId);
+        setHotelId(hotelId);
+        setBlockStatus(true);
+        setShowModal(true);
     };
 
     const handleClear = () => {
@@ -49,7 +57,14 @@ const Hotels = () => {
                     Add Hotel
                 </Link>
             </span>
-
+            <ConfirmModal isOpen={showModal} message={`Do you really wish to ${blockStatus ? "Unblock" : "Block"} ${hotelId}`}
+                onClose={function (): void {
+                    setShowModal(false);
+                }} onConfirm={async function (): Promise<void> {
+                    setShowModal(false);
+                    if (blockStatus) { await unblockHotel.mutateAsync(hotelId); }
+                    else { await blockHotel.mutateAsync(hotelId); }
+                }} />
             <div className="overflow-x-auto">
                 <div className="flex flex-row items-center flex-1 bg-white p-2 border rounded mb-2">
                     <input placeholder="Search hotels by name or place..." value={searchData}

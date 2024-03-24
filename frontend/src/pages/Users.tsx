@@ -2,11 +2,15 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import * as apiClient from '../api-client';
 import { useState } from "react";
 import Pagination from "../components/Pagination";
+import ConfirmModal from "../components/ConfirmModal";
 
 const Users = () => {
     const [searchData, setSearchData] = useState("");
     const [page, setPage] = useState<number>(1);
     const queryClient = useQueryClient();
+    const [showModal, setShowModal] = useState(false);
+    const [userId, setUserId] = useState("");
+    const [blockStatus, setBlockStatus] = useState(false);
 
     const searchParams = {
         destination: searchData,
@@ -30,11 +34,15 @@ const Users = () => {
     });
 
     const handleBlock = async (userId: string) => {
-        await blockUser.mutateAsync(userId);
+        setUserId(userId);
+        setBlockStatus(false);
+        setShowModal(true);
     };
 
     const handleUnblock = async (userId: string) => {
-        await unblockUser.mutateAsync(userId);
+        setUserId(userId);
+        setBlockStatus(true);
+        setShowModal(true);
     };
 
     const handleClear = () => {
@@ -46,7 +54,14 @@ const Users = () => {
             <span className="flex justify-between">
                 <h1 className="text-3xl font-bold">Users</h1>
             </span>
-
+            <ConfirmModal isOpen={showModal} message={`Do you really wish to ${blockStatus ? "Unblock" : "Block"} ${userId}`}
+                onClose={function (): void {
+                    setShowModal(false);
+                }} onConfirm={async function (): Promise<void> {
+                    setShowModal(false);
+                    if (blockStatus) { await unblockUser.mutateAsync(userId); }
+                    else { await blockUser.mutateAsync(userId); }
+                }} />
             <div className="overflow-x-auto">
                 <div className="flex flex-row items-center flex-1 bg-white p-2 border rounded mb-2">
                     <input placeholder="Search users by name, email or mobile..." value={searchData}

@@ -18,7 +18,7 @@ export const createBookingMail = (newBooking: BookingType, user: UserType, hotel
     ${hotel && `Number of Guests: ${newBooking.adultCount + newBooking.childCount}`}
     ${restaurant && `Number of Guests: ${newBooking.guestCount}`}
 
-    Please review the information above to ensure everything is accurate. If there are any discrepancies or if you have any additional requests, please don't hesitate to contact us at http://localhost:5173/.
+    Please review the information above to ensure everything is accurate. If there are any discrepancies or if you have any additional requests, please don't hesitate to contact us at ${process.env.FRONTEND_URL}.
 
     As part of our commitment to providing exceptional service, we offer a range of amenities and facilities to enhance your visit. Take advantage of our concierge services, we're here to make your experience memorable.
 

@@ -2,25 +2,27 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import * as apiClient from "../api-client";
+import ConfirmModal from "../components/ConfirmModal";
 
 const Bookings = () => {
     const { bookingId } = useParams<{ bookingId?: string }>();
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [cancelId, setCancelId] = useState<string>(bookingId || "");
     const [searchData, setSearchData] = useState<string>(bookingId || "");
     const queryClient = useQueryClient();
 
     const { data: bookings, refetch } = useQuery("loadBookings", () => apiClient.loadBookings(searchData), {
         refetchOnWindowFocus: false
     });
-    console.log(bookings);
+
 
     const handleClear = () => {
         setSearchData("");
     }
 
     const handleCancel = async (bookingId: string) => {
-        if (confirm(`Are you sure you want to cancel booking (#bookingId:${bookingId})?`)) {
-            await cancelBooking.mutateAsync(bookingId);
-        }
+        setShowModal(true);
+        setCancelId(bookingId)
     }
 
     const cancelBooking = useMutation<void, Error, string>(apiClient.cancelBooking, {
@@ -37,6 +39,12 @@ const Bookings = () => {
 
     return (
         <div className="container mx-auto">
+            <ConfirmModal isOpen={showModal} message={`Do you really wish to cancel this booking?`}
+                onClose={function (): void { setShowModal(false); }}
+                onConfirm={async function (): Promise<void> {
+                    await cancelBooking.mutateAsync(cancelId);
+                    setShowModal(false);
+                }} />
             <h1 className="text-2xl font-bold mb-4">Bookings</h1>
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 border">
                 <div className="flex flex-row items-center flex-1 bg-white p-2 border rounded">

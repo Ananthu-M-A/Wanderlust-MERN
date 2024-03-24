@@ -3,11 +3,15 @@ import { Link } from "react-router-dom";
 import * as apiClient from '../api-client';
 import { useState } from "react";
 import Pagination from "../components/Pagination";
+import ConfirmModal from "../components/ConfirmModal";
 
 const Restaurants = () => {
     const [searchData, setSearchData] = useState("");
     const [page, setPage] = useState<number>(1);
     const queryClient = useQueryClient();
+    const [showModal, setShowModal] = useState(false);
+    const [restaurantId, setRestaurantId] = useState("");
+    const [blockStatus, setBlockStatus] = useState(false);
 
     const searchParams = {
         destination: searchData,
@@ -30,11 +34,15 @@ const Restaurants = () => {
     });
 
     const handleBlock = async (restaurantId: string) => {
-        await blockRestaurant.mutateAsync(restaurantId);
+        setRestaurantId(restaurantId);
+        setBlockStatus(false);
+        setShowModal(true);
     };
 
     const handleUnblock = async (restaurantId: string) => {
-        await unblockRestaurant.mutateAsync(restaurantId);
+        setRestaurantId(restaurantId);
+        setBlockStatus(true);
+        setShowModal(true);
     };
 
     const handleClear = () => {
@@ -49,7 +57,14 @@ const Restaurants = () => {
                     Add Restaurant
                 </Link>
             </span>
-
+            <ConfirmModal isOpen={showModal} message={`Do you really wish to ${blockStatus ? "Unblock" : "Block"} ${restaurantId}`}
+                onClose={function (): void {
+                    setShowModal(false);
+                }} onConfirm={async function (): Promise<void> {
+                    setShowModal(false);
+                    if (blockStatus) { await unblockRestaurant.mutateAsync(restaurantId); }
+                    else { await blockRestaurant.mutateAsync(restaurantId); }
+                }} />
             <div className="overflow-x-auto">
                 <div className="flex flex-row items-center flex-1 bg-white p-2 border rounded mb-2">
                     <input placeholder="Search restaurants by name or place..." value={searchData}
