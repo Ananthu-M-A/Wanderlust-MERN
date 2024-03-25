@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { weekDays } from "../../config/options-config";
+import { WeekDays } from "../../../../types/Enums";
 import { RestaurantFormData } from "./ManageRestaurantForm";
 
 
@@ -21,7 +21,7 @@ const WorkingHours = () => {
                     Closing Time
                 </label>
             </div>
-            {weekDays.map((week, index) => (
+            {Object.values(WeekDays).map((week, index) => (
                 <div className="grid grid-cols-3 p-2 gap-2 bg-gray-300 justify-between" key={index}>
                     <div>
                         <input type="text" key={index} value={week} readOnly

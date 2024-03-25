@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "../types/Enums.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

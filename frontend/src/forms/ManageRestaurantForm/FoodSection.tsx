@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { RestaurantFormData } from "./ManageRestaurantForm";
-import { foodList } from "../../config/options-config";
+import { FoodItems } from "../../../../types/Enums";
 
 const FoodSection = () => {
     const { register, formState: { errors } } = useFormContext<RestaurantFormData>();
@@ -20,7 +20,7 @@ const FoodSection = () => {
                     Quantity
                 </div>
             </div>
-            {foodList.map((food, index) => (
+            {Object.values(FoodItems).map((food, index) => (
                 <div className="grid grid-cols-1 sm:grid-cols-3 p-2 gap-2 bg-gray-300" key={index}>
                     <div>
                         <input type="text" value={food}

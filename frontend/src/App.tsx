@@ -1,27 +1,26 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import './index.css';
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import AddHotel from "./pages/AddHotel";
+import Login from "./pages/user/auth/Login";
 import { useAppContext } from "./contexts/AppContext";
-import Hotels from "./pages/Hotels";
-import EditHotel from "./pages/EditHotel";
-import Search from "./pages/Search";
-import Detail from "./pages/Detail";
-import AdminLogin from "./pages/AdminLogin";
 import { useAdminContext } from "./contexts/AdminContext";
-import Users from "./pages/Users";
-import Account from "./pages/Profile";
-import Restaurants from "./pages/Restaurants";
-import AddRestaurant from "./pages/AddRestaurant";
-import EditRestaurant from "./pages/EditRestaurant";
-import Dashboard from "./pages/Dashboard";
-import BookingDetails from "./pages/Booking Details";
-import Bookings from "./pages/Bookings";
-import BookingResultPage from "./pages/BookingResultPage";
-import BookingsTable from "./pages/BookingsTable";
-// import SearchRestaurants from "./pages/SearchRestaurants";
+import Search from "./pages/user/home/Search";
+import Detail from "./pages/user/home/Detail";
+import AdminLogin from "./pages/admin/AdminLogin";
+import Bookings from "./pages/user/booking/Bookings";
+import BookingResultPage from "./pages/user/booking/BookingResultPage";
+import Dashboard from "./pages/admin/Dashboard";
+import AddRestaurant from "./pages/admin/restaurants/AddRestaurant";
+import EditRestaurant from "./pages/admin/restaurants/EditRestaurant";
+import AddHotel from "./pages/admin/hotels/AddHotel";
+import EditHotel from "./pages/admin/hotels/EditHotel";
+import Users from "./pages/admin/users/Users";
+import Hotels from "./pages/admin/hotels/Hotels";
+import Restaurants from "./pages/admin/restaurants/Restaurants";
+import BookingDetails from "./pages/admin/bookings/Booking Details";
+import BookingsTable from "./pages/admin/bookings/BookingsTable";
+import Profile from "./pages/user/home/Profile";
+import Register from "./pages/user/auth/Register";
 
 
 function App() {
@@ -71,7 +70,7 @@ function App() {
 
             <Route path="/home/account" element={
               <Layout>
-                <Account />
+                <Profile />
               </Layout>} />
 
             <Route path="/home/bookings/*" element={

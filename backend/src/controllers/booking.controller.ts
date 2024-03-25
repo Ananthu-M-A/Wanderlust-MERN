@@ -69,7 +69,7 @@ export const checkout = async (req: Request, res: Response) => {
                 restaurantId: paymentData.restaurantId,
                 bookingStatus: { $ne: `cancelled` },
                 $or: [
-                    { $and: [{ bookedDate: { $lt: paymentData.dateOfBooking } }, { checkOut: { $gt: paymentData.dateOfBooking } }] },
+                    { $and: [{ dateOfBooking: { $lt: paymentData.dateOfBooking } }, { dateOfBooking: { $gt: paymentData.dateOfBooking } }] },
                 ]
             });
 
@@ -150,8 +150,10 @@ export const loadCheckoutResult = async (req: CustomRequest, res: Response) => {
                     path: `wanderlust_booking_id_${newBooking._id}.pdf`
                 }];
                 const emailContent = createBookingMail(newBooking, user, hotel);
-                sendBookingMail(res, recipientEmail, subject, emailContent, attachments);
-                res.redirect(`${process.env.FRONTEND_URL}/home/${newBooking._id}/order-result-page`)
+                if(emailContent){
+                    sendBookingMail(res, recipientEmail, subject, emailContent, attachments);
+                    res.redirect(`${process.env.FRONTEND_URL}/home/${newBooking._id}/order-result-page`)
+                }
             }
         } else if (restaurantId) {
             const paymentData = req.session.paymentData;
@@ -167,7 +169,7 @@ export const loadCheckoutResult = async (req: CustomRequest, res: Response) => {
                 userId: req.userId,
                 restaurantId: paymentData.restaurantId,
                 guestCount: paymentData.guestCount,
-                bookedDate: paymentData.dateOfBooking,
+                dateOfBooking: paymentData.dateOfBooking,
                 foodDetails,
                 totalCost: paymentData.foodPrice * paymentData.guestCount,
                 paymentId: paymentIntentId,
@@ -187,8 +189,10 @@ export const loadCheckoutResult = async (req: CustomRequest, res: Response) => {
                     path: `wanderlust_booking_id_${newBooking._id}.pdf`
                 }];
                 const emailContent = createBookingMail(newBooking, user, undefined, restaurant);
-                sendBookingMail(res, recipientEmail, subject, emailContent, attachments);
-                res.redirect(`${process.env.FRONTEND_URL}/home/${newBooking._id}/order-result-page`)
+                if(emailContent){
+                    sendBookingMail(res, recipientEmail, subject, emailContent, attachments);
+                    res.redirect(`${process.env.FRONTEND_URL}/home/${newBooking._id}/order-result-page`);
+                }
             }
         }
 

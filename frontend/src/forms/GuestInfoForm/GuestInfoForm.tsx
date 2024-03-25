@@ -58,6 +58,7 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
         roomTypes.forEach(room => {
             if (room.type === roomType) {
                 setValue("roomPrice", room.price);
+                setRoomAvailability(room.quantity);
             }
         });
 
@@ -164,7 +165,7 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                         </label>
                         <label className="items-center flex">
                             Count:
-                            <input type="number" min={1} max={10} {...register("roomCount", {
+                            <input type="number" min={1} max={roomAvailability} {...register("roomCount", {
                                 valueAsNumber: true
                             })}
                                 className="w-full p-1 focus:outline-none font-bold" />

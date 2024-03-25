@@ -1,0 +1,96 @@
+import { useQuery } from 'react-query';
+import * as apiClient from "../../../api-client";
+import { useEffect, useState } from 'react';
+import Pagination from '../../../components/search/filters/Pagination';
+import { Link } from 'react-router-dom';
+
+const BookingsTable = () => {
+    const [searchData, setSearchData] = useState<string>("");
+    const [page, setPage] = useState<number>(1);
+
+    const BookingData = {
+        bookingId: searchData,
+        page: page.toString(),
+    }
+
+    const { data: bookings, refetch } = useQuery(["loadBookingsTable", BookingData],
+        () => apiClient.loadBookingsTable(BookingData), {
+        refetchOnWindowFocus: false,
+        refetchInterval: 5000,
+        enabled: !!searchData
+    });
+
+    const handleClear = () => {
+        setSearchData("");
+    }
+
+    useEffect(() => {
+        refetch();
+    }, [])
+
+    return (
+        <div className="space-y-5">
+            <span className="flex justify-between">
+                <h1 className="text-3xl font-bold">Bookings</h1>
+            </span>
+            <div className="overflow-x-auto">
+                <div className="flex flex-row items-center flex-1 bg-white p-2 border rounded mb-2">
+                    <input placeholder="Search bookings by booking ID..." value={searchData}
+                        className="text-md w-full focus:outline-none"
+                        onChange={(event) => { setSearchData(event.target.value) }} />
+                    <button className="w-100 font-bold text-xl hover:text-blue-600"
+                        onClick={handleClear}>
+                        Clear
+                    </button>
+                </div>
+                <table className="table-auto w-full border-collapse border border-gray-800">
+                    <thead>
+                        <tr className="bg-gray-200">
+                            <th className="border border-gray-800 px-4 py-2">Booking ID</th>
+                            <th className="border border-gray-800 px-4 py-2">Hotel Name</th>
+                            <th className="border border-gray-800 px-4 py-2">DoB</th>
+                            <th className="border border-gray-800 px-4 py-2">Total Cost</th>
+                            <th className="border border-gray-800 px-4 py-2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(bookings && bookings.data.length > 0) ? bookings.data.map(booking => (
+                            <tr key={booking._id} className="bg-white">
+                                <td className="border border-gray-800 px-4 py-2">{booking._id}</td>
+                                {booking.hotelId ?
+                                    <td className="border border-gray-800 px-4 py-2">
+                                        {booking.hotelId.name}
+                                    </td> :
+                                    <td className="border border-gray-800 px-4 py-2">
+                                        {booking.restaurantId.name}
+                                    </td>}
+                                <td className="border border-gray-800 px-4 py-2">{new Date(booking.bookingDate).toDateString()}</td>
+                                <td className="border border-gray-800 px-4 py-2">{booking.totalCost}</td>
+                                <td className="border border-gray-800 px-4 py-2">
+                                    <div className="flex justify-center">
+                                        <span className="mr-4">
+                                            <Link to={`/admin/booking-details/${booking._id}`}
+                                                className="flex text-black text-xl font-bold p-2">
+                                                View
+                                            </Link>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        )) : (
+                            <>
+                                <span className="ml-2">Hotels list is empty</span>
+                            </>
+                        )}
+                    </tbody>
+                </table>
+                <Pagination
+                    page={bookings?.pagination.page || 1}
+                    pages={bookings?.pagination.pages || 1}
+                    onPageChange={(page) => setPage(page)} />
+            </div>
+        </div>
+    );
+};
+
+export default BookingsTable;

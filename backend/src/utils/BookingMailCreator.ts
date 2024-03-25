@@ -1,36 +1,55 @@
 import { BookingType, HotelType, RestaurantType, UserType } from "../../../types/types";
 
 export const createBookingMail = (newBooking: BookingType, user: UserType, hotel?: HotelType, restaurant?: RestaurantType) => {
-    const emailContent = `
-    Dear ${user?.firstName} ${user?.lastName},
+    try {
+        const { firstName, lastName } = user;
+        const { name: hotelName, city: hotelCity, country: hotelCountry } = hotel || {};
+        const { name: restaurantName, city: restaurantCity, country: restaurantCountry } = restaurant || {};
 
-    We are thrilled to confirm your reservation at ${hotel?.name || restaurant?.name}! Your comfort and satisfaction are our top priorities, and we are excited to host you during your upcoming visit.
+        const emailContent = `
+    Dear ${firstName ?? ''} ${lastName ?? ''},
+
+    We are thrilled to confirm your reservation at ${hotelName || restaurantName}! Your comfort and satisfaction are our top priorities, and we are excited to host you during your upcoming visit.
 
     Here are the details of your booking:
 
-    Reservation ID: ${newBooking._id}
-    Guest Name: ${user?.firstName} ${user?.lastName}
-    ${hotel && `Check-in Date: ${newBooking.checkIn}`}
-    ${hotel && `Check-out Date: ${newBooking.checkOut}`}
-    ${restaurant && `Booked Date: ${newBooking.dateOfBooking}`}
-    ${hotel && `Room Detail: ${newBooking.roomDetails.roomType}, ${newBooking.roomDetails.roomPrice}, ${newBooking.roomDetails.roomCount}`}
-    ${restaurant && `Food Detail: ${newBooking.foodDetails.foodItem}, ${newBooking.foodDetails.foodPrice}, ${newBooking.guestCount}`}
-    ${hotel && `Number of Guests: ${newBooking.adultCount + newBooking.childCount}`}
-    ${restaurant && `Number of Guests: ${newBooking.guestCount}`}
+    ${hotel ?
+                `Reservation ID: ${newBooking._id}
+    Guest Name: ${firstName ?? ''} ${lastName ?? ''}
+    ${newBooking.checkIn ? `Check-in Date: ${newBooking.checkIn}` : ''}
+    ${newBooking.checkOut ? `Check-out Date: ${newBooking.checkOut}` : ''}
+    ${newBooking.roomDetails.roomType && newBooking.roomDetails.roomPrice && newBooking.roomDetails.roomCount ?
+                    `Room Detail: ${newBooking.roomDetails.roomType} Bed Room, ₹${newBooking.roomDetails.roomPrice}, ${newBooking.roomDetails.roomCount} Nos` : ''
+                }
+    ${newBooking.adultCount && newBooking.childCount ?
+                    `Number of Guests: ${newBooking.adultCount + newBooking.childCount}` : ''
+                }
+    `:
+                `Reservation ID: ${newBooking._id}
+                Guest Name: ${firstName ?? ''} ${lastName ?? ''}
+                ${newBooking.dateOfBooking ? `Booked Date: ${newBooking.dateOfBooking}` : ''}
+                ${newBooking.foodDetails.foodItem && newBooking.foodDetails.foodPrice && newBooking.guestCount ?
+                    `Food Detail: ${newBooking.foodDetails.foodItem}, ₹${newBooking.foodDetails.foodPrice}, ${newBooking.guestCount} plate` : ''
+                }
+                ${newBooking.guestCount ? `Number of Guests: ${newBooking.guestCount}` : ''} `
+            }
+    Please review the information above to ensure everything is accurate.If there are any discrepancies or if you have any additional requests, please don't hesitate to contact us at ${process.env.FRONTEND_URL || ''}.
 
-    Please review the information above to ensure everything is accurate. If there are any discrepancies or if you have any additional requests, please don't hesitate to contact us at ${process.env.FRONTEND_URL}.
+    As part of our commitment to providing exceptional service, we offer a range of amenities and facilities to enhance your visit.Take advantage of our concierge services; we're here to make your experience memorable.
 
-    As part of our commitment to providing exceptional service, we offer a range of amenities and facilities to enhance your visit. Take advantage of our concierge services, we're here to make your experience memorable.
+    Upon arrival, our friendly staff will be ready to assist you with the entry process and answer any questions you may have.We want to ensure your visit is seamless and enjoyable from start to finish.
 
-    Upon arrival, our friendly staff will be ready to assist you with the entry process and answer any questions you may have. We want to ensure your visit is seamless and enjoyable from start to finish.
-
-    Thank you for choosing ${hotel?.name || restaurant?.name}. We look forward to welcoming you and making your stay with us unforgettable.
+    Thank you for choosing ${hotelName || restaurantName}.We look forward to welcoming you and making your stay with us unforgettable.
 
     Warm regards,
 
     Administrator,
-    ${hotel?.name || restaurant?.name}
-    ${hotel?.city || restaurant?.city}, ${hotel?.country || restaurant?.country}`;
+    ${hotelName || restaurantName}
+    ${hotelCity || restaurantCity}, ${hotelCountry || restaurantCountry} `;
 
-    return emailContent;
+        return emailContent;
+
+    } catch (error) {
+        console.log("Error creating booking email", error);
+    }
 }

@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { restaurantFacilities } from "../../config/options-config";
+import { RestaurantFacilities } from "../../../../types/Enums";
 import { RestaurantFormData } from "./ManageRestaurantForm";
 
 
@@ -10,7 +10,7 @@ const FacilitiesSection = () => {
         <div>
             <h2 className="text-2xl font-bold mb-3">Facilities</h2>
             <div className="grid grid-cols-5 gap-3">
-                {restaurantFacilities.map((facility, index) => (
+                {Object.values(RestaurantFacilities).map((facility, index) => (
                     <label key={index} className="text-sm flex gap-1 text-gray-700">
                         <input key={index} type='checkbox' value={facility} {...register('facilities', {
                             validate: (facilities) => {

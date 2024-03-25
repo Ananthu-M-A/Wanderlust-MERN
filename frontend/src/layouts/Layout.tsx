@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Hero from "../components/Hero";
-import SearchBar from "../components/SearchBar";
+import Header from "../components/header/Header";
+import Hero from "../components/header/Hero";
+import SearchBar from "../components/search/SearchBar";
 import { useLocation } from "react-router-dom";
 
 interface Props {
