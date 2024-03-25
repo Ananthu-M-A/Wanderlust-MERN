@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Link } from "react-router-dom";
 import * as apiClient from '../api-client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import ConfirmModal from "../components/ConfirmModal";
 
@@ -18,8 +18,12 @@ const Restaurants = () => {
         page: page.toString(),
     }
 
-    const { data: restaurantData } = useQuery(["loadRestaurants", searchParams],
-        () => apiClient.loadRestaurants(searchParams));
+    const { data: restaurantData, refetch } = useQuery(["loadRestaurants", searchParams],
+        () => apiClient.loadRestaurants(searchParams), {
+        refetchOnWindowFocus: false,
+        refetchInterval: 5000,
+        enabled: !!searchData
+    });
 
     const blockRestaurant = useMutation<void, Error, string>(apiClient.blockRestaurant, {
         onSuccess: () => {
@@ -48,6 +52,10 @@ const Restaurants = () => {
     const handleClear = () => {
         setSearchData("");
     }
+
+    useEffect(() => {
+        refetch();
+    }, []);
 
     return (
         <div className="space-y-5">

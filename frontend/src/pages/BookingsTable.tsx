@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import * as apiClient from "../api-client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import { Link } from 'react-router-dom';
 
@@ -13,13 +13,21 @@ const BookingsTable = () => {
         page: page.toString(),
     }
 
-    const { data: bookings } = useQuery(["loadBookingsTable", BookingData],
-        () => apiClient.loadBookingsTable(BookingData));
+    const { data: bookings, refetch } = useQuery(["loadBookingsTable", BookingData],
+        () => apiClient.loadBookingsTable(BookingData), {
+        refetchOnWindowFocus: false,
+        refetchInterval: 5000,
+        enabled: !!searchData
+    });
 
 
     const handleClear = () => {
         setSearchData("");
     }
+
+    useEffect(() => {
+        refetch();
+    }, [])
 
     return (
         <div className="space-y-5">

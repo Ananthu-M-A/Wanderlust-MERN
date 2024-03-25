@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import * as apiClient from '../api-client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import ConfirmModal from "../components/ConfirmModal";
 
@@ -17,9 +17,12 @@ const Users = () => {
         page: page.toString(),
     }
 
-    const { data: userData } = useQuery(["loadUsers", searchParams],
-        () => apiClient.loadUsers(searchParams));
-    console.log(userData);
+    const { data: userData, refetch } = useQuery(["loadUsers", searchParams],
+        () => apiClient.loadUsers(searchParams), {
+        refetchOnWindowFocus: false,
+        refetchInterval: 5000,
+        enabled: !!searchData
+    });
 
     const blockUser = useMutation<void, Error, string>(apiClient.blockUser, {
         onSuccess: () => {
@@ -48,6 +51,10 @@ const Users = () => {
     const handleClear = () => {
         setSearchData("");
     }
+
+    useEffect(() => {
+        refetch();
+    }, [])
 
     return (
         <div className="space-y-5">

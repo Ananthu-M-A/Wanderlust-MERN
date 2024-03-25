@@ -12,7 +12,9 @@ const Bookings = () => {
     const queryClient = useQueryClient();
 
     const { data: bookings, refetch } = useQuery("loadBookings", () => apiClient.loadBookings(searchData), {
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        refetchInterval: 5000,
+        enabled: !!searchData
     });
 
 
@@ -33,7 +35,7 @@ const Bookings = () => {
 
     useEffect(() => {
         refetch();
-    }, [searchData]);
+    }, []);
 
     const sortedFilteredBookings = searchData.trim() ? bookings?.filter(booking => (booking._id === searchData || booking._id === searchData)) : bookings;
 
