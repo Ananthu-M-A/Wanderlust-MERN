@@ -1,4 +1,6 @@
 import { BookingType, HotelType, RestaurantType, UserType } from "../../../types/types";
+import { Request, Response } from "express";
+import "dotenv/config";
 
 export const createBookingMail = (newBooking: BookingType, user: UserType, hotel?: HotelType, restaurant?: RestaurantType) => {
     try {

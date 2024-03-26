@@ -1,13 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import '../interfaces/session.interface';
 
-declare global {
-    namespace Express {
-        interface Request {
-            adminId: string;
-        }
-    }
-}
 
 const verifyAdminToken = (req: Request, res: Response, next: NextFunction) => {
     try {

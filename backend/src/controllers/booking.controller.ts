@@ -8,7 +8,6 @@ import { BookingType } from "../../../types/types";
 import { createPDF } from "../utils/PDF Creator";
 import { createBookingMail } from "../utils/BookingMailCreator";
 import { Attachment } from "nodemailer/lib/mailer";
-import { SessionUserData } from '../interfaces/SessionInterface';
 import { retrievePaymentId, sessionPayment } from "../utils/StripePayment";
 import Restaurant from "../models/restaurant.model";
 
@@ -112,7 +111,7 @@ export const checkout = async (req: Request, res: Response) => {
     }
 };
 
-export const loadCheckoutResult = async (req: CustomRequest, res: Response) => {
+export const loadCheckoutResult = async (req: Request, res: Response) => {
     try {
         const { hotelId, restaurantId } = req.session.paymentData;
         if (hotelId) {

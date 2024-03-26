@@ -3,10 +3,9 @@ import User from "../models/user.model";
 import { UserType } from "../../../types/types";
 import bcrypt from 'bcryptjs';
 import { uploadImage } from "../utils/CloudinaryUploader";
-import { CustomRequest } from '../interfaces/SessionInterface';
 
 
-export const loadProfile = async (req: CustomRequest, res: Response) => {
+export const loadProfile = async (req: Request, res: Response) => {
     try {
     const userId = req.userId;
         const user = await User.findById(userId);
@@ -20,7 +19,7 @@ export const loadProfile = async (req: CustomRequest, res: Response) => {
     }
 };
 
-export const updateProfile = async (req: CustomRequest, res: Response) => {
+export const updateProfile = async (req: Request, res: Response) => {
     try {
     const userId = req.userId;
         const user = await User.findById({ _id: userId });

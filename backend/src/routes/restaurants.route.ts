@@ -1,5 +1,5 @@
 import express from 'express';
-import verifyAdminToken from '../middleware/admin.auth.middleware';
+import verifyAdminToken from '../middlewares/admin.auth.middleware';
 import { blockRestaurant, createRestaurant, loadRestaurant, loadRestaurants, unblockRestaurant, updateRestaurant } from '../controllers/restaurants.controller';
 import { body } from 'express-validator';
 import multer, { Multer } from 'multer';

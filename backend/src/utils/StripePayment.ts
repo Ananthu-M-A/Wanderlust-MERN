@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { SessionUserData } from '../interfaces/SessionInterface';
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY as string);

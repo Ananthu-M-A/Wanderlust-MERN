@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { CustomRequest } from '../interfaces/SessionInterface';
 import { sendBookingMail } from '../utils/NodeMailer';
+import '../interfaces/session.interface';
 
 
 export const userRegistration = async (req: Request, res: Response) => {
@@ -137,7 +137,7 @@ export const userLogin = async (req: Request, res: Response) => {
     }
 };
 
-export const userAuthorization = (req: CustomRequest, res: Response) => {
+export const userAuthorization = (req: Request, res: Response) => {
     try {
         res.status(200).send({ userId: req.userId });
     } catch (error) {
@@ -159,7 +159,7 @@ export const userLogout = (req: Request, res: Response) => {
     }
 };
 
-export const loadUser = async (req: CustomRequest, res: Response) => {
+export const loadUser = async (req: Request, res: Response) => {
     const userId = req.userId;
     try {
         const user = await User.findById(userId).select("-password");

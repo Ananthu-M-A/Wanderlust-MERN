@@ -1,6 +1,6 @@
 import express from 'express';
 import { blockUser, loadUsers, unblockUser } from '../controllers/users.controller';
-import verifyAdminToken from '../middleware/admin.auth.middleware';
+import verifyAdminToken from '../middlewares/admin.auth.middleware';
 const usersRouter = express.Router();
 
 usersRouter.get('/', verifyAdminToken, loadUsers);
