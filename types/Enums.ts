@@ -61,3 +61,11 @@ export enum FoodItems {
     MuttonMandhi = "Mutton Mandhi",
     Meals = "Meals"
 }
+
+export enum PriceList {
+    ONE_THOUSAND = 1000, 
+    TWO_THOUSAND_FIVE_HUNDRED = 2500, 
+    FIVE_THOUSAND = 5000, 
+    FIFTEEN_THOUSAND = 15000, 
+    THIRTY_THOUSAND = 30000
+}

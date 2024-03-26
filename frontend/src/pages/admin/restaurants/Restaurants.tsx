@@ -128,7 +128,7 @@ const Restaurants = () => {
                             </tr>
                         )) : (
                             <>
-                                <span className="ml-2">Restaurants list is empty</span>
+                                <span className="ml-2">List empty</span>
                             </>
                         )}
                     </tbody>

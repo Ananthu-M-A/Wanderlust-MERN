@@ -26,6 +26,7 @@ const Dashboard = () => {
                     <p className="text-3xl font-bold">₹{totalCost?.toFixed(2)}</p>
                 </div>
             </div>
+            {(bookings && bookings.data.length > 0) && <>
             <h2 className="text-2xl font-semibold mt-8 mb-4">Recent Bookings</h2>
             <div className="overflow-x-auto">
                 <table className="table-auto w-full border-collapse border border-gray-800">
@@ -49,7 +50,7 @@ const Dashboard = () => {
                         ))}
                     </tbody>
                 </table>
-            </div>
+            </div></>}
         </div>
     );
 };

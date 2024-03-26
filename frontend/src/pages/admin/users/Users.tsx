@@ -122,7 +122,7 @@ const Users = () => {
                             </tr>
                         )) : (
                             <>
-                                <span className="ml-2">Users list is empty</span>
+                                <span className="ml-2">Users list empty</span>
                             </>
                         )}
                     </tbody>

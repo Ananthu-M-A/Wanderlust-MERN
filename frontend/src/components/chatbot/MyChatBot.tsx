@@ -122,6 +122,35 @@ const MyChatBot = () => {
       },
     },
 
+    // checkIns: {
+    //   message: "Please select the check-in date",
+    //   render: () => (
+    //     <>
+    //     <DatePicker
+    //       selected={checkIn} selectsStart minDate={checkInMinDate} maxDate={maxDate}
+    //       placeholderText="Check-in Date" wrapperClassName="min-w-full"
+    //       className="bg-blue-900 hover:bg-blue-700 text-white items-center ml-4 mt-3 rounded p-2 focus:outline-none cursor-pointer text-center"
+    //       onChange={(date: Date) => {
+    //         setCheckIn(date);
+    //         const newDate = new Date(date.getTime());
+    //         newDate.setDate(newDate.getDate() + 1);
+    //         setCheckOut(newDate);
+    //       }}
+    //     />
+    //   </>),
+    //   options: ["Confirm Check-in Date", "Cancel Booking"],
+    //   path: ({ userInput }: { userInput: string }) => {
+    //     if (userInput === "Confirm Check-in Date") {
+    //       return "confirmCheckInDate";
+    //     }
+    //     if (userInput === "Cancel Booking") {
+    //       search.clearSearchValues()
+    //       return "end";
+    //     }
+    //   },
+    //   chatDisabled: true,
+    // },
+
     selectBooking: {
       message: `Hello ${userName}. You can start booking now, Select one...`,
       options: ["Hotel", "Restaurant", "Transit"],

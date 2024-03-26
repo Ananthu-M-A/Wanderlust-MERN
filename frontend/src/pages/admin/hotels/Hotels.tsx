@@ -128,7 +128,7 @@ const Hotels = () => {
                             </tr>
                         )) : (
                             <>
-                                <span className="ml-2">Hotels list is empty</span>
+                                <span className="ml-2">List empty</span>
                             </>
                         )}
                     </tbody>

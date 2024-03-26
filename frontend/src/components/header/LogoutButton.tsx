@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from '../../api-client';
 import { useAppContext } from "../../contexts/AppContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
     isAdmin: boolean;
@@ -11,6 +11,8 @@ const LogoutButton = ({ isAdmin }: Props) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { showToast } = useAppContext();
+    const { pathname } = useLocation();
+    console.log(pathname);
 
     const mutationAdmin = useMutation(apiClient.adminLogout, {
         onSuccess: async () => {
@@ -38,7 +40,11 @@ const LogoutButton = ({ isAdmin }: Props) => {
     };
 
     return (
-        <button onClick={handleClick} className="flex items-center text-blue-500 px-3 font-bold hover:text-blue-800">Logout</button>
+        <button onClick={handleClick}
+            className={(pathname === '/admin/dashboard' || pathname === '/admin/bookings' || pathname === '/admin/hotels' ||
+                pathname === '/admin/restaurants' || pathname === '/admin/users') ?
+                `px-4 py-2 cursor-pointer text-blue-300 font-bold hover:text-white` :
+                `px-4 py-2 cursor-pointer hover:bg-gray-100`}>Logout</button>
     )
 }
 
