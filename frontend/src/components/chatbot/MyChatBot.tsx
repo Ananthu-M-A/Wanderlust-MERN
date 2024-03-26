@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ChatBot from "react-chatbotify";
 import "react-chatbotify/dist/react-chatbotify.css";
 import * as apiClient from "../../api-client";
@@ -16,8 +16,16 @@ const MyChatBot = () => {
   const [restaurant, setRestaurant] = useState<any[]>([]);
   const [userName, setUserName] = useState<string>("");
   const [destination, setDestination] = useState<string>("");
-  const [checkIn, setCheckIn] = useState<Date>(new Date());
-  const [checkOut, setCheckOut] = useState<Date>(new Date());
+  const [checkIn, setCheckIn] = useState<Date>(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  });
+  const [checkOut, setCheckOut] = useState<Date>(() => {
+    const nextDay = new Date(checkIn);
+    nextDay.setDate(nextDay.getDate() + 1);
+    return nextDay;
+  });
   const [dateOfBooking, setDateOfBooking] = useState<Date>(new Date());
   const [adultCount, setAdultCount] = useState<number>(1);
   const [childCount, setChildCount] = useState<number>(1);
@@ -31,43 +39,49 @@ const MyChatBot = () => {
   const [error, setError] = useState<string>("");
   const search = useSearchContext();
   const { showToast } = useAppContext();
-  let roomPrice = 0, foodPrice = 0, total = 0;
+  let roomPrice = 0,
+    foodPrice = 0,
+    total = 0;
 
   useEffect(() => {
     return () => { };
-  }, [hotel, userName, destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, hotelId, roomPrice, total, error])
-
-  const minDate = useMemo(() => new Date(), []);
-  const maxDate = useMemo(() => {
-    const date = new Date();
-    date.setFullYear(date.getFullYear() + 1);
-    return date;
   }, []);
+
+  const checkInMinDate = new Date();
+  checkInMinDate.setDate(checkInMinDate.getDate() + 1);
+  const checkOutMinDate = new Date(checkIn);
+  checkOutMinDate.setDate(checkOutMinDate.getDate() + 1);
+  const maxDate = new Date();
+  maxDate.setFullYear(maxDate.getFullYear() + 1);
 
   const { mutate } = useMutation(apiClient.createCheckoutSession, {
     onMutate: (newPaymentData) => {
-      return newPaymentData
+      return newPaymentData;
     },
     onSuccess: () => {
       showToast({ message: "Booking Saved!", type: "SUCCESS" });
     },
     onError: (error: any) => {
       if (error.message === "Error booking room") {
-        console.log("1233");
-        setError("Requirement unavailable")
+        setError("Requirement unavailable");
       }
-      search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0);
+      search.clearSearchValues();
       showToast({ message: "Error saving booking!", type: "ERROR" });
-    }
-  })
+    },
+  });
 
   const options = {
     header: {
       title: <div className="font-bold text-xl">WanderLustBookingAssistant</div>,
       showAvatar: true,
-      avatar: "/chatbot.avif"
+      avatar: "/chatbot.avif",
     },
-    theme: { embedded: false, primaryColor: "#3B82F6", secondaryColor: "#000000", showFooter: false },
+    theme: {
+      embedded: false,
+      primaryColor: "#3B82F6",
+      secondaryColor: "#000000",
+      showFooter: false,
+    },
     chatHistory: { disabled: true },
     notification: { disabled: true },
     emoji: { disabled: true },
@@ -122,7 +136,7 @@ const MyChatBot = () => {
           return "searchTransit";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -151,7 +165,7 @@ const MyChatBot = () => {
       path: async ({ userInput }: { userInput: string }) => {
         setDestination(userInput);
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
         if (userInput === "More") {
@@ -170,7 +184,7 @@ const MyChatBot = () => {
       path: async ({ userInput }: { userInput: string }) => {
         setDestination(userInput);
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
         if (userInput === "More") {
@@ -210,7 +224,7 @@ const MyChatBot = () => {
           return "confirmDestinationH";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -264,7 +278,7 @@ const MyChatBot = () => {
           return "confirmDestinationR";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -279,7 +293,7 @@ const MyChatBot = () => {
           return "adultCount";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -294,7 +308,7 @@ const MyChatBot = () => {
           return "guestCount";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -306,7 +320,7 @@ const MyChatBot = () => {
       path: ({ userInput }: { userInput: string }) => {
         const temp = parseInt(userInput);
         if (userInput === "Cancel Booking" || isNaN(temp)) {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
         setAdultCount(temp);
@@ -319,7 +333,7 @@ const MyChatBot = () => {
       path: ({ userInput }: { userInput: string }) => {
         const temp = parseInt(userInput);
         if (userInput === "Cancel Booking" || isNaN(temp)) {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
         setChildCount(temp);
@@ -332,7 +346,7 @@ const MyChatBot = () => {
       path: ({ userInput }: { userInput: string }) => {
         const temp = parseInt(userInput);
         if (userInput === "Cancel Booking" || isNaN(temp)) {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
         setGuestCount(temp);
@@ -348,7 +362,7 @@ const MyChatBot = () => {
           return "roomDetails";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -363,7 +377,7 @@ const MyChatBot = () => {
           return "foodDetails";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -375,7 +389,7 @@ const MyChatBot = () => {
       options: ["Single", "Double", "Triple", "King", "Queen", "Cancel Booking"],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
         setRoomType(userInput)
@@ -389,7 +403,7 @@ const MyChatBot = () => {
       options: [...Object.values(FoodItems)],
       path: ({ userInput }: { userInput: string }) => {
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
         setFoodItem(userInput)
@@ -406,7 +420,7 @@ const MyChatBot = () => {
           return "totalRooms";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -421,7 +435,7 @@ const MyChatBot = () => {
           return "dateOfBooking";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -433,7 +447,7 @@ const MyChatBot = () => {
       path: ({ userInput }: { userInput: string }) => {
         const temp = parseInt(userInput);
         if (userInput === "Cancel Booking" || isNaN(temp)) {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
         setRoomCount(temp);
@@ -449,7 +463,7 @@ const MyChatBot = () => {
           return "checkIn";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -460,15 +474,15 @@ const MyChatBot = () => {
       message: "Please select the check-in date",
       render: () => (
         <DatePicker
-          selected={checkIn} selectsStart
-          minDate={minDate} startDate={checkIn}
-          maxDate={maxDate} endDate={checkOut}
-          placeholderText="Check-in Date"
-          onChange={(date) => {
-            setCheckIn(date as Date); setCheckOut(date as Date);
-          }}
-          wrapperClassName="min-w-full"
+          selected={checkIn} selectsStart minDate={checkInMinDate} maxDate={maxDate}
+          placeholderText="Check-in Date" wrapperClassName="min-w-full"
           className="bg-blue-900 hover:bg-blue-700 text-white items-center ml-4 mt-3 rounded p-2 focus:outline-none cursor-pointer text-center"
+          onChange={(date: Date) => {
+            setCheckIn(date);
+            const newDate = new Date(date.getTime());
+            newDate.setDate(newDate.getDate() + 1);
+            setCheckOut(newDate);
+          }}
         />
       ),
       options: ["Confirm Check-in Date", "Cancel Booking"],
@@ -477,7 +491,7 @@ const MyChatBot = () => {
           return "confirmCheckInDate";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -492,7 +506,7 @@ const MyChatBot = () => {
           return "checkOut";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -503,13 +517,11 @@ const MyChatBot = () => {
       message: "Now, Select check-out date",
       render: () => (
         <DatePicker
-          selected={checkOut} selectsEnd
-          startDate={checkOut}
-          placeholderText="Check-out Date"
-          minDate={checkIn} maxDate={maxDate}
+          selected={checkOut} startDate={checkIn} endDate={checkOut}
+          minDate={checkOutMinDate} maxDate={maxDate} placeholderText="Check-out Date"
           onChange={(date) => setCheckOut(date as Date)}
           wrapperClassName="min-w-full"
-          className="bg-blue-900 hover:bg-blue-700 text-white items-center mt-3 rounded p-2 focus:outline-none cursor-pointer text-center"
+          className="bg-blue-900 hover:bg-blue-700 text-white items-center ml-4 mt-3 rounded p-2 focus:outline-none cursor-pointer text-center"
         />
       ),
       options: ["Confirm Check-out Date", "Cancel Booking"],
@@ -518,7 +530,7 @@ const MyChatBot = () => {
           return "confirmCheckOutDate";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -533,7 +545,7 @@ const MyChatBot = () => {
           return "verifyBookingDetailsH";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -560,7 +572,7 @@ const MyChatBot = () => {
           return "confirmBookingDate";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -575,7 +587,7 @@ const MyChatBot = () => {
           return "verifyBookingDetailsR";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -618,7 +630,7 @@ const MyChatBot = () => {
           return "end";
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },
@@ -651,7 +663,7 @@ const MyChatBot = () => {
           return "end"
         }
         if (userInput === "Cancel Booking") {
-          search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0)
+          search.clearSearchValues()
           return "end";
         }
       },

@@ -63,6 +63,8 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
         });
 
         if (checkIn && checkOut && roomCount && roomPrice && nightsPerStay) {
+            console.log(nightsPerStay);
+            
             const newTotalCost = roomCount * nightsPerStay * roomPrice;
             setTotalCost(newTotalCost);
         }
@@ -71,8 +73,10 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
 
     }, [checkIn, checkOut, roomType, roomCount, roomPrice, nightsPerStay]);
 
-
-    const minDate = new Date();
+    const checkInMinDate = new Date();
+    checkInMinDate.setDate(checkInMinDate.getDate() + 1);
+    const checkOutMinDate = new Date(checkIn);
+    checkOutMinDate.setDate(checkOutMinDate.getDate() + 1);
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 1);
 
@@ -105,21 +109,20 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                 <div className="grid grid-cols-1 gap-4 items-center">
                     <div>
                         <DatePicker
-                            selected={checkIn} selectsStart startDate={checkIn} endDate={checkOut}
-                            minDate={minDate} maxDate={maxDate} placeholderText="Check-in Date"
-                            onChange={(date: Date) => {
+                            selected={checkIn} selectsStart minDate={checkInMinDate} maxDate={maxDate}
+                            placeholderText="Check-in Date" wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none"
+                            required onChange={(date: Date) => {
                                 setValue("checkIn", date);
                                 const newDate = new Date(date.getTime());
                                 newDate.setDate(newDate.getDate() + 1);
                                 setValue("checkOut", newDate);
                             }}
-                            wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none" required
                         />
                     </div>
                     <div>
                         <DatePicker
                             selected={checkOut} startDate={checkIn} endDate={checkOut}
-                            minDate={checkIn} maxDate={maxDate} placeholderText="Check-out Date"
+                            minDate={checkOutMinDate} maxDate={maxDate} placeholderText="Check-out Date"
                             onChange={(date) => setValue("checkOut", date as Date)}
                             wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none" required
                         />
@@ -171,7 +174,6 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
                                 className="w-full p-1 focus:outline-none font-bold" />
                         </label>
                     </div>
-
 
 
                     {/* Number of Rooms:

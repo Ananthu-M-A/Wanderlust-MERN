@@ -20,17 +20,10 @@ type SearchContext = {
         roomType: string,
         roomCount: number,
         roomPrice: number,
-        totalCost: number) => void;
-    clearSearchValues: (
-        destination: string,
-        checkIn: Date,
-        checkOut: Date,
-        adultCount: number,
-        childCount: number,
-        roomType: string,
-        roomCount: number,
-        roomPrice: number,
-        totalCost: number) => void;
+        totalCost: number,
+        hotelId?: string
+    ) => void;
+    clearSearchValues: () => void;
 };
 
 const SearchContext = React.createContext<SearchContext | undefined>(undefined);
@@ -44,9 +37,25 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         () => sessionStorage.getItem("destination") || ""
     );
     const [checkIn, setCheckIn] = useState<Date>(
-        () => new Date(sessionStorage.getItem("checkIn") || new Date().toISOString()));
+        () => {
+            const storedCheckIn = sessionStorage.getItem("checkIn");
+            let tomorrow = new Date();
+            if (storedCheckIn) {
+                tomorrow = new Date(storedCheckIn);
+            }
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return storedCheckIn ? new Date(storedCheckIn) : tomorrow;
+        }
+    );
     const [checkOut, setCheckOut] = useState<Date>(
-        () => new Date(sessionStorage.getItem("checkOut") || new Date().toISOString()));
+        () => {
+            const storedCheckOut = sessionStorage.getItem("checkOut");
+            const nextDay = new Date(checkIn);
+            nextDay.setDate(nextDay.getDate() + 1);
+            return storedCheckOut ? new Date(storedCheckOut) : nextDay;
+        }
+    );
+
     const [adultCount, setAdultCount] = useState<number>(
         () => parseInt(sessionStorage.getItem("adultCount") || "1")
     );
@@ -79,8 +88,8 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         roomCount: number,
         roomPrice: number,
         totalCost: number,
-        hotelId?: string) => {
-
+        hotelId?: string
+    ) => {
         setDestination(destination);
         setCheckIn(checkIn);
         setCheckOut(checkOut);
@@ -108,43 +117,28 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         }
     };
 
-    const clearSearchValues = (
-        destination: string,
-        checkIn: Date,
-        checkOut: Date,
-        adultCount: number,
-        childCount: number,
-        roomType: string,
-        roomCount: number,
-        roomPrice: number,
-        totalCost: number,
-        hotelId?: string) => {
+    const clearSearchValues = () => {
+        setDestination("");
+        setCheckIn(new Date());
+        setCheckOut(new Date());
+        setAdultCount(1);
+        setChildCount(0);
+        setRoomType("");
+        setRoomCount(1);
+        setRoomPrice(0);
+        setTotalCost(0);
+        setHotelId("");
 
-        setDestination(destination);
-        setCheckIn(checkIn);
-        setCheckOut(checkOut);
-        setAdultCount(adultCount);
-        setChildCount(childCount);
-        setRoomType(roomType);
-        setRoomCount(roomCount);
-        setRoomPrice(roomPrice);
-        setTotalCost(totalCost);
-        if (hotelId) {
-            setHotelId(hotelId);
-        }
-
-        sessionStorage.setItem("destination", "");
-        sessionStorage.setItem("checkIn", new Date().toISOString());
-        sessionStorage.setItem("checkOut", new Date().toISOString());
-        sessionStorage.setItem("adultCount", "1");
-        sessionStorage.setItem("childCount", "0");
-        sessionStorage.setItem("roomType", "");
-        sessionStorage.setItem("roomCount", "1");
-        sessionStorage.setItem("roomPrice", "0");
-        sessionStorage.setItem("totalCost", "0");
-        if (hotelId) {
-            sessionStorage.setItem("hotelId", hotelId);
-        }
+        sessionStorage.removeItem("destination");
+        sessionStorage.removeItem("checkIn");
+        sessionStorage.removeItem("checkOut");
+        sessionStorage.removeItem("adultCount");
+        sessionStorage.removeItem("childCount");
+        sessionStorage.removeItem("roomType");
+        sessionStorage.removeItem("roomCount");
+        sessionStorage.removeItem("roomPrice");
+        sessionStorage.removeItem("totalCost");
+        sessionStorage.removeItem("hotelId");
     };
 
     return (
