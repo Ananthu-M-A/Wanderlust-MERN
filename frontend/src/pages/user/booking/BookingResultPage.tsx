@@ -6,7 +6,7 @@ const BookingResultPage = () => {
   const { bookingId } = useParams();
   const search = useSearchContext();
   useEffect(()=>{
-    search.clearSearchValues("", new Date(), new Date(), 1, 0, "", 1, 0, 0);
+    search.clearSearchValues();
   },[]);
   return (
     <div className="flex items-center justify-center">

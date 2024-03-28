@@ -3,11 +3,8 @@ import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from '../../api-client';
 import { useAdminContext } from "../../contexts/AdminContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { LoginFormData } from "../../../../types/types";
 
-export type LoginFormData = {
-    email: string;
-    password: string;
-}
 
 const AdminLogin = () => {
     const queryClient = useQueryClient();

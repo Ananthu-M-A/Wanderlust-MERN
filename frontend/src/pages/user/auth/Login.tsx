@@ -4,11 +4,8 @@ import * as apiClient from '../../../api-client';
 import { useAppContext } from "../../../contexts/AppContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { LoginFormData } from "../../../../../types/types";
 
-export type LoginFormData = {
-    email: string;
-    password: string;
-}
 
 const Login = () => {
     const queryClient = useQueryClient();
@@ -62,9 +59,11 @@ const Login = () => {
                 {errors.password && (<span className="text-red-500">{errors.password.message}</span>)}
             </label>
             <span className="flex items-center justify-between">
-                <span className="text-sm">
-                    Not Registered? <Link className="underline" to="/register">Create an account now</Link>
+                <span className="text-md">
+                    <span className="block">Not Registered? <Link className="underline" to="/register">Create an account now</Link></span>
+                    <span className="block">Forgot Password? <Link className="underline" to="/reset-password">Forgot Password?</Link></span>
                 </span>
+
                 <button type="submit"
                     className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
                     Login

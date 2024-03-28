@@ -4,31 +4,11 @@ import TypesSection from "../ManageRestaurantForm/TypesSection";
 import FacilitiesSection from "../ManageRestaurantForm/FacilitiesSection";
 import ImagesSection from "../ManageRestaurantForm/ImagesSection";
 import WorkingHours from "./WorkingHours";
-import { OpeningHour, RestaurantType } from "../../../../types/types";
+import { RestaurantFormData, RestaurantType } from "../../../../types/types";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import FoodSection from "./FoodSection";
 
-export type FoodItem = {
-    item: string;
-    price: number;
-    quantity: number;
-};
-
-export type RestaurantFormData = {
-    name: string;
-    city: string;
-    country: string;
-    description: string;
-    starRating: number;
-    openingHours: OpeningHour[],
-    type: string;
-    foodItems: FoodItem[],
-    facilities: string[];
-    imageUrls: string[];
-    imageFiles: FileList;
-    lastUpdated: Date;
-};
 
 type Props = {
     restaurant?: RestaurantType;

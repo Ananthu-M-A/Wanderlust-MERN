@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
-import { RestaurantFormData } from "./ManageRestaurantForm";
 import { FoodItems } from "../../../../types/Enums";
+import { RestaurantFormData } from "../../../../types/types";
 
 const FoodSection = () => {
     const { register, formState: { errors } } = useFormContext<RestaurantFormData>();

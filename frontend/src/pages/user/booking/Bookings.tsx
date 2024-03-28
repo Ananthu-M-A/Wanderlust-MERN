@@ -27,6 +27,15 @@ const Bookings = () => {
         setShowModal(true);
         setCancelId(bookingId);
     }
+    
+    const handleDownloadDoc = async (bookingId: string) => {
+        try {
+            const url = await apiClient.downloadDoc(bookingId);
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error('Error downloading document:', error);
+        }
+    }
 
     const cancelBooking = useMutation<void, Error, string>(apiClient.cancelBooking, {
         onSuccess: () => {
@@ -36,6 +45,7 @@ const Bookings = () => {
     });
 
     useEffect(() => {
+
         refetch();
     }, [navigate]);
 
@@ -69,19 +79,31 @@ const Bookings = () => {
                         <div key={booking._id} className="bg-white rounded shadow p-4 hover:shadow-lg scroll">
                             <div className="flex justify-between">
                                 {booking.hotelId && (<>
-                                    <h2 className="text-lg font-semibold mb-2">{booking.hotelId.name}
+                                    <span className="text-lg font-semibold mb-2">{booking.hotelId.name}
                                         <h6 className="text-sm font-semibold text-gray-600">Hotel</h6>
-                                    </h2>
+                                    </span>
                                 </>)}
                                 {booking.restaurantId && (<>
-                                    <h2 className="text-lg font-semibold mb-2">{booking.restaurantId.name}
+                                    <span className="text-lg font-semibold mb-2">{booking.restaurantId.name}
                                         <h6 className="text-sm font-semibold text-gray-600">Restaurant</h6>
-                                    </h2>
+                                    </span>
                                 </>)}
-                                {(booking.bookingStatus === "active") ? (<button className="text-lg font-bold mb-2 text-blue-800 hover:text-blue-600"
-                                    onClick={() => { handleCancel(booking._id) }}>
-                                    Cancel
-                                </button>) : <>{`${booking.bookingStatus} on ${booking.cancellationDate}`}</>}
+                                {(booking.bookingStatus === "active") ?
+                                    (<button className="text-lg font-bold mb-2 text-blue-800 hover:text-blue-600"
+                                        onClick={() => { handleCancel(booking._id) }}>
+                                        Cancel
+                                    </button>) :
+                                    (booking.bookingStatus === "cancelled") ?
+                                        <> {`${booking.bookingStatus} on ${booking.cancellationDate}`} </> :
+                                        (booking.bookingStatus === "Booking Confirmed") ?
+                                            <div className="flex">{`${booking.bookingStatus}`}
+                                                <div className="cursor-pointer" onClick={() => { handleDownloadDoc(booking._id) }}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                                                        <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                            </div> :
+                                            <></>}
                             </div>
                             <p>Booking ID: {booking._id}</p>
                             {booking.roomDetails && <>
@@ -91,7 +113,7 @@ const Bookings = () => {
                             </>}
                             {booking.foodDetails && <>
                                 <p>Booked Date: {booking.dateOfBooking}</p>
-                                <p>Food Details: {`${booking.foodDetails.foodItem} of price ₹${booking.foodDetails.foodPrice} for ${booking.foodDetails.foodCount} guests`}</p>
+                                <p>Food Details: {`${booking.foodDetails.foodItem} of price ₹${booking.foodDetails.foodPrice} for ${booking.guestCount} guests`}</p>
                             </>}
                             <p>Date of Booking: {new Date(booking.bookingDate).toLocaleDateString()}</p>
                             <p>Total Cost: ₹{booking.totalCost}</p>

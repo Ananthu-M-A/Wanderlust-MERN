@@ -103,7 +103,7 @@ const GoogleMap: React.FC<Props> = ({ searchInput, onInputChange, sendDataToPare
                 type="text"
                 style={{ width: '100%', maxWidth: '485px', fontSize: 'larger', margin: '0 auto', display: 'block' }}
                 id='search-input'
-                placeholder=" Search..."
+                placeholder="  Google here..."
                 value={searchInput}
                 onChange={handleChange}
             />

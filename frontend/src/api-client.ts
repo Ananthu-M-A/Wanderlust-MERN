@@ -1,11 +1,10 @@
-import { LoginFormData } from "./pages/user/auth/Login";
-import { RegisterFormData } from "./pages/user/auth/Register";
-import { BookingType, HotelType, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
 import { loadStripe } from "@stripe/stripe-js";
+import { BookingData, BookingType, HotelType, LoginFormData, RegisterFormData, ResetPasswordFormData, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchParams, SearchRestaurantParams, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const stripe = await loadStripe('pk_test_51OmXsJSFKXnVvS5mYKhovpdQ83qlQfCzxP9QRnOGMkwo60n8zQFqLa8fzfpaUVuaqmouwCH8NOcokyONxwPQUmHx00xxk61lmd');
+const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
+const stripe = await loadStripe(PUBLIC_KEY);
 
 
 export const loadCurrentUser = async (): Promise<UserType> => {
@@ -50,6 +49,24 @@ export const register = async (formData: RegisterFormData) => {
     }
 }
 
+export const resetPassword = async (formData: ResetPasswordFormData) => {
+    const response = await fetch(`${API_BASE_URL}/api/user/reset-password`, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+    });
+
+    const responseBody = await response.json();
+    localStorage.setItem("otpToken", responseBody.otpToken);
+
+    if (!response.ok) {
+        throw new Error(responseBody.message);
+    }
+}
+
 
 export const updateProfile = async (formData: FormData) => {
     console.log(formData);
@@ -70,7 +87,7 @@ export const updateProfile = async (formData: FormData) => {
 
 
 export const verifyRegistration = async (otp: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/user/verifyRegistration`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/verify-registration`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -86,6 +103,22 @@ export const verifyRegistration = async (otp: string) => {
     }
 }
 
+export const verifyResetPassword = async (otp: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/user/verify-reset-password`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ otp }),
+        credentials: 'include'
+    });
+
+    const responseBody = await response.json();
+
+    if (!response.ok) {
+        throw new Error(responseBody.message);
+    }
+}
 
 export const login = async (formData: LoginFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/user/login`, {
@@ -328,21 +361,6 @@ export const unblockUser = async (userId: string) => {
     }
 };
 
-
-export type SearchParams = {
-    destination?: string;
-    checkIn?: string;
-    checkOut?: string;
-    adultCount?: string;
-    childCount?: string;
-    page?: string;
-    facilities?: string[];
-    types?: string[];
-    stars?: string[];
-    maxPrice?: string;
-    sortOption?: string;
-}
-
 export const searchHotels = async (searchParams: SearchParams): Promise<SearchHotelResponse> => {
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
@@ -365,19 +383,6 @@ export const searchHotels = async (searchParams: SearchParams): Promise<SearchHo
     return response.json();
 }
 
-export type SearchRestaurantParams = {
-    destination?: string;
-    checkIn?: string;
-    checkOut?: string;
-    adultCount?: string;
-    childCount?: string;
-    page?: string;
-    facilities?: string[];
-    types?: string[];
-    stars?: string[];
-    maxPrice?: string;
-    sortOption?: string;
-}
 
 export const searchRestaurants = async (searchParams: SearchRestaurantParams): Promise<SearchRestaurantResponse> => {
     const queryParams = new URLSearchParams();
@@ -431,7 +436,7 @@ export const createCheckoutSession = async (paymentData: any) => {
 export const loadBookings = async (query: string): Promise<BookingType[]> => {
     try {
         console.log(query);
-        
+
         const response = await fetch(`${API_BASE_URL}/api/user/booking/bookings?bookingId=${query}`, {
             credentials: "include"
         });
@@ -444,6 +449,30 @@ export const loadBookings = async (query: string): Promise<BookingType[]> => {
         throw new Error("Failed to load bookings");
     }
 }
+
+export const downloadDoc = async (bookingId: string) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/user/booking/${bookingId}/receipt`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/pdf',
+            },
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to download document');
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        return url;
+    } catch (error) {
+        console.error('Error downloading document:', error);
+        throw error;
+    }
+}
+
 
 export const cancelBooking = async (bookingId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/user/booking/${bookingId}/cancel`, {
@@ -470,11 +499,6 @@ export const adminLogin = async (formData: LoginFormData) => {
     if (!response.ok) {
         throw new Error(responseBody.message);
     }
-}
-
-export type BookingData = {
-    bookingId: string;
-    page: string;
 }
 
 export const loadBookingsTable = async (BookingData: BookingData): Promise<SearchBookingResponse> => {

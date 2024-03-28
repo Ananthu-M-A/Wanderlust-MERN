@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import * as apiClient from '../../../api-client';
 import { useAppContext } from "../../../contexts/AppContext";
-import { RegisterFormData } from "../Auth/Register";
 import { useEffect } from "react";
+import { RegisterFormData } from "../../../../../types/types";
 
 
 const Profile = () => {

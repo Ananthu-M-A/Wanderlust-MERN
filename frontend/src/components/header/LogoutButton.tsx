@@ -12,7 +12,6 @@ const LogoutButton = ({ isAdmin }: Props) => {
     const queryClient = useQueryClient();
     const { showToast } = useAppContext();
     const { pathname } = useLocation();
-    console.log(pathname);
 
     const mutationAdmin = useMutation(apiClient.adminLogout, {
         onSuccess: async () => {

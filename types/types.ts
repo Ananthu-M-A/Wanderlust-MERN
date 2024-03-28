@@ -140,3 +140,131 @@ export type SearchUserResponse = {
         pages: number;
     }
 }
+
+export type SearchParams = {
+    destination?: string;
+    checkIn?: string;
+    checkOut?: string;
+    adultCount?: string;
+    childCount?: string;
+    page?: string;
+    facilities?: string[];
+    types?: string[];
+    stars?: string[];
+    maxPrice?: string;
+    sortOption?: string;
+}
+
+export type SearchRestaurantParams = {
+    destination?: string;
+    checkIn?: string;
+    checkOut?: string;
+    adultCount?: string;
+    childCount?: string;
+    page?: string;
+    facilities?: string[];
+    types?: string[];
+    stars?: string[];
+    maxPrice?: string;
+    sortOption?: string;
+}
+
+export type BookingData = {
+    bookingId: string;
+    page: string;
+}
+
+export type LoginFormData = {
+    email: string;
+    password: string;
+}
+
+export type ResetPasswordFormData = {
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export type RegisterFormData = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobile: string;
+    imageFile: FileList;
+    imageUrl: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export type RestaurantFormData = {
+    get(arg0: string): unknown;
+    name: string;
+    city: string;
+    country: string;
+    description: string;
+    starRating: number;
+    openingHours: OpeningHour[],
+    type: string;
+    foodItems: FoodItem[],
+    facilities: string[];
+    imageUrls: string[];
+    imageFiles: FileList;
+    lastUpdated: Date;
+};
+
+export type HotelFormData = {
+    get(arg0: string): unknown;
+    name: string;
+    city: string;
+    country: string;
+    description: string;
+    type: string;
+    starRating: number;
+    facilities: string[];
+    imageFiles: FileList;
+    imageUrls: string[];
+    adultCount: number;
+    childCount: number;
+    roomTypes: RoomType[];
+};
+
+export type GuestInfoFormData = {
+    checkIn: Date;
+    checkOut: Date;
+    adultCount: number;
+    childCount: number;
+    roomType: string;
+    roomCount: number;
+    roomPrice: number;
+}
+
+export type ToastMessage = {
+    message: string,
+    type: "SUCCESS" | "ERROR";
+}
+
+export type SearchContext = {
+    destination: string;
+    checkIn: Date;
+    checkOut: Date;
+    adultCount: number;
+    childCount: number;
+    roomType: string;
+    roomCount: number;
+    roomPrice: number;
+    totalCost: number;
+    hotelId: string;
+    saveSearchValues: (
+        destination: string,
+        checkIn: Date,
+        checkOut: Date,
+        adultCount: number,
+        childCount: number,
+        roomType: string,
+        roomCount: number,
+        roomPrice: number,
+        totalCost: number,
+        hotelId?: string
+    ) => void;
+    clearSearchValues: () => void;
+};

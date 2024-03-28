@@ -1,31 +1,5 @@
 import React, { useContext, useState } from "react";
-
-type SearchContext = {
-    destination: string;
-    checkIn: Date;
-    checkOut: Date;
-    adultCount: number;
-    childCount: number;
-    roomType: string;
-    roomCount: number;
-    roomPrice: number;
-    totalCost: number;
-    hotelId: string;
-    saveSearchValues: (
-        destination: string,
-        checkIn: Date,
-        checkOut: Date,
-        adultCount: number,
-        childCount: number,
-        roomType: string,
-        roomCount: number,
-        roomPrice: number,
-        totalCost: number,
-        hotelId?: string
-    ) => void;
-    clearSearchValues: () => void;
-};
-
+import { SearchContext } from "../../../types/types";
 const SearchContext = React.createContext<SearchContext | undefined>(undefined);
 
 type SearchContextProviderProps = {

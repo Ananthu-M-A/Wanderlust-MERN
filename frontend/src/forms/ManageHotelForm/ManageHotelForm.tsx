@@ -4,26 +4,10 @@ import TypesSection from "./TypesSection";
 import FacilitiesSection from "./FacilitiesSection";
 import GuestSection from "./GuestSection";
 import ImagesSection from "./ImagesSection";
-import { HotelType, RoomType } from "../../../../types/types";
+import { HotelFormData, HotelType } from "../../../../types/types";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import RoomsAndPriceSection from "./RoomsAndPriceSection";
-
-
-export type HotelFormData = {
-    name: string;
-    city: string;
-    country: string;
-    description: string;
-    type: string;
-    starRating: number;
-    facilities: string[];
-    imageFiles: FileList;
-    imageUrls: string[];
-    adultCount: number;
-    childCount: number;
-    roomTypes: RoomType[];
-};
 
 type Props = {
     hotel?: HotelType;

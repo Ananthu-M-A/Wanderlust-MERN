@@ -172,3 +172,85 @@ export const loadUser = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Something went wrong!" });
     }
 };
+
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ message: errors.array() })
+        }
+        const user = await User.findOne({
+            email: req.body.email,
+        });
+        if (!user) {
+            return res.status(400).json({ message: "User does not exist!" });
+        }
+
+        const generateOTP = () => {
+            return crypto.randomInt(100000, 999999).toString();
+        };
+
+        const currentDate = new Date();
+        const otpTimeout = 30;
+        const otp = generateOTP();
+        const otpExpiry = new Date(currentDate.getTime() + otpTimeout * 1000);
+
+        const { email, password } = req.body;
+
+        if (!req.session) {
+            return res.status(400).json({ message: "Session not available" });
+        }
+
+        req.session.userLoginData = { email, password, otp, otpExpiry };
+
+        const subject = `OTP Verification - [WANDERLUST]`;
+        const bookingMail = `Your passwor reset OTP is: ${otp}`;
+        sendBookingMail(res, req.session.userLoginData.email, subject, bookingMail);
+        res.status(200).json({ status: "Success", message: "Password reset Initiated!" });
+
+    } catch (error) {
+        console.log("Error in resetting password", error);
+        return res.status(500).send({ message: "Something went wrong!" });
+    }
+};
+
+export const verifyResetPassword = async (req: Request, res: Response) => {
+    try {
+        const enteredOtp = req.body.otp;
+        const userLoginData = req.session.userLoginData;
+
+        if (!userLoginData) {
+            console.log("User data not found in session.");
+            return res.status(400).json({ message: "Error in resetting password.." });
+        }
+        const otpExpiry = new Date(userLoginData.otpExpiry);
+        const currentTime = new Date();
+
+
+        if (currentTime > otpExpiry) {
+            console.log("OTP timeout");
+            return res.status(400).json({ message: "OTP Timeout" });
+        }
+
+        if (enteredOtp === userLoginData.otp) {
+            const { email, password } = userLoginData;
+            const user = await User.findOne({ email });
+            if (user) {
+                user.password = password;
+                await user.save();
+            }
+            if (user) {
+                req.session.userLoginData = undefined;
+                return res.status(200).send({ message: "Reset Password, OK" });
+            } else {
+                return res.status(400).json({ message: "Error resetting password.." });
+            }
+        } else {
+            console.log("Invalid OTP");
+            res.status(400).json({ message: "Invalid OTP" });
+        }
+    } catch (error) {
+        console.log("Error verifying reset password", error);
+        return res.status(500).send({ message: "Something went wrong!" });
+    }
+};

@@ -4,17 +4,7 @@ import * as apiClient from '../../../api-client';
 import { useAppContext } from "../../../contexts/AppContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-export type RegisterFormData = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobile: string;
-    imageFile: FileList;
-    imageUrl: string;
-    password: string;
-    confirmPassword: string;
-}
+import { RegisterFormData } from "../../../../../types/types";
 
 const Register = () => {
     const queryClient = useQueryClient();

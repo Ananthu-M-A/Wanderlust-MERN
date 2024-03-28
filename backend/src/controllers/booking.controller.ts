@@ -10,6 +10,8 @@ import { createBookingMail } from "../utils/BookingMailCreator";
 import { Attachment } from "nodemailer/lib/mailer";
 import { retrievePaymentId, sessionPayment } from "../utils/StripePayment";
 import Restaurant from "../models/restaurant.model";
+import '../interfaces/session.interface';
+import fs from 'fs'
 
 interface CustomRequest extends Request {
     userId: string;
@@ -63,31 +65,28 @@ export const checkout = async (req: Request, res: Response) => {
                 sessionPayment(req, res, name, description, unit_amount, quantity, success_url, cancel_url);
             }
         } else if (restaurantId) {
-            const paymentData = req.body;            
-            const existingBookings = await Booking.find({
-                restaurantId: paymentData.restaurantId,
-                bookingStatus: { $ne: `cancelled` },
-                $or: [
-                    { $and: [{ dateOfBooking: { $lt: paymentData.dateOfBooking } }, { dateOfBooking: { $gt: paymentData.dateOfBooking } }] },
-                ]
-            });
-
-            let totalFoodBookings = 0;
-            existingBookings.forEach(booking => {
-                if (booking.foodDetails.foodItem === paymentData.foodItem) {
-                    totalFoodBookings += booking.foodDetails.foodCount;
-                }
-            });
-            const restaurantData = await Restaurant.findOne({ _id: paymentData.restaurantId });
-
-            if (restaurantData) {
-                const foodData = restaurantData.foodItems.find(food => food.item === paymentData.foodItem);
-                if (foodData) {
-                    const remainingFoods = foodData.quantity as unknown as number - totalFoodBookings;
-                    if (remainingFoods < paymentData.foodCount) {
-                        return res.status(500).json({ error: "Requirement unavailable" });
+            const paymentData = req.body;
+            const date = new Date(paymentData.dateOfBooking);
+            date.setHours(0, 0, 0, 0);
+            
+            const result = await Booking.aggregate([
+                {
+                    $match: {
+                        "foodDetails.foodItem": paymentData.foodItem,
+                        // "dateOfBooking": { $eq: date }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$foodDetails.foodItem",
+                        totalGuests: { $sum: "$guestCount" }
                     }
                 }
+            ]);
+            if (result.length > 0) {
+                if (result[0].totalGuests >= paymentData.foodCount)
+                    console.log(result[0].totalGuests);
+                return res.status(500).json({ error: "Requirement unavailable" });
             }
 
             req.session.paymentData = paymentData;
@@ -123,17 +122,18 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
                 roomPrice: paymentData.roomPrice,
                 roomCount: paymentData.roomCount
             }
+
             const newBooking = new Booking({
                 userId: req.userId,
                 hotelId: paymentData.hotelId,
                 adultCount: paymentData.adultCount,
                 childCount: paymentData.childCount,
-                checkIn: paymentData.checkIn,
-                checkOut: paymentData.checkOut,
+                checkIn: new Date(paymentData.checkIn).toDateString(),
+                checkOut: new Date(paymentData.checkOut).toDateString(),
                 roomDetails,
                 totalCost: paymentData.roomPrice * paymentData.nightsPerStay * paymentData.roomCount,
                 paymentId: paymentIntentId,
-                bookingDate: new Date(),
+                bookingDate: new Date().toDateString(),
                 bookingStatus: "active",
             });
             await newBooking.save();
@@ -149,7 +149,7 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
                     path: `wanderlust_booking_id_${newBooking._id}.pdf`
                 }];
                 const emailContent = createBookingMail(newBooking, user, hotel);
-                if(emailContent){
+                if (emailContent) {
                     sendBookingMail(res, recipientEmail, subject, emailContent, attachments);
                     res.redirect(`${process.env.FRONTEND_URL}/home/${newBooking._id}/order-result-page`)
                 }
@@ -157,22 +157,22 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
         } else if (restaurantId) {
             const paymentData = req.session.paymentData;
             const sessionId = req.query.session_id;
-            const paymentIntentId = await retrievePaymentId(sessionId);            
+            const paymentIntentId = await retrievePaymentId(sessionId);
             const foodDetails = {
                 foodItem: paymentData.foodItem,
                 foodPrice: paymentData.foodPrice,
-                foodCount: paymentData.guestCount
+                foodCount: paymentData.foodCount
             }
-            
+
             const newBooking = new Booking({
                 userId: req.userId,
                 restaurantId: paymentData.restaurantId,
                 guestCount: paymentData.guestCount,
-                dateOfBooking: paymentData.dateOfBooking,
+                dateOfBooking: new Date(paymentData.dateOfBooking).toDateString(),
                 foodDetails,
                 totalCost: paymentData.foodPrice * paymentData.guestCount,
                 paymentId: paymentIntentId,
-                bookingDate: new Date(),
+                bookingDate: new Date().toDateString(),
                 bookingStatus: "active",
             });
             await newBooking.save();
@@ -188,7 +188,7 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
                     path: `wanderlust_booking_id_${newBooking._id}.pdf`
                 }];
                 const emailContent = createBookingMail(newBooking, user, undefined, restaurant);
-                if(emailContent){
+                if (emailContent) {
                     sendBookingMail(res, recipientEmail, subject, emailContent, attachments);
                     res.redirect(`${process.env.FRONTEND_URL}/home/${newBooking._id}/order-result-page`);
                 }
@@ -203,6 +203,22 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
 
 export const bookings = async (req: Request, res: Response) => {
     try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const bookingsToUpdate = await Booking.find({
+            $or: [
+                { checkIn: { $lte: today } },
+                { dateOfBooking: { $lte: today } }
+            ],
+            bookingStatus: { $ne: "Booking Confirmed" }
+        });
+
+        await Promise.all(bookingsToUpdate.map(async (booking) => {
+            booking.bookingStatus = "Booking Confirmed";
+            await booking.save();
+        }));
+
         const { bookingId } = req.query;
         let allBookings: BookingType[] = [];
 
@@ -235,5 +251,35 @@ export const cancelBooking = async (req: Request, res: Response) => {
     } catch (error) {
         console.log("Error in cancelling user booking", error);
         return res.status(500).send({ message: "Something went wrong!" });
+    }
+};
+
+export const downloadDoc = async (req: Request, res: Response) => {
+    try {
+        const { bookingId } = req.params;
+        const booking = await Booking.findOne({ _id: bookingId });
+        if (!booking) {
+            res.status(404).send({ message: "Booking not found" });
+            return;
+        }
+        const hotel = await Hotel.findOne({ _id: booking.hotelId });
+        const restaurant = await Restaurant.findOne({ _id: booking.restaurantId });
+        const user = await User.findOne({ _id: req.userId });
+
+        if (user && hotel && booking) {
+            const pdfPath = createPDF(booking, user, hotel);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=booking_${bookingId}.pdf`);
+            res.send(pdfPath);
+        }
+        if (user && booking && restaurant) {
+            const pdfPath = createPDF(booking, user, undefined, restaurant);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=wanderlust_booking_id_${bookingId}.pdf`);
+            res.send(pdfPath);
+        }
+    } catch (error) {
+        console.log("Error in downloading payment receipt", error);
+        res.status(500).send({ message: "Something went wrong!" });
     }
 };

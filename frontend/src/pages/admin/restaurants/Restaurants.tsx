@@ -55,7 +55,7 @@ const Restaurants = () => {
 
     useEffect(() => {
         refetch();
-    }, []);
+    }, [handleBlock, handleUnblock]);
 
     return (
         <div className="space-y-5">

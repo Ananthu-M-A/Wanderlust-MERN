@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
-import { RestaurantFormData } from "./ManageRestaurantForm";
 import React, { useState } from "react";
+import { RestaurantFormData } from "../../../../types/types";
 
 const ImagesSection = () => {
   const { register, formState: { errors }, watch, setValue } = useFormContext<RestaurantFormData>();

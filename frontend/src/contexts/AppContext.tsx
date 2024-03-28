@@ -3,19 +3,15 @@ import Toast from "../components/Toast";
 import { useQuery } from "react-query";
 import * as apiClient from '../api-client';
 import { loadStripe, Stripe } from "@stripe/stripe-js";
-
-const STRIPE_PUB_KEY = import.meta.env.VITE_STRIPE_PUB_KEY || "";
-
-type ToastMessage = {
-    message: string,
-    type: "SUCCESS" | "ERROR";
-}
+import { ToastMessage } from "../../../types/types";
 
 type AppContext = {
     showToast: (toastMessage: ToastMessage) => void;
     isLoggedIn: boolean;
     stripePromise: Promise<Stripe | null>;
 }
+
+const STRIPE_PUB_KEY = import.meta.env.VITE_STRIPE_PUB_KEY || "";
 
 const AppContext = React.createContext<AppContext | undefined>(undefined);
 

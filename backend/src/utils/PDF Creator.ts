@@ -2,7 +2,7 @@ import PDFKit from 'pdfkit';
 import fs from 'fs';
 import { BookingType, HotelType, RestaurantType, UserType } from '../../../types/types';
 
-export const createPDF = (newBooking: BookingType, user: UserType, hotel?: HotelType, restaurant?: RestaurantType) => {
+export const createPDF = async (newBooking: BookingType, user: UserType, hotel?: HotelType, restaurant?: RestaurantType) => {
     try {
         const doc = new PDFKit();
 

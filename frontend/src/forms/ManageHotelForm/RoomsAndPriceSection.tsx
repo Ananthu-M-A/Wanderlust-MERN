@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { RoomTypes } from "../../../../types/Enums";
-import { HotelFormData } from "./ManageHotelForm";
+import { HotelFormData } from "../../../../types/types";
 
 
 const RoomsAndPriceSection = () => {

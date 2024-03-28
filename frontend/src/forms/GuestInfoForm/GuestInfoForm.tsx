@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import { useSearchContext } from "../../contexts/SearchContext";
 import { useAppContext } from "../../contexts/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RoomType } from "../../../../types/types";
+import { GuestInfoFormData, RoomType } from "../../../../types/types";
 import { useEffect, useState } from "react";
 import * as apiClient from "../../api-client";
 import { useMutation } from "react-query";
@@ -12,16 +12,6 @@ import { useMutation } from "react-query";
 type Props = {
     hotelId: string;
     roomTypes: RoomType[];
-}
-
-type GuestInfoFormData = {
-    checkIn: Date;
-    checkOut: Date;
-    adultCount: number;
-    childCount: number;
-    roomType: string;
-    roomCount: number;
-    roomPrice: number;
 }
 
 const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {

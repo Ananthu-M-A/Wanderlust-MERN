@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
-import { HotelFormData } from "./ManageHotelForm";
 import { useLocation } from "react-router-dom";
+import { HotelFormData } from "../../../../types/types";
 
 const DetailsSection = () => {
     const { register, formState: { errors } } = useFormContext<HotelFormData>();
