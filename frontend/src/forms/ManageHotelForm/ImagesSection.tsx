@@ -17,9 +17,13 @@ const ImagesSection = () => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
+      if (files.length > 3) {
+        console.log("Max 3 images can be selected");
+        return;
+      }
       const selectedFiles = Array.from(files);
       const imageFiles = selectedFiles.filter(file => file.type.startsWith('image/'));
-      if(imageFiles.length === 0){
+      if (imageFiles.length === 0) {
         console.log("No valid image files selected");
         return;
       }

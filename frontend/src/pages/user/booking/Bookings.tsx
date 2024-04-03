@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import * as apiClient from "../../../api-client";
 import ConfirmModal from "../../../components/ConfirmModal";
 
@@ -10,7 +10,6 @@ const Bookings = () => {
     const [cancelId, setCancelId] = useState<string>(bookingId || "");
     const [searchData, setSearchData] = useState<string>(bookingId || "");
     const queryClient = useQueryClient();
-    const navigate = useNavigate();
 
     const { data: bookings, refetch } = useQuery("loadBookings", () => apiClient.loadBookings(searchData), {
         refetchOnWindowFocus: false,
@@ -40,14 +39,13 @@ const Bookings = () => {
     const cancelBooking = useMutation<void, Error, string>(apiClient.cancelBooking, {
         onSuccess: () => {
             queryClient.invalidateQueries("loadBookings");
-            navigate("/home/bookings")
+            refetch();
         }
     });
 
     useEffect(() => {
-
         refetch();
-    }, [navigate]);
+    }, []);
 
     const sortedFilteredBookings = searchData.trim() ? bookings?.filter(booking => (booking._id === searchData || booking._id === searchData)) : bookings;
 

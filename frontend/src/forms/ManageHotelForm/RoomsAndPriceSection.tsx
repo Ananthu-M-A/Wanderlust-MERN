@@ -22,7 +22,7 @@ const RoomsAndPriceSection = () => {
                 </label>
             </div>
             {Object.values(RoomTypes).map((roomType, index) => (
-                <div className="grid grid-cols-3 p-2 gap-2 bg-gray-300 justify-between">
+                <div key={index} className="grid grid-cols-3 p-2 gap-2 bg-gray-300 justify-between">
                     <div>
                         <input type="text" key={index} value={roomType} readOnly
                             {...register(`roomTypes.${index}.type`, { required: "This feild is required" })}

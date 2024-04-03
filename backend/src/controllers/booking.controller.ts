@@ -133,7 +133,7 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
                 roomDetails,
                 totalCost: paymentData.roomPrice * paymentData.nightsPerStay * paymentData.roomCount,
                 paymentId: paymentIntentId,
-                bookingDate: new Date().toDateString(),
+                bookingDate: new Date(),
                 bookingStatus: "active",
             });
             await newBooking.save();
@@ -269,7 +269,7 @@ export const downloadDoc = async (req: Request, res: Response) => {
         if (user && hotel && booking) {
             const pdfPath = createPDF(booking, user, hotel);
             res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', `attachment; filename=booking_${bookingId}.pdf`);
+            res.setHeader('Content-Disposition', `attachment; filename=wanderlust_booking_id_${bookingId}.pdf`);
             res.send(pdfPath);
         }
         if (user && booking && restaurant) {

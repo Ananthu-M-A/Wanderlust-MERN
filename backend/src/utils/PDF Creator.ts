@@ -27,6 +27,7 @@ export const createPDF = async (newBooking: BookingType, user: UserType, hotel?:
         doc.end();
 
         return stream;
+        // return doc;
 
     } catch (error) {
         console.log("Error creating PDF", error);
