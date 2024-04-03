@@ -69,6 +69,8 @@ const Header = () => {
                           <Link to="/home/account">Profile</Link></li>
                         <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                           <Link to="/home/bookings">Bookings</Link></li>
+                        <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+                          <Link to="/home/chat-help">Help</Link></li>
                         <LogoutButton isAdmin={false} />
                       </ul>
                     </div>

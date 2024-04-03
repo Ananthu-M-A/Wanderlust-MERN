@@ -44,7 +44,7 @@ const LogoutButton = ({ isAdmin }: Props) => {
                 pathname === '/admin/restaurants' || pathname === '/admin/users') ?
                 `px-4 py-2 cursor-pointer text-blue-300 font-bold hover:text-white` :
                 `px-4 py-2 cursor-pointer hover:bg-gray-100`}>Logout</button>
-    )
+    );
 }
 
 export default LogoutButton;

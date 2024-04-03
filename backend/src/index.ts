@@ -1,5 +1,7 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
+import http from 'http';
+import messageSocket from './sockets/messageSocket';
 import "dotenv/config";
 import { connectDb } from './utils/MongoDB';
 import cookieParser from 'cookie-parser';
@@ -17,13 +19,17 @@ import restaurantsRouter from './routes/restaurants.route';
 connectDb();
 
 const app = express();
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+const server = http.createServer(app);
+messageSocket(server);
+
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
 }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(session({
     secret: process.env.SESSION_SECRET || "Secret",
     resave: false,
@@ -44,6 +50,7 @@ app.use("/api/admin/hotels", hotelsRouter);
 app.use("/api/admin/restaurants", restaurantsRouter);
 app.use("/api/admin/bookings", bookingsRouter);
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server started on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
 });

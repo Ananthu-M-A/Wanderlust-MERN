@@ -4,6 +4,7 @@ import Layout from "./layouts/Layout";
 import './index.css';
 import { useAppContext } from "./contexts/AppContext";
 import { useAdminContext } from "./contexts/AdminContext";
+import ChatHelp from "./components/ChatHelp";
 
 const Login = lazy(() => import("./pages/user/auth/Login"));
 const Search = lazy(() => import("./pages/user/home/Search"));
@@ -33,11 +34,6 @@ function App() {
     <Suspense fallback={<div>Loading...</div>}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={
-            <Layout>
-              <p>Home Page</p>
-            </Layout>
-          } />
 
           <Route path="/search" element={
             <Layout>
@@ -77,6 +73,12 @@ function App() {
 
           {isLoggedIn && (
             <>
+              <Route path="/home/chat-help" element={
+                <Layout>
+                    <ChatHelp />
+                </Layout>
+              } />
+
               <Route path="/home/account" element={
                 <Layout>
                   <Profile />
@@ -169,7 +171,7 @@ function App() {
 
         </Routes>
       </BrowserRouter>
-    </Suspense>
+    </Suspense >
   );
 }
 
