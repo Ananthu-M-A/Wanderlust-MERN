@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import '../../index.css';
-import { useAppContext } from '../../contexts/AppContext';
-import LogoutButton from './LogoutButton';
-import { useAdminContext } from '../../contexts/AdminContext';
 import { useQuery } from 'react-query';
-import * as apiClient from '../../api-client';
+import { useAppContext } from '../../contexts/AppContext';
+import { useAdminContext } from '../../contexts/AdminContext';
 import { useEffect, useState } from 'react';
+import '../../index.css';
+import LogoutButton from './LogoutButton';
+import * as apiClient from '../../api-client';
 
 const Header = () => {
   const { isLoggedIn } = useAppContext();
@@ -45,6 +45,8 @@ const Header = () => {
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Restaurants</Link>
             <Link to="/admin/users"
               className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Users</Link>
+            <Link to="/admin/chat"
+              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Chat</Link>
             <LogoutButton isAdmin={true} />
           </>) : (<>
             {!isLoggedIn ? (
@@ -70,7 +72,7 @@ const Header = () => {
                         <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                           <Link to="/home/bookings">Bookings</Link></li>
                         <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
-                          <Link to="/home/chat-help">Help</Link></li>
+                          <Link to="/home/help">Help</Link></li>
                         <LogoutButton isAdmin={false} />
                       </ul>
                     </div>

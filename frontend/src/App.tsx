@@ -1,10 +1,9 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Layout from "./layouts/Layout";
-import './index.css';
 import { useAppContext } from "./contexts/AppContext";
 import { useAdminContext } from "./contexts/AdminContext";
-import ChatHelp from "./components/ChatHelp";
+import './index.css';
+import Layout from "./layouts/Layout";
 
 const Login = lazy(() => import("./pages/user/auth/Login"));
 const Search = lazy(() => import("./pages/user/home/Search"));
@@ -25,6 +24,9 @@ const BookingsTable = lazy(() => import("./pages/admin/bookings/BookingsTable"))
 const Profile = lazy(() => import("./pages/user/home/Profile"));
 const Register = lazy(() => import("./pages/user/auth/Register"));
 const ResetPassword = lazy(() => import("./pages/user/auth/ResetPassword"));
+const Help = lazy(() => import("./pages/user/home/Help"));
+const Chat = lazy(() => import("./pages/admin/Chat"));
+
 
 function App() {
   const { isLoggedIn } = useAppContext();
@@ -73,9 +75,9 @@ function App() {
 
           {isLoggedIn && (
             <>
-              <Route path="/home/chat-help" element={
+              <Route path="/home/help" element={
                 <Layout>
-                    <ChatHelp />
+                  <Help />
                 </Layout>
               } />
 
@@ -104,6 +106,12 @@ function App() {
               <Route path="/admin/dashboard" element={
                 <Layout>
                   <Dashboard />
+                </Layout>
+              } />
+
+              <Route path="/admin/chat" element={
+                <Layout>
+                  <Chat />
                 </Layout>
               } />
 

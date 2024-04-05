@@ -15,6 +15,7 @@ import profileRouter from './routes/profile.route';
 import homeRouter from './routes/home.route';
 import bookingRouter from './routes/booking.route';
 import restaurantsRouter from './routes/restaurants.route';
+import liveChatRouter from './routes/chat.route';
 
 connectDb();
 
@@ -43,6 +44,7 @@ app.use("/api/user", authRouter);
 app.use("/api/user/profile", profileRouter);
 app.use("/api/user/home", homeRouter);
 app.use("/api/user/booking", bookingRouter);
+app.use("/api/user/live-chat", liveChatRouter);
 
 app.use("/api/admin", adminRouter);
 app.use("/api/admin/users", usersRouter);
