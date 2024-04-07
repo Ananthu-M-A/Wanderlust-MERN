@@ -33,7 +33,11 @@ function App() {
   const { isAdminLoggedIn } = useAdminContext();
 
   return (
-    <Suspense fallback={<div>🌀 Loading...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex justify-center items-center bg-gray-100 text-3xl">
+        🌀 Loading...
+      </div>
+    }>
       <BrowserRouter>
         <Routes>
 
