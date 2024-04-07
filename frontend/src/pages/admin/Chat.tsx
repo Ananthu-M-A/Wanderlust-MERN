@@ -1,13 +1,13 @@
 import io from 'socket.io-client';
 import { useEffect, useState } from 'react';
-import '../../index.css';
 import ChatWindow from '../../components/ChatWindow';
+import '../../index.css';
 
 const socket = io('http://localhost:4000');
 
 const Chat = () => {
-    const [name, setName] = useState<string>("DemoAdmin");
-    const [roomId, setRoomId] = useState<string>("DemoRoomID");
+    const [name] = useState<string>("DemoAdmin");
+    const [roomId] = useState<string>("ChatRoom");
 
     useEffect(() => {
         if (name !== "" && roomId !== "") {

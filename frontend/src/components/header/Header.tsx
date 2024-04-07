@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { useAppContext } from '../../contexts/AppContext';
 import { useAdminContext } from '../../contexts/AdminContext';
@@ -11,80 +11,70 @@ const Header = () => {
   const { isLoggedIn } = useAppContext();
   const { isAdminLoggedIn } = useAdminContext();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { data: user } = useQuery("loadAccount", apiClient.loadAccount);
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const { data: user } = useQuery("loadAccount", apiClient.loadAccount,
-    {
-      onSuccess: () => { },
-      onError: () => { }
-    }
-  );
-
-  useEffect(() => {
-  }, [user]);
+  useEffect(() => { }, [user]);
+  const activeClassNameProp = { activeClassName: "active-link" };
 
   return (
     <div className="bg-black py-6">
-      <div className="container mx-auto flex justify-between">
-        <span className="text-3xl text-white font-bold tracking-tight">
-          <Link to="/">WANDERLUST</Link>
-          {isAdminLoggedIn && <p className='text-xl'>ADMIN</p>}
-        </span>
-        < span className='flex space-x-2'>
-          {isAdminLoggedIn ? (<>
-            <Link to="/admin/dashboard"
-              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Dashboard</Link>
-            <Link to="/admin/bookings"
-              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Bookings</Link>
-            <Link to="/admin/hotels"
-              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Hotels</Link>
-            <Link to="/admin/restaurants"
-              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Restaurants</Link>
-            <Link to="/admin/users"
-              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Users</Link>
-            <Link to="/admin/chat"
-              className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Chat</Link>
-            <LogoutButton isAdmin={true} />
-          </>) : (<>
-            {!isLoggedIn ? (
-              <Link to="/login"
-                className='flex items-center text-blue-300 px-3 font-bold hover:text-white'>Login</Link>
-            ) : (<>
-              <span className='flex space-x-2'>
-                <div className="flex items-center justify-center relative">
-                  <div className="h-10 w-10 overflow-hidden bg-gray-300 flex-shrink-0">
-                    {user && <img className="h-full w-full object-cover"
-                      src={user.imageUrl ? user.imageUrl : `/user.png`} alt="Profile Picture" />}
+      <div className="container mx-auto flex justify-between items-center flex-wrap">
+        <Link to="/" className="text-3xl text-white font-bold tracking-tight mb-4 md:mb-0">
+          WANDERLUST
+          {isAdminLoggedIn && <span className='text-xl'><Link to="/admin/dashboard" >ADMIN</Link></span>}
+        </Link>
+        <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+          {isAdminLoggedIn ? (
+            <>
+              <div className="relative mb-4 md:mb-0">
+                <button className='text-blue-300 font-bold hover:text-white' onClick={handleDropdownToggle}>
+                  Dashboard
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute top-12 md:top-auto right-0 z-10 bg-white border border-gray-200 rounded shadow-md">
+                    <ul onClick={() => setIsDropdownOpen(false)}>
+                      <li className="px-4 py-2 hover:bg-gray-100"><NavLink to="/admin/dashboard" {...activeClassNameProp}>Dashboard</NavLink></li>
+                      <li className="px-4 py-2 hover:bg-gray-100"><NavLink to="/admin/bookings" {...activeClassNameProp}>Bookings</NavLink></li>
+                      <li className="px-4 py-2 hover:bg-gray-100"><NavLink to="/admin/hotels" {...activeClassNameProp}>Hotels</NavLink></li>
+                      <li className="px-4 py-2 hover:bg-gray-100"><NavLink to="/admin/restaurants" {...activeClassNameProp}>Restaurants</NavLink></li>
+                      <li className="px-4 py-2 hover:bg-gray-100"><NavLink to="/admin/users" {...activeClassNameProp}>Users</NavLink></li>
+                    </ul>
                   </div>
-                  <button className='text-gray-600' onClick={handleDropdownToggle}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                      <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-.53 14.03a.75.75 0 0 0 1.06 0l3-3a.75.75 0 1 0-1.06-1.06l-1.72 1.72V8.25a.75.75 0 0 0-1.5 0v5.69l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3Z" clipRule="evenodd" />
-                    </svg>
+                )}
+              </div>
+              <NavLink className='text-blue-300 font-bold hover:text-white' to="/admin/chat" {...activeClassNameProp}>Chat</NavLink>
+            </>
+          ) : (
+            <>
+              {!isLoggedIn ? (
+                <Link to="/login" className="text-blue-300 font-bold hover:text-white">Login</Link>
+              ) : (
+                <div className="relative mb-4 md:mb-0">
+                  <button className="text-gray-600" onClick={handleDropdownToggle}>
+                    <img className="h-10 w-10 object-cover rounded-full" src={user && user.imageUrl ? user.imageUrl : `/user.png`} alt="Profile" />
                   </button>
                   {isDropdownOpen && (
-                    <div className="absolute top-12 right-0 z-10 bg-white border border-gray-200 rounded shadow-md">
-                      <ul onClick={() => { setIsDropdownOpen(!isDropdownOpen) }}>
-                        <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
-                          <Link to="/home/account">Profile</Link></li>
-                        <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
-                          <Link to="/home/bookings">Bookings</Link></li>
-                        <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
-                          <Link to="/home/help">Help</Link></li>
-                        <LogoutButton isAdmin={false} />
+                    <div className="absolute top-12 md:top-auto right-0 z-10 bg-white border border-gray-200 rounded shadow-md">
+                      <ul onClick={() => setIsDropdownOpen(false)}>
+                        <li className="px-4 py-2 hover:bg-gray-100"><Link to="/home/account">Profile</Link></li>
+                        <li className="px-4 py-2 hover:bg-gray-100"><Link to="/home/bookings">Bookings</Link></li>
+                        <li className="px-4 py-2 hover:bg-gray-100"><Link to="/home/help">Help</Link></li>
                       </ul>
                     </div>
                   )}
                 </div>
-              </span>
-            </>)}
-          </>)}
-        </span>
+              )}
+            </>
+          )}
+          {(isLoggedIn || isAdminLoggedIn) && <LogoutButton isAdmin={isAdminLoggedIn} />}
+        </div>
       </div>
-    </div >
-  )
+    </div>
+  );
 }
 
 export default Header;
