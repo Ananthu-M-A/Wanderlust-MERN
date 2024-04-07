@@ -18,8 +18,8 @@ export const createBookingMail = (newBooking: BookingType, user: UserType, hotel
     ${hotel ?
                 `Reservation ID: ${newBooking._id}
     Guest Name: ${firstName ?? ''} ${lastName ?? ''}
-    ${newBooking.checkIn ? `Check-in Date: ${newBooking.checkIn}` : ''}
-    ${newBooking.checkOut ? `Check-out Date: ${newBooking.checkOut}` : ''}
+    ${newBooking.checkIn ? `Check-in Date: ${new Date(newBooking.checkIn).toLocaleDateString()} 02:00:00 PM` : ''}
+    ${newBooking.checkOut ? `Check-out Date: ${new Date(newBooking.checkOut).toLocaleDateString()} 12:00:00 PM` : ''}
     ${newBooking.roomDetails.roomType && newBooking.roomDetails.roomPrice && newBooking.roomDetails.roomCount ?
                     `Room Detail: ${newBooking.roomDetails.roomType} Bed Room, ₹${newBooking.roomDetails.roomPrice}, ${newBooking.roomDetails.roomCount} Nos` : ''
                 }
@@ -29,7 +29,7 @@ export const createBookingMail = (newBooking: BookingType, user: UserType, hotel
     `:
                 `Reservation ID: ${newBooking._id}
                 Guest Name: ${firstName ?? ''} ${lastName ?? ''}
-                ${newBooking.dateOfBooking ? `Booked Date: ${newBooking.dateOfBooking}` : ''}
+                ${newBooking.dateOfBooking ? `Booked Date: ${new Date(newBooking.dateOfBooking).toLocaleDateString()} 02:00:00 PM` : ''}
                 ${newBooking.foodDetails.foodItem && newBooking.foodDetails.foodPrice && newBooking.guestCount ?
                     `Food Detail: ${newBooking.foodDetails.foodItem}, ₹${newBooking.foodDetails.foodPrice}, ${newBooking.guestCount} plate` : ''
                 }

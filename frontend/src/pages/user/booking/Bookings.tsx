@@ -45,7 +45,7 @@ const Bookings = () => {
 
     useEffect(() => {
         refetch();
-    }, []);
+    }, [searchData]);
 
     const sortedFilteredBookings = searchData.trim() ? bookings?.filter(booking => (booking._id === searchData || booking._id === searchData)) : bookings;
 
@@ -92,7 +92,7 @@ const Bookings = () => {
                                         Cancel
                                     </button>) :
                                     (booking.bookingStatus === "cancelled") ?
-                                        <> {`${booking.bookingStatus} on ${booking.cancellationDate}`} </> :
+                                        <> {`${booking.bookingStatus} on ${new Date(booking.cancellationDate).toLocaleDateString()}`} </> :
                                         (booking.bookingStatus === "Booking Confirmed") ?
                                             <div className="flex">{`${booking.bookingStatus}`}
                                                 <div className="cursor-pointer" onClick={() => { handleDownloadDoc(booking._id) }}>
@@ -105,12 +105,12 @@ const Bookings = () => {
                             </div>
                             <p>Booking ID: {booking._id}</p>
                             {booking.roomDetails && <>
-                                <p>Check-in: {new Date(booking.checkIn).toLocaleDateString()}</p>
-                                <p>Check-out: {new Date(booking.checkOut).toLocaleDateString()}</p>
+                                <p>Check-in: {`${new Date(booking.checkIn).toLocaleDateString()} 02:00:00 PM`}</p>
+                                <p>Check-out: {`${new Date(booking.checkOut).toLocaleDateString()} 12:00:00 PM`}</p>
                                 <p>Rooms Details: {`${booking.roomDetails.roomType} Bed Rooms, ₹${booking.roomDetails.roomPrice}, ${booking.roomDetails.roomCount} Nos`}</p>
                             </>}
                             {booking.foodDetails && <>
-                                <p>Booked Date: {booking.dateOfBooking}</p>
+                                <p>Booked Date: {new Date(booking.dateOfBooking).toLocaleDateString()}</p>
                                 <p>Food Details: {`${booking.foodDetails.foodItem} of price ₹${booking.foodDetails.foodPrice} for ${booking.guestCount} guests`}</p>
                             </>}
                             <p>Date of Booking: {new Date(booking.bookingDate).toLocaleDateString()}</p>

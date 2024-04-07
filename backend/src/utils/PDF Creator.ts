@@ -15,14 +15,14 @@ export const createPDF = async (newBooking: BookingType, user: UserType, hotel?:
         restaurant && doc.text(`Restaurant Name: ${restaurant?.name}`).moveDown();
         hotel && doc.text(`Adult Count: ${newBooking.adultCount}`).moveDown();
         hotel && doc.text(`Child Count: ${newBooking.childCount}`).moveDown();
-        hotel && doc.text(`Check-In: ${newBooking.checkIn}`).moveDown();
-        hotel && doc.text(`Check-Out: ${newBooking.checkOut}`).moveDown();
-        restaurant && doc.text(`Booked Date: ${newBooking.dateOfBooking}`).moveDown();
+        hotel && doc.text(`Check-In: ${new Date(newBooking.checkIn).toLocaleDateString()} 02:00:00 PM`).moveDown();
+        hotel && doc.text(`Check-Out: ${new Date(newBooking.checkOut).toLocaleDateString()} 12:00:00 PM`).moveDown();
+        restaurant && doc.text(`Booked Date: ${new Date(newBooking.dateOfBooking).toLocaleDateString()} 02:00:00 PM`).moveDown();
         hotel && doc.text(`Room Details: ${newBooking.roomDetails.roomType} Bed Room, ₹${newBooking.roomDetails.roomPrice}, ${newBooking.roomDetails.roomCount} Nos`).moveDown();
         restaurant && doc.text(`Food Details: ${newBooking.foodDetails.foodItem} of price ₹${newBooking.foodDetails.foodPrice} for ${newBooking.guestCount} guests`).moveDown();
         doc.text(`Total Cost: ₹ ${newBooking.totalCost}`).moveDown();
         doc.text(`Payment Status: Successfull`).moveDown();
-        doc.text(`Booking Date: ${newBooking.bookingDate}`).moveDown();
+        doc.text(`Booking Date: ${new Date(newBooking.bookingDate).toLocaleDateString()}`).moveDown();
 
         doc.end();
 

@@ -55,7 +55,7 @@ const Header = () => {
               ) : (
                 <div className="relative mb-4 md:mb-0">
                   <button className="text-gray-600" onClick={handleDropdownToggle}>
-                    <img className="h-10 w-10 object-cover rounded-full" src={user && user.imageUrl ? user.imageUrl : `/user.png`} alt="Profile" />
+                    <img className="h-10 w-10 object-cover rounded-full bg-white" src={user && user.imageUrl ? user.imageUrl : `/user.png`} alt="Profile" />
                   </button>
                   {isDropdownOpen && (
                     <div className="absolute top-12 md:top-auto right-0 z-10 bg-white border border-gray-200 rounded shadow-md">
