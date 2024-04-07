@@ -1,9 +1,9 @@
+import Layout from "./layouts/Layout";
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useAppContext } from "./contexts/AppContext";
 import { useAdminContext } from "./contexts/AdminContext";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './index.css';
-import Layout from "./layouts/Layout";
 
 const Login = lazy(() => import("./pages/user/auth/Login"));
 const Search = lazy(() => import("./pages/user/home/Search"));
@@ -33,7 +33,7 @@ function App() {
   const { isAdminLoggedIn } = useAdminContext();
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>🌀 Loading...</div>}>
       <BrowserRouter>
         <Routes>
 

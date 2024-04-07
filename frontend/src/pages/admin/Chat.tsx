@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import ChatWindow from '../../components/ChatWindow';
 import '../../index.css';
 
-const socket = io('http://localhost:4000');
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const socket = io(API_BASE_URL);
 
 const Chat = () => {
     const [name] = useState<string>("DemoAdmin");

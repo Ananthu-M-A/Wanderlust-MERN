@@ -6,7 +6,8 @@ import { useQuery } from 'react-query';
 import * as apiClient from '../../../api-client';
 import { UserType } from '../../../../../types/types';
 
-const socket = io('http://localhost:4000');
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const socket = io(API_BASE_URL);
 
 const Help = () => {
     const [name, setName] = useState<string>("");
