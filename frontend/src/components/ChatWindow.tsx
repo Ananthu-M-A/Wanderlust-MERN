@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 type Props = {
@@ -18,6 +18,7 @@ function ChatWindow({ socket, name, roomId }: Props) {
     const [currentMessage, setCurrentMessage] = useState<string>("");
     const [messageList, setMessageList] = useState<Message[]>([]);
     const { pathname } = useLocation();
+    const latestMessage = useRef<HTMLDivElement>(null);
 
     const sendMessage = () => {
         if (currentMessage.trim() !== "") {
@@ -33,6 +34,7 @@ function ChatWindow({ socket, name, roomId }: Props) {
     }
 
     useEffect(() => {
+        findLatestMessage();
         const handleReceivedMessage = (receivedMessageData: Message) => {
             setMessageList((list) => [...list, receivedMessageData]);
         };
@@ -40,7 +42,11 @@ function ChatWindow({ socket, name, roomId }: Props) {
         return () => {
             socket.off("received_message", handleReceivedMessage);
         };
-    }, [socket]);
+    }, [socket, messageList]);
+
+    const findLatestMessage = () => {
+        latestMessage.current?.scrollIntoView({ behavior: 'smooth' });
+    }
 
     return (
         <div className="flex flex-col h-screen">
@@ -60,8 +66,8 @@ function ChatWindow({ socket, name, roomId }: Props) {
                             <p className="text-gray-400">online</p>
                         </div>)}
                 </div>
-                <div className="flex-1 bg-gray-300 flex flex-col"
-                    style={{ maxHeight: `calc(100vh - 200px)`, overflowY: "auto" }}>
+                <div className="flex-1 bg-gray-300 flex flex-col max-h-[300px] overflow-y-auto scrollbar-hide"
+                    style={{ maxHeight: `calc(100vh - 200px)` }}>
                     {messageList.map((messageContent, index) => (
                         <div key={index} className="py-1 px-2">
                             <div className={messageContent.name === name
@@ -74,6 +80,7 @@ function ChatWindow({ socket, name, roomId }: Props) {
                             </div>
                         </div>
                     ))}
+                    <div ref={latestMessage}></div>
                 </div>
                 <div className="bg-white p-2 flex items-center"
                     style={{ borderBottomLeftRadius: "10px", borderBottomRightRadius: "10px" }}>
