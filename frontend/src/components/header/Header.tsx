@@ -24,8 +24,8 @@ const Header = () => {
     <div className="bg-black py-6">
       <div className="container mx-auto flex justify-between items-center flex-wrap">
         <Link to="/" className="text-3xl text-white font-bold tracking-tight mb-4 md:mb-0">
-          WANDERLUST
-          {isAdminLoggedIn && <span className='text-xl'><Link to="/admin/dashboard" >ADMIN</Link></span>}
+          <img src="/logonobg2.png" style={{height:"50px"}} alt="" />
+          {isAdminLoggedIn && <span className='text-sm flex'><Link to="/admin/dashboard" >ADMIN</Link></span>}
         </Link>
         <div className="flex flex-col md:flex-row md:items-center md:gap-4">
           {isAdminLoggedIn ? (
