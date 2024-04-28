@@ -4,8 +4,6 @@ import { BookingData, BookingType, HotelType, LoginFormData, RegisterFormData, R
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
-const stripe = await loadStripe(PUBLIC_KEY);
-
 
 export const loadCurrentUser = async (): Promise<UserType> => {
     const response = await fetch(`${API_BASE_URL}/api/admin/users/load-user`, {
@@ -417,6 +415,7 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 
 
 export const createCheckoutSession = async (paymentData: any) => {
+    const stripe = await loadStripe(PUBLIC_KEY);
     const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
