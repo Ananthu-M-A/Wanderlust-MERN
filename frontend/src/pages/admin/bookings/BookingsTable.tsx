@@ -61,9 +61,11 @@ const BookingsTable = () => {
                                     <td className="border border-gray-800 px-4 py-2">
                                         {booking.hotelId.name}
                                     </td> :
-                                    <td className="border border-gray-800 px-4 py-2">
-                                        {booking.restaurantId.name}
-                                    </td>}
+                                    booking.restaurantId ?
+                                        <td className="border border-gray-800 px-4 py-2">
+                                            {booking.restaurantId.name}
+                                        </td> : <></>
+                                }
                                 <td className="border border-gray-800 px-4 py-2">{new Date(booking.bookingDate).toDateString()}</td>
                                 <td className="border border-gray-800 px-4 py-2">{booking.totalCost}</td>
                                 <td className="border border-gray-800 px-4 py-2">

@@ -72,8 +72,8 @@ export type RestaurantType = {
 export type BookingType = {
     _id: string;
     userId: Object;
-    hotelId: Object;
-    restaurantId: Object;
+    hotelId?: HotelType;
+    restaurantId?: RestaurantType;
     adultCount: number;
     childCount: number;
     guestCount: number;
