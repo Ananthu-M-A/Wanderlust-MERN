@@ -4,6 +4,7 @@ import http from 'http';
 import messageSocket from './sockets/messageSocket';
 import "dotenv/config";
 import { connectDb } from './utils/MongoDB';
+import MongoDBStore from 'connect-mongodb-session';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import authRouter from './routes/auth.route';
@@ -18,6 +19,16 @@ import restaurantsRouter from './routes/restaurants.route';
 import liveChatRouter from './routes/chat.route';
 
 connectDb();
+
+const MongoDBStoreSession = MongoDBStore(session);
+const store = new MongoDBStoreSession({
+  uri: process.env.MONGODB_CONNECTION_STRING as string,
+  collection: 'sessions'
+});
+
+store.on('error', function(error: any) {
+  console.error('MongoDBStore error:', error);
+});
 
 const app = express();
 
@@ -38,6 +49,7 @@ app.use(session({
     cookie: {
         maxAge: 86400000,
     },
+    store: store
 }));
 
 app.use("/api/user", authRouter);
