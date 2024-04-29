@@ -9,7 +9,7 @@ const Detail = () => {
 
     const { data: hotel } = useQuery("loadHotelHomeById",
         () => apiClient.loadHotelHomeById(hotelId as string),
-        { enabled: !!hotelId, }
+        { enabled: !!hotelId }
     );
 
     if (!hotel) {

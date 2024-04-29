@@ -52,9 +52,7 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
             }
         });
 
-        if (checkIn && checkOut && roomCount && roomPrice && nightsPerStay) {
-            console.log(nightsPerStay);
-            
+        if (checkIn && checkOut && roomCount && roomPrice && nightsPerStay) {            
             const newTotalCost = roomCount * nightsPerStay * roomPrice;
             setTotalCost(newTotalCost);
         }

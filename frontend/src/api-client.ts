@@ -374,9 +374,7 @@ export const searchHotels = async (searchParams: SearchParams): Promise<SearchHo
     searchParams.types?.forEach((type) => queryParams.append("types", type));
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
-    const response = await fetch(`${API_BASE_URL}/api/user/home/search-hotels?${queryParams}`,{
-        credentials: "include"
-    });
+    const response = await fetch(`${API_BASE_URL}/api/user/home/search-hotels?${queryParams}`);
     if (!response.ok) {
         throw new Error("Error searching hotels");
     }
@@ -428,10 +426,12 @@ export const createCheckoutSession = async (paymentData: any) => {
         throw new Error("Error booking room");
     }
     const session = await response.json();
+    console.log("SESSION:",session);
+    
     const result = stripe?.redirectToCheckout({
         sessionId: session.id
     })
-    console.log(result);
+    console.log("RESULT:",result);
 }
 
 export const loadBookings = async (query: string): Promise<BookingType[]> => {
