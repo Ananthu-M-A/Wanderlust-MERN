@@ -6,7 +6,9 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
 
 export const loadCurrentUser = async (): Promise<UserType> => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/users/load-user`);
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/load-user`, {
+        credentials: "include",
+    });
 
     if (!response.ok) {
         throw new Error("Error loading user");
@@ -16,7 +18,9 @@ export const loadCurrentUser = async (): Promise<UserType> => {
 
 
 export const loadAccount = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/user/profile`);
+    const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+        credentials: "include",
+    });
 
     if (!response.ok) {
         throw new Error("Error loading user");
@@ -28,7 +32,7 @@ export const loadAccount = async () => {
 export const register = async (formData: RegisterFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/user/register`, {
         method: 'POST',
-        
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -46,7 +50,7 @@ export const register = async (formData: RegisterFormData) => {
 export const resetPassword = async (formData: ResetPasswordFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/user/reset-password`, {
         method: 'POST',
-        
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -67,7 +71,7 @@ export const updateProfile = async (formData: FormData) => {
 
     const response = await fetch(`${API_BASE_URL}/api/user/profile/update`, {
         method: 'PUT',
-        
+        credentials: "include",
         body: formData
     });
 
@@ -87,7 +91,7 @@ export const verifyRegistration = async (otp: string) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ otp }),
-         
+        credentials: 'include'
     });
 
     const responseBody = await response.json();
@@ -104,7 +108,7 @@ export const verifyResetPassword = async (otp: string) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ otp }),
-         
+        credentials: 'include'
     });
 
     const responseBody = await response.json();
@@ -117,7 +121,7 @@ export const verifyResetPassword = async (otp: string) => {
 export const login = async (formData: LoginFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/user/login`, {
         method: 'POST',
-        
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -132,7 +136,9 @@ export const login = async (formData: LoginFormData) => {
 
 
 export const validateAdminToken = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/validate-token`);
+    const response = await fetch(`${API_BASE_URL}/api/admin/validate-token`, {
+        credentials: "include",
+    });
 
     if (!response.ok) {
         throw new Error("Invalid Token");
@@ -144,7 +150,7 @@ export const validateAdminToken = async () => {
 export const logout = async () => {
     const response = await fetch(`${API_BASE_URL}/api/user/logout`, {
         method: "POST",
-        
+        credentials: "include",
     });
     if (!response.ok) {
         throw new Error("Error during Logout");
@@ -155,7 +161,7 @@ export const logout = async () => {
 export const adminLogout = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/logout`, {
         method: "POST",
-        
+        credentials: "include",
     });
     if (!response.ok) {
         throw new Error("Error during Logout");
@@ -166,7 +172,7 @@ export const adminLogout = async () => {
 export const addHotel = async (hotelFormData: FormData) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/hotels/create-hotel`, {
         method: 'POST',
-        
+        credentials: "include",
         body: hotelFormData,
     });
 
@@ -180,7 +186,7 @@ export const addHotel = async (hotelFormData: FormData) => {
 export const addRestaurant = async (restaurantFormData: FormData) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/create-restaurant`, {
         method: 'POST',
-        
+        credentials: "include",
         body: restaurantFormData,
     });
 
@@ -197,7 +203,7 @@ export const loadHotels = async (searchParams: SearchParams): Promise<SearchHote
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
     const response = await fetch(`${API_BASE_URL}/api/admin/hotels?${queryParams}`, {
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -212,7 +218,7 @@ export const loadRestaurants = async (searchParams: SearchParams): Promise<Searc
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
     const response = await fetch(`${API_BASE_URL}/api/admin/restaurants?${queryParams}`, {
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -225,7 +231,7 @@ export const loadRestaurants = async (searchParams: SearchParams): Promise<Searc
 export const blockHotel = async (hotelId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}/block`, {
         method: "PUT",
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -237,7 +243,7 @@ export const blockHotel = async (hotelId: string) => {
 export const unblockHotel = async (hotelId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}/unblock`, {
         method: "PUT",
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -248,7 +254,7 @@ export const unblockHotel = async (hotelId: string) => {
 export const blockRestaurant = async (restaurantId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/block`, {
         method: "PUT",
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -260,7 +266,7 @@ export const blockRestaurant = async (restaurantId: string) => {
 export const unblockRestaurant = async (restaurantId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/unblock`, {
         method: "PUT",
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -270,7 +276,7 @@ export const unblockRestaurant = async (restaurantId: string) => {
 
 export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
     const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}`, {
-         
+        credentials: "include"
     })
     if (!response.ok) {
         throw new Error("Failed to load hotel");
@@ -280,7 +286,7 @@ export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
 
 export const loadRestaurantById = async (restaurantId: string): Promise<RestaurantType> => {
     const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}`, {
-         
+        credentials: "include"
     })
     if (!response.ok) {
         throw new Error("Failed to load restaurant");
@@ -293,7 +299,7 @@ export const updateHotelById = async (hotelFormData: FormData) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelFormData.get("hotelId")}/update`, {
         method: "PUT",
         body: hotelFormData,
-         
+        credentials: "include"
     })
     if (!response.ok) {
         throw new Error("Failed to update hotel");
@@ -305,7 +311,7 @@ export const updateRestaurantById = async (restaurantFormData: FormData) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantFormData.get("restaurantId")}/update`, {
         method: "PUT",
         body: restaurantFormData,
-         
+        credentials: "include"
     })
     if (!response.ok) {
         throw new Error("Failed to update restaurant");
@@ -319,7 +325,7 @@ export const loadUsers = async (searchParams: SearchParams): Promise<SearchUserR
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
     const response = await fetch(`${API_BASE_URL}/api/admin/users?${queryParams}`, {
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -333,7 +339,7 @@ export const loadUsers = async (searchParams: SearchParams): Promise<SearchUserR
 export const blockUser = async (userId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/block`, {
         method: "PUT",
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -345,7 +351,7 @@ export const blockUser = async (userId: string) => {
 export const unblockUser = async (userId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/unblock`, {
         method: "PUT",
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -413,7 +419,7 @@ export const createCheckoutSession = async (paymentData: any) => {
     const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        
+        credentials: "include",
         body: JSON.stringify(paymentData)
     })
     if (!response.ok) {
@@ -431,7 +437,7 @@ export const loadBookings = async (query: string): Promise<BookingType[]> => {
         console.log(query);
 
         const response = await fetch(`${API_BASE_URL}/api/user/booking/bookings?bookingId=${query}`, {
-             
+            credentials: "include"
         });
         if (!response.ok) {
             throw new Error("Failed to load bookings");
@@ -450,7 +456,7 @@ export const downloadDoc = async (bookingId: string) => {
             headers: {
                 'Content-Type': 'application/pdf',
             },
-             
+            credentials: 'include'
         });
 
         if (!response.ok) {
@@ -470,7 +476,7 @@ export const downloadDoc = async (bookingId: string) => {
 export const cancelBooking = async (bookingId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/user/booking/${bookingId}/cancel`, {
         method: "PUT",
-        
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -481,7 +487,7 @@ export const cancelBooking = async (bookingId: string) => {
 export const adminLogin = async (formData: LoginFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
         method: 'POST',
-        
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -500,7 +506,7 @@ export const loadBookingsTable = async (BookingData: BookingData): Promise<Searc
         queryParams.append("bookingId", BookingData.bookingId || "");
         queryParams.append("page", BookingData.page || "");
         const response = await fetch(`${API_BASE_URL}/api/admin/bookings?${queryParams}`, {
-             
+            credentials: "include"
         });
         if (!response.ok) {
             throw new Error("Failed to load orders");
@@ -514,7 +520,9 @@ export const loadBookingsTable = async (BookingData: BookingData): Promise<Searc
 
 export const loadBookingDetails = async (bookingId: string) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/admin/bookings/${bookingId}`);
+        const response = await fetch(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
+            credentials: "include"
+        });
         if (!response.ok) {
             throw new Error("Failed to load booking details");
         }
@@ -526,7 +534,10 @@ export const loadBookingDetails = async (bookingId: string) => {
 }
 
 export const validateToken = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/user/validate-token`);
+    const response = await fetch(`${API_BASE_URL}/api/user/validate-token`, {
+        credentials: "include",
+    });
+
     if (!response.ok) {
         throw new Error("Invalid Token");
     }
