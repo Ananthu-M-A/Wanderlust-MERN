@@ -77,7 +77,10 @@ const GuestInfoForm = ({ hotelId, roomTypes }: Props) => {
         onSuccess: () => {
             showToast({ message: "Booking Saved!", type: "SUCCESS" });
         },
-        onError: () => {
+        onError: (error) => {
+            if(error instanceof Error){
+                console.log(error.message, error)
+            }
             showToast({ message: "Current Requirement unavailable", type: "ERROR" });
         }
     })

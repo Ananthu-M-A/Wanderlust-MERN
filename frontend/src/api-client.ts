@@ -415,27 +415,32 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 
 
 export const createCheckoutSession = async (paymentData: any) => {
-    const stripe = await loadStripe(PUBLIC_KEY);
-    console.log(stripe);
-    const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(paymentData)
-    })
-    console.log("RESPONSE:",response);
+    try {
+        const stripe = await loadStripe(PUBLIC_KEY);
+        const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(paymentData)
+        });
+        
+        if (!response.ok) {
+            throw new Error("Failed to create checkout session");
+        }
 
-    if (!response.ok) {
-        throw new Error("Error booking room");
+        const session = await response.json();
+
+        const result = stripe?.redirectToCheckout({
+            sessionId: session.id
+        });
+
+        console.log("Redirecting to checkout...", result);
+    } catch (error) {
+        console.error("Error creating checkout session:", error);
+        throw new Error("Failed to initiate payment");
     }
-    const session = await response.json();
-    console.log("SESSION:",session);
-    
-    const result = stripe?.redirectToCheckout({
-        sessionId: session.id
-    })
-    console.log("RESULT:",result);
 }
+
 
 export const loadBookings = async (query: string): Promise<BookingType[]> => {
     try {

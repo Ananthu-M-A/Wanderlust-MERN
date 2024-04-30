@@ -51,7 +51,7 @@ export const checkout = async (req: Request, res: Response) => {
 
             req.session.paymentData = paymentData;
             const hotel = await Hotel.findById(paymentData.hotelId);
-            if (hotel) {
+            if (hotel)  {
                 const name = `${hotel.name}, ${hotel.city}, ${hotel.country}`;
                 const description = `
             Rooms: ${paymentData.roomType} Bed, ₹${paymentData.roomPrice}, ${paymentData.roomCount}Nos, 
