@@ -416,6 +416,7 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 
 export const createCheckoutSession = async (paymentData: any) => {
     const stripe = await loadStripe(PUBLIC_KEY);
+    console.log(stripe);
     const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
