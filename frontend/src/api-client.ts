@@ -422,6 +422,8 @@ export const createCheckoutSession = async (paymentData: any) => {
         credentials: "include",
         body: JSON.stringify(paymentData)
     })
+    console.log("RESPONSE:",response);
+
     if (!response.ok) {
         throw new Error("Error booking room");
     }
