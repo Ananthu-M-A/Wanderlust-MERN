@@ -422,7 +422,6 @@ export const createCheckoutSession = async (paymentData: any) => {
             headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify(paymentData),
-            mode: 'no-cors'
         });
 
         console.log("RESPONSE",response);
