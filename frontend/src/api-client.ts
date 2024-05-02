@@ -424,10 +424,11 @@ export const createCheckoutSession = async (paymentData: any) => {
             body: JSON.stringify(paymentData)
         });
         
+        console.log("RESPONSE",response);
+        
         if (!response.ok) {
             throw new Error("Failed to create checkout session");
         }
-        console.log("RESPONSE",response);
         
         const session = await response.json();
 
