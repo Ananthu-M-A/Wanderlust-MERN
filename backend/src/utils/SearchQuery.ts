@@ -65,3 +65,15 @@ export const bookingBotSearchQuery = (queryParams: any) => {
     }
     return constructedQuery
 };
+
+export const constructSearchQuery = (queryParams: any) => {
+    let constructedQuery: any = {};
+    if (queryParams.destination) {
+        constructedQuery.$or = [
+            { name: new RegExp(queryParams.destination, "i") },
+            { email: new RegExp(queryParams.destination, "i") },
+            { mobile: new RegExp(queryParams.destination, "i") },
+        ];
+    }
+    return constructedQuery
+}

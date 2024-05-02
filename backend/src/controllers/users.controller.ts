@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
 import { SearchUserResponse } from "../../../types/types";
+import { constructSearchQuery } from "../utils/SearchQuery";
 
 export const loadUsers = async (req: Request, res: Response) => {
     try {
@@ -47,14 +48,3 @@ export const unblockUser = async (req: Request, res: Response) => {
     }
 };
 
-const constructSearchQuery = (queryParams: any) => {
-    let constructedQuery: any = {};
-    if (queryParams.destination) {
-        constructedQuery.$or = [
-            { name: new RegExp(queryParams.destination, "i") },
-            { email: new RegExp(queryParams.destination, "i") },
-            { mobile: new RegExp(queryParams.destination, "i") },
-        ];
-    }
-    return constructedQuery
-}

@@ -1,9 +1,9 @@
-import { loadStripe } from "@stripe/stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
 import { BookingData, BookingType, HotelType, LoginFormData, RegisterFormData, ResetPasswordFormData, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchParams, SearchRestaurantParams, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
+// const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
 
 export const loadCurrentUser = async (): Promise<UserType> => {
     const response = await fetch(`${API_BASE_URL}/api/admin/users/load-user`, {
@@ -416,7 +416,7 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 
 export const createCheckoutSession = async (paymentData: any) => {
     try {
-        const stripe = await loadStripe(PUBLIC_KEY);
+        // const stripe = await loadStripe(PUBLIC_KEY);
         const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -427,14 +427,17 @@ export const createCheckoutSession = async (paymentData: any) => {
         if (!response.ok) {
             throw new Error("Failed to create checkout session");
         }
-
+        console.log("RESPONSE",response);
+        
         const session = await response.json();
 
-        const result = stripe?.redirectToCheckout({
-            sessionId: session.id
-        });
+        console.log("SESSION",session);
 
-        console.log("Redirecting to checkout...", result);
+        // const result = stripe?.redirectToCheckout({
+        //     sessionId: session.id
+        // });
+
+        // console.log("Redirecting to checkout...", result);
     } catch (error) {
         console.error("Error creating checkout session:", error);
         throw new Error("Failed to initiate payment");
