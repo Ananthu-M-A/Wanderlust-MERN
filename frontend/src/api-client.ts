@@ -421,9 +421,10 @@ export const createCheckoutSession = async (paymentData: any) => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify(paymentData)
+            body: JSON.stringify(paymentData),
+            mode: 'no-cors'
         });
-        
+
         console.log("RESPONSE",response);
         
         if (!response.ok) {
