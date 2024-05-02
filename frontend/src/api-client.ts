@@ -1,5 +1,5 @@
 // import { loadStripe } from "@stripe/stripe-js";
-import { BookingData, BookingType, HotelType, LoginFormData, RegisterFormData, ResetPasswordFormData, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchParams, SearchRestaurantParams, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
+import { BookingData, BookingType, HotelType, LoginFormData, PaymentData, RegisterFormData, ResetPasswordFormData, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchParams, SearchRestaurantParams, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -414,7 +414,7 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 }
 
 
-export const createCheckoutSession = async (paymentData: any) => {
+export const createCheckoutSession = async (paymentData: PaymentData) => {
     try {
         // const stripe = await loadStripe(PUBLIC_KEY);
         const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {

@@ -268,3 +268,15 @@ export type SearchContext = {
     ) => void;
     clearSearchValues: () => void;
 };
+
+export type PaymentData = {
+    checkIn: Date,
+    checkOut: Date,
+    adultCount: number,
+    childCount: number,
+    roomType: string,
+    roomCount: number,
+    roomPrice: number,
+    hotelId: string,
+    nightsPerStay:number
+}
