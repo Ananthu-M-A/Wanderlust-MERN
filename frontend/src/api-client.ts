@@ -405,34 +405,26 @@ export const searchRestaurants = async (searchParams: SearchRestaurantParams): P
 }
 
 
-export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => {
-    const response = await fetch(`${API_BASE_URL}/api/user/home/search-hotels/${hotelId}`);
-    if (!response.ok) {
-        throw new Error("Failed to update hotels");
-    }
-    return response.json();
-}
-
+import axios from 'axios';
 
 export const createCheckoutSession = async (paymentData: PaymentData) => {
     try {
-        // const stripe = await loadStripe(PUBLIC_KEY);
-        const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify(paymentData),
+        const response = await axios.post(`${API_BASE_URL}/api/user/booking/checkout`, paymentData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
         });
 
-        console.log("RESPONSE",response);
+        console.log("RESPONSE", response);
         
-        if (!response.ok) {
+        if (!response.data || !response.data.ok) {
             throw new Error("Failed to create checkout session");
         }
         
-        const session = await response.json();
+        const session = response.data;
 
-        console.log("SESSION",session);
+        console.log("SESSION", session);
 
         // const result = stripe?.redirectToCheckout({
         //     sessionId: session.id
@@ -444,6 +436,7 @@ export const createCheckoutSession = async (paymentData: PaymentData) => {
         throw new Error("Failed to initiate payment");
     }
 }
+
 
 
 export const loadBookings = async (query: string): Promise<BookingType[]> => {
