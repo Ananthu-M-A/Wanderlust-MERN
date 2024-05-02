@@ -15,7 +15,6 @@
     "@stripe/stripe-js": "^3.0.5",
     "@types/googlemaps": "^3.43.3",
     "@types/socket.io-client": "^3.0.0",
-    "axios": "^1.6.8",
     "build": "^0.1.4",
     "react": "^18.2.0",
     "react-chatbotify": "^1.2.0",
