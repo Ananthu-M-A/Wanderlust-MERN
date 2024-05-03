@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { loadStripe } from "@stripe/stripe-js";
 import { BookingData, BookingType, HotelType, LoginFormData, PaymentData, RegisterFormData, ResetPasswordFormData, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchParams, SearchRestaurantParams, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
 
@@ -6,355 +6,329 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
 
 export const loadCurrentUser = async (): Promise<UserType> => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/users/load-user`, {
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/admin/users/load-user`, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Error loading user");
     }
-    return response.json();
 }
-
 
 export const loadAccount = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/user/profile`, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Error loading user");
     }
-    return response.json();
 }
 
-
 export const register = async (formData: RegisterFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/user/register`, {
-        method: 'POST',
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-    });
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/user/register`, formData, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-    const responseBody = await response.json();
-    localStorage.setItem("otpToken", responseBody.otpToken);
-
-    if (!response.ok) {
-        throw new Error(responseBody.message);
+        localStorage.setItem("otpToken", response.data.otpToken);
+    } catch (error: any) {
+        throw new Error(error.response.data.message);
     }
 }
 
 export const resetPassword = async (formData: ResetPasswordFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/user/reset-password`, {
-        method: 'POST',
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-    });
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/user/reset-password`, formData, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-    const responseBody = await response.json();
-    localStorage.setItem("otpToken", responseBody.otpToken);
-
-    if (!response.ok) {
-        throw new Error(responseBody.message);
+        localStorage.setItem("otpToken", response.data.otpToken);
+    } catch (error: any) {
+        throw new Error(error.response.data.message);
     }
 }
-
 
 export const updateProfile = async (formData: FormData) => {
     console.log(formData);
 
-    const response = await fetch(`${API_BASE_URL}/api/user/profile/update`, {
-        method: 'PUT',
-        credentials: "include",
-        body: formData
-    });
+    try {
+        const response = await axios.put(`${API_BASE_URL}/api/user/profile/update`, formData, {
+            withCredentials: true
+        });
 
-    const responseBody = await response.json();
-
-    if (!response.ok) {
-        throw new Error(responseBody.message);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data.message);
     }
 }
 
-
-
 export const verifyRegistration = async (otp: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/user/verify-registration`, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ otp }),
-        credentials: 'include'
-    });
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/user/verify-registration`, { otp }, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            withCredentials: true
+        });
 
-    const responseBody = await response.json();
-
-    if (!response.ok) {
-        throw new Error(responseBody.message);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data.message);
     }
 }
 
 export const verifyResetPassword = async (otp: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/user/verify-reset-password`, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ otp }),
-        credentials: 'include'
-    });
-
-    const responseBody = await response.json();
-
-    if (!response.ok) {
-        throw new Error(responseBody.message);
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/user/verify-reset-password`, { otp }, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data.message);
     }
 }
 
 export const login = async (formData: LoginFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/user/login`, {
-        method: 'POST',
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-    });
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/user/login`, formData, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-    const responseBody = await response.json();
-    if (!response.ok) {
-        throw new Error(responseBody.message);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data.message);
     }
 }
 
 
 export const validateAdminToken = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/validate-token`, {
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/admin/validate-token`, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Invalid Token");
     }
-
-    return response.json();
 }
 
 export const logout = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/user/logout`, {
-        method: "POST",
-        credentials: "include",
-    });
-    if (!response.ok) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/user/logout`, null, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Error during Logout");
     }
 };
 
 
 export const adminLogout = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/logout`, {
-        method: "POST",
-        credentials: "include",
-    });
-    if (!response.ok) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/admin/logout`, {}, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Error during Logout");
     }
 };
 
-
 export const addHotel = async (hotelFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/create-hotel`, {
-        method: 'POST',
-        credentials: "include",
-        body: hotelFormData,
-    });
-
-    if (!response.ok) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/admin/hotels/create-hotel`, hotelFormData, {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to add Hotel");
     }
-
-    return response.json();
 };
 
 export const addRestaurant = async (restaurantFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/create-restaurant`, {
-        method: 'POST',
-        credentials: "include",
-        body: restaurantFormData,
-    });
-
-    if (!response.ok) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/admin/restaurants/create-restaurant`, restaurantFormData, {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to add Restaurant");
     }
-
-    return response.json();
 };
-
 
 export const loadHotels = async (searchParams: SearchParams): Promise<SearchHotelResponse> => {
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
-    const response = await fetch(`${API_BASE_URL}/api/admin/hotels?${queryParams}`, {
-        credentials: "include",
-    });
 
-    if (!response.ok) {
+    try {
+        const response: AxiosResponse<SearchHotelResponse> = await axios.get(`${API_BASE_URL}/api/admin/hotels`, {
+            params: queryParams,
+            withCredentials: true
+        });
+        
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to load hotels");
     }
-
-    return response.json();
 };
 
 export const loadRestaurants = async (searchParams: SearchParams): Promise<SearchRestaurantResponse> => {
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
-    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants?${queryParams}`, {
-        credentials: "include",
-    });
 
-    if (!response.ok) {
+    try {
+        const response: AxiosResponse<SearchRestaurantResponse> = await axios.get(`${API_BASE_URL}/api/admin/restaurants`, {
+            params: queryParams,
+            withCredentials: true
+        });
+        
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to load restaurants");
     }
-
-    return response.json();
 };
 
 export const blockHotel = async (hotelId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}/block`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        await axios.put(`${API_BASE_URL}/api/admin/hotels/${hotelId}/block`, null, {
+            withCredentials: true,
+        });
+    } catch (error) {
         throw new Error("Failed to block hotel");
     }
 };
 
-
 export const unblockHotel = async (hotelId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}/unblock`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        await axios.put(`${API_BASE_URL}/api/admin/hotels/${hotelId}/unblock`, null, {
+            withCredentials: true,
+        });
+    } catch (error) {
         throw new Error("Failed to unblock hotel");
     }
 };
 
 export const blockRestaurant = async (restaurantId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/block`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        await axios.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/block`, null, {
+            withCredentials: true,
+        });
+    } catch (error) {
         throw new Error("Failed to block restaurant");
     }
 };
 
-
 export const unblockRestaurant = async (restaurantId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/unblock`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        await axios.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/unblock`, null, {
+            withCredentials: true,
+        });
+    } catch (error) {
         throw new Error("Failed to unblock restaurant");
     }
 };
 
 export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelId}`, {
-        credentials: "include"
-    })
-    if (!response.ok) {
+    try {
+        const response: AxiosResponse<HotelType> = await axios.get(`${API_BASE_URL}/api/admin/hotels/${hotelId}`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to load hotel");
     }
-    return response.json();
 }
 
 export const loadRestaurantById = async (restaurantId: string): Promise<RestaurantType> => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}`, {
-        credentials: "include"
-    })
-    if (!response.ok) {
+    try {
+        const response: AxiosResponse<RestaurantType> = await axios.get(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to load restaurant");
     }
-    return response.json();
 }
 
-
 export const updateHotelById = async (hotelFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/hotels/${hotelFormData.get("hotelId")}/update`, {
-        method: "PUT",
-        body: hotelFormData,
-        credentials: "include"
-    })
-    if (!response.ok) {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/api/admin/hotels/${hotelFormData.get("hotelId")}/update`, hotelFormData, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to update hotel");
     }
-    return response.json();
 }
 
 export const updateRestaurantById = async (restaurantFormData: FormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/restaurants/${restaurantFormData.get("restaurantId")}/update`, {
-        method: "PUT",
-        body: restaurantFormData,
-        credentials: "include"
-    })
-    if (!response.ok) {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantFormData.get("restaurantId")}/update`, restaurantFormData, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to update restaurant");
     }
-    return response.json();
 }
-
 
 export const loadUsers = async (searchParams: SearchParams): Promise<SearchUserResponse> => {
     const queryParams = new URLSearchParams();
     queryParams.append("destination", searchParams.destination || "");
     queryParams.append("page", searchParams.page || "");
-    const response = await fetch(`${API_BASE_URL}/api/admin/users?${queryParams}`, {
-        credentials: "include",
-    });
 
-    if (!response.ok) {
-        throw new Error("Failed to load hotels");
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/admin/users`, {
+            params: queryParams,
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to load users");
     }
-
-    return response.json();
 };
 
-
 export const blockUser = async (userId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/block`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        await axios.put(`${API_BASE_URL}/api/admin/users/${userId}/block`, null, {
+            withCredentials: true
+        });
+    } catch (error) {
         throw new Error("Failed to block user");
     }
 };
 
-
 export const unblockUser = async (userId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/unblock`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        await axios.put(`${API_BASE_URL}/api/admin/users/${userId}/unblock`, null, {
+            withCredentials: true
+        });
+    } catch (error) {
         throw new Error("Failed to unblock user");
     }
 };
@@ -374,13 +348,15 @@ export const searchHotels = async (searchParams: SearchParams): Promise<SearchHo
     searchParams.types?.forEach((type) => queryParams.append("types", type));
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
-    const response = await fetch(`${API_BASE_URL}/api/user/home/search-hotels?${queryParams}`);
-    if (!response.ok) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/user/home/search-hotels`, {
+            params: queryParams
+        });
+        return response.data;
+    } catch (error) {
         throw new Error("Error searching hotels");
     }
-    return response.json();
 }
-
 
 export const searchRestaurants = async (searchParams: SearchRestaurantParams): Promise<SearchRestaurantResponse> => {
     const queryParams = new URLSearchParams();
@@ -397,22 +373,24 @@ export const searchRestaurants = async (searchParams: SearchRestaurantParams): P
     searchParams.types?.forEach((type) => queryParams.append("types", type));
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
-    const response = await fetch(`${API_BASE_URL}/api/user/home/search-restaurants?${queryParams}`);
-    if (!response.ok) {
-        throw new Error("Error searching hotels");
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/user/home/search-restaurants`, {
+            params: queryParams
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error("Error searching restaurants");
     }
-    return response.json();
 }
-
 
 export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => {
-    const response = await fetch(`${API_BASE_URL}/api/user/home/search-hotels/${hotelId}`);
-    if (!response.ok) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/user/home/search-hotels/${hotelId}`);
+        return response.data;
+    } catch (error) {
         throw new Error("Failed to update hotels");
     }
-    return response.json();
 }
-
 
 export const createCheckoutSession = async (paymentData: PaymentData) => {
     try {
@@ -446,19 +424,15 @@ export const createCheckoutSession = async (paymentData: PaymentData) => {
     }
 }
 
-
-
 export const loadBookings = async (query: string): Promise<BookingType[]> => {
     try {
         console.log(query);
 
-        const response = await fetch(`${API_BASE_URL}/api/user/booking/bookings?bookingId=${query}`, {
-            credentials: "include"
+        const response = await axios.get(`${API_BASE_URL}/api/user/booking/bookings?bookingId=${query}`, {
+            withCredentials: true
         });
-        if (!response.ok) {
-            throw new Error("Failed to load bookings");
-        }
-        return response.json();
+
+        return response.data;
     } catch (error) {
         console.error("Error loading bookings:", error);
         throw new Error("Failed to load bookings");
@@ -467,20 +441,15 @@ export const loadBookings = async (query: string): Promise<BookingType[]> => {
 
 export const downloadDoc = async (bookingId: string) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/user/booking/${bookingId}/receipt`, {
-            method: 'GET',
+        const response = await axios.get(`${API_BASE_URL}/api/user/booking/${bookingId}/receipt`, {
+            responseType: 'blob',
             headers: {
                 'Content-Type': 'application/pdf',
             },
-            credentials: 'include'
+            withCredentials: true
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to download document');
-        }
-
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(new Blob([response.data]));
         return url;
     } catch (error) {
         console.error('Error downloading document:', error);
@@ -488,31 +457,27 @@ export const downloadDoc = async (bookingId: string) => {
     }
 }
 
-
 export const cancelBooking = async (bookingId: string) => {
-    const response = await fetch(`${API_BASE_URL}/api/user/booking/${bookingId}/cancel`, {
-        method: "PUT",
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        await axios.put(`${API_BASE_URL}/api/user/booking/${bookingId}/cancel`, null, {
+            withCredentials: true
+        });
+    } catch (error) {
         throw new Error("Failed to cancel booking");
     }
 };
 
 export const adminLogin = async (formData: LoginFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
-        method: 'POST',
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-    });
-
-    const responseBody = await response.json();
-    if (!response.ok) {
-        throw new Error(responseBody.message);
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/admin/login`, formData, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response.data.message);
     }
 }
 
@@ -521,13 +486,10 @@ export const loadBookingsTable = async (BookingData: BookingData): Promise<Searc
         const queryParams = new URLSearchParams();
         queryParams.append("bookingId", BookingData.bookingId || "");
         queryParams.append("page", BookingData.page || "");
-        const response = await fetch(`${API_BASE_URL}/api/admin/bookings?${queryParams}`, {
-            credentials: "include"
+        const response = await axios.get(`${API_BASE_URL}/api/admin/bookings?${queryParams}`, {
+            withCredentials: true
         });
-        if (!response.ok) {
-            throw new Error("Failed to load orders");
-        }
-        return response.json();
+        return response.data;
     } catch (error) {
         console.error("Error loading orders:", error);
         throw new Error("Failed to load orders");
@@ -536,27 +498,24 @@ export const loadBookingsTable = async (BookingData: BookingData): Promise<Searc
 
 export const loadBookingDetails = async (bookingId: string) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
-            credentials: "include"
+        const response = await axios.get(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
+            withCredentials: true
         });
-        if (!response.ok) {
-            throw new Error("Failed to load booking details");
-        }
-        return response.json();
+        return response.data;
     } catch (error) {
-        console.error("Error loading orders:", error);
-        throw new Error("Failed to load orders");
+        console.error("Error loading booking details:", error);
+        throw new Error("Failed to load booking details");
     }
 }
 
 export const validateToken = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/user/validate-token`, {
-        credentials: "include",
-    });
-
-    if (!response.ok) {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/user/validate-token`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error validating token:", error);
         throw new Error("Invalid Token");
     }
-
-    return response.json();
 }
