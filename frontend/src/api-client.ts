@@ -1,6 +1,6 @@
+import axios from 'axios';
 import { loadStripe } from "@stripe/stripe-js";
 import { BookingData, BookingType, HotelType, LoginFormData, PaymentData, RegisterFormData, ResetPasswordFormData, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchParams, SearchRestaurantParams, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
-
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
@@ -417,22 +417,23 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 export const createCheckoutSession = async (paymentData: PaymentData) => {
     try {
         const stripe = await loadStripe(PUBLIC_KEY);
-        const response = await fetch(`${API_BASE_URL}/api/user/booking/checkout`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify(paymentData),
+
+        const response = await axios.post(`${API_BASE_URL}/api/user/booking/checkout`, paymentData, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
         });
 
-        console.log("RESPONSE",response);
-        
-        if (!response.ok) {
+        console.log("RESPONSE", response);
+
+        if (response.status !== 200) {
             throw new Error("Failed to create checkout session");
         }
-        
-        const session = await response.json();
 
-        console.log("SESSION",session);
+        const session = response.data;
+
+        console.log("SESSION", session);
 
         const result = stripe?.redirectToCheckout({
             sessionId: session.id
@@ -444,6 +445,7 @@ export const createCheckoutSession = async (paymentData: PaymentData) => {
         throw new Error("Failed to initiate payment");
     }
 }
+
 
 
 export const loadBookings = async (query: string): Promise<BookingType[]> => {
