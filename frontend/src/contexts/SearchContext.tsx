@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { SearchContext } from "../../../types/types";
+import type { SearchContext } from "../../../types/types";
 const SearchContext = React.createContext<SearchContext | undefined>(undefined);
 
 type SearchContextProviderProps = {

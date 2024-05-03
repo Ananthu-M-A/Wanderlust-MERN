@@ -26,8 +26,9 @@ export const sessionPayment =
             res.json({ id: session.id });
 
         } catch (error) {
-            console.log("Error in creating session payment", error);
-        }
+            console.error("Error in creating session payment:", error);
+            res.status(500).json({ error: 'An error occurred' });
+        }        
     }
 
 export const retrievePaymentId = async (sessionId: any) => {
