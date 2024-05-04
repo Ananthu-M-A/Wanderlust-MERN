@@ -35,10 +35,7 @@ const app = express();
 const server = http.createServer(app);
 messageSocket(server);
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-}));
+app.use(cors());
 app.options('/api/user/booking/checkout', (req: Request, res: Response) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.status(200).end();
