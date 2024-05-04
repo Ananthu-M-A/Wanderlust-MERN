@@ -23,6 +23,8 @@ export const sessionPayment =
                 mode: "payment",
                 success_url, cancel_url,
             });
+            console.log(session);
+            
             res.json({ id: session.id });
 
         } catch (error) {
