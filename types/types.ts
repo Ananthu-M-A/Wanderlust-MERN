@@ -285,5 +285,4 @@ export type PaymentData = {
     foodPrice?: number,
     foodCount?: number,
     restaurantId?: string
-    auth_token?: string
 }

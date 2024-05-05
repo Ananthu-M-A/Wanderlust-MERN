@@ -412,12 +412,13 @@ export const createCheckoutSession = async (paymentData: PaymentData) => {
         const session = response.data;
 
         console.log("SESSION", session);
+        console.log(response)
+        // const result = stripe?.redirectToCheckout({
+        //     sessionId: session.id
+        // });
 
-        const result = stripe?.redirectToCheckout({
-            sessionId: session.id
-        });
-
-        console.log("Redirecting to checkout...", result);
+        // console.log("Redirecting to checkout...", result);
+        window.location.assign(session.url)
     } catch (error) {
         console.error("Error creating checkout session:", error);
         throw new Error("Failed to initiate payment");
