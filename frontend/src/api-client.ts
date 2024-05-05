@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
-import { loadStripe } from "@stripe/stripe-js";
 import { BookingData, BookingType, HotelType, LoginFormData, PaymentData, RegisterFormData, ResetPasswordFormData, RestaurantType, SearchBookingResponse, SearchHotelResponse, SearchParams, SearchRestaurantParams, SearchRestaurantResponse, SearchUserResponse, UserType } from '../../types/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
 
 export const loadCurrentUser = async (): Promise<UserType> => {
     try {
@@ -394,30 +392,16 @@ export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => 
 
 export const createCheckoutSession = async (paymentData: PaymentData) => {
     try {
-        const stripe = await loadStripe(PUBLIC_KEY);
-
         const response = await axios.post(`${API_BASE_URL}/api/user/booking/checkout`, paymentData, {
             headers: {
                 'Content-Type': 'application/json'
             },
             withCredentials: true
         });
-
-        console.log("RESPONSE", response);
-
         if (response.status !== 200) {
             throw new Error("Failed to create checkout session");
         }
-
         const session = response.data;
-
-        console.log("SESSION", session);
-        console.log(response)
-        // const result = stripe?.redirectToCheckout({
-        //     sessionId: session.id
-        // });
-
-        // console.log("Redirecting to checkout...", result);
         window.location.assign(session.url)
     } catch (error) {
         console.error("Error creating checkout session:", error);

@@ -36,17 +36,10 @@ const app = express();
 const server = http.createServer(app);
 messageSocket(server);
 
-const allowedOrigins = [process.env.FRONTEND_URL, "https://checkout.stripe.com"]; // Add more frontend URLs as needed
 app.use(morgan("dev"))
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: process.env.FRONTEND_URL,
+  credentials: true
 }));
 
 app.use(express.json());

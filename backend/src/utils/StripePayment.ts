@@ -22,9 +22,7 @@ export const sessionPayment =
                 line_items: bookingData,
                 mode: "payment",
                 success_url, cancel_url,
-            });
-            console.log(session);
-            
+            });            
             res.json({ ...session });
 
         } catch (error) {
