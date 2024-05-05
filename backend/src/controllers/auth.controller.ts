@@ -125,7 +125,11 @@ export const userLogin = async (req: Request, res: Response) => {
             process.env.JWT_SECRET_KEY as string,
             { expiresIn: '1d' },
         );
-        res.cookie("auth_token", token);
+        res.cookie("auth_token", token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 86400000
+        });
         return res.status(200).json({ userId: user._id });
     } catch (error) {
         console.log("Error in user login", error);
