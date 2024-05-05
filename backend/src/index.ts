@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 import http from 'http';
 import messageSocket from './sockets/messageSocket';
@@ -26,7 +26,7 @@ const store = new MongoDBStoreSession({
   collection: 'sessions'
 });
 
-store.on('error', function (error: any) {
+store.on('error', function(error: any) {
   console.error('MongoDBStore error:', error);
 });
 
@@ -35,22 +35,21 @@ const app = express();
 const server = http.createServer(app);
 messageSocket(server);
 
-app.use(cors());
-app.options('/api/user/booking/checkout', (req: Request, res: Response) => {
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.status(200).end();
-});
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
-  secret: process.env.SESSION_SECRET || "Secret",
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    maxAge: 86400000,
-  },
-  store: store
+    secret: process.env.SESSION_SECRET || "Secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 86400000,
+    },
+    store: store
 }));
 
 app.use("/api/user", authRouter);
@@ -67,5 +66,5 @@ app.use("/api/admin/bookings", bookingsRouter);
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+    console.log(`Server started on port ${PORT}`);
 });

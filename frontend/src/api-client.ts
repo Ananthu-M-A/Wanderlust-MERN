@@ -400,7 +400,7 @@ export const createCheckoutSession = async (paymentData: PaymentData) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            withCredentials: true
+            // withCredentials: true
         });
 
         console.log("RESPONSE", response);
