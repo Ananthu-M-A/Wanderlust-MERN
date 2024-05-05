@@ -25,7 +25,7 @@ export const sessionPayment =
             });
             console.log(session);
             
-            res.json({ id: session.id });
+            // res.json({ id: session.id });
 
         } catch (error) {
             console.error("Error in creating session payment:", error);
