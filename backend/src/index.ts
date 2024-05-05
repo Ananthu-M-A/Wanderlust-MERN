@@ -26,7 +26,7 @@ const store = new MongoDBStoreSession({
   collection: 'sessions'
 });
 
-store.on('error', function(error: any) {
+store.on('error', function (error: any) {
   console.error('MongoDBStore error:', error);
 });
 
@@ -35,21 +35,30 @@ const app = express();
 const server = http.createServer(app);
 messageSocket(server);
 
+const allowedOrigins = [process.env.FRONTEND_URL, "https://checkout.stripe.com"]; // Add more frontend URLs as needed
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
-    secret: process.env.SESSION_SECRET || "Secret",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 86400000,
-    },
-    store: store
+  secret: process.env.SESSION_SECRET || "Secret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 86400000,
+  },
+  store: store
 }));
 
 app.use("/api/user", authRouter);
@@ -66,5 +75,5 @@ app.use("/api/admin/bookings", bookingsRouter);
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
+  console.log(`Server started on port ${PORT}`);
 });
