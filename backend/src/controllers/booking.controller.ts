@@ -116,7 +116,7 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
         if (hotelId) {
             const paymentData = req.session.paymentData;
             const sessionId = req.query.session_id;
-            const paymentIntentId = await retrievePaymentId(sessionId);
+            const paymentIntentId = await retrievePaymentId(sessionId as string);
             const roomDetails = {
                 roomType: paymentData.roomType,
                 roomPrice: paymentData.roomPrice,
@@ -157,7 +157,7 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
         } else if (restaurantId) {
             const paymentData = req.session.paymentData;
             const sessionId = req.query.session_id;
-            const paymentIntentId = await retrievePaymentId(sessionId);
+            const paymentIntentId = await retrievePaymentId(sessionId as string);
             const foodDetails = {
                 foodItem: paymentData.foodItem,
                 foodPrice: paymentData.foodPrice,

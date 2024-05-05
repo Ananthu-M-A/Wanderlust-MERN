@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import * as apiClient from "../../../api-client";
 import ConfirmModal from "../../../components/ConfirmModal";
+import { BookingType } from "../../../../../types/types";
 
 const Bookings = () => {
     const { bookingId } = useParams<{ bookingId?: string }>();
@@ -73,7 +74,7 @@ const Bookings = () => {
                 <div className="max-h-[500px] overflow-y-auto">
                     {(searchData === "") &&
                         <h6 className="ml-2">Showing latest bookings...</h6>}
-                    {sortedFilteredBookings?.length ? sortedFilteredBookings.map((booking: any) => (
+                    {sortedFilteredBookings?.length ? sortedFilteredBookings.map((booking: BookingType) => (
                         <div key={booking._id} className="bg-white rounded shadow p-4 hover:shadow-lg scroll">
                             <div className="flex justify-between">
                                 {booking.hotelId && (<>

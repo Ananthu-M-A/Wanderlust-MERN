@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Socket } from "socket.io-client";
 
 type Props = {
-    socket: any;
+    socket: Socket;
     name: string;
     roomId: string;
 }

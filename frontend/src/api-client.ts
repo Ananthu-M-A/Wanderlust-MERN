@@ -56,8 +56,6 @@ export const resetPassword = async (formData: ResetPasswordFormData) => {
 }
 
 export const updateProfile = async (formData: FormData) => {
-    console.log(formData);
-
     try {
         const response = await axios.put(`${API_BASE_URL}/api/user/profile/update`, formData, {
             withCredentials: true

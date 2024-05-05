@@ -18,8 +18,10 @@ const LogoutButton = ({ isAdmin }: Props) => {
             showToast({ message: "Logged out Successfully!", type: "SUCCESS" });
             navigate("/adminLogin");
         },
-        onError: (error: any) => { showToast({ message: error.message, type: "ERROR" }) },
-
+        onError: (error) => {
+            if(error instanceof Error)
+            showToast({ message: error.message, type: "ERROR" })
+        },
     });
 
     const mutationUser = useMutation(apiClient.logout, {
@@ -28,8 +30,10 @@ const LogoutButton = ({ isAdmin }: Props) => {
             showToast({ message: "Loggedout Successfully!", type: "SUCCESS" });
             navigate("/");
         },
-        onError: (error: any) => { showToast({ message: error.message, type: "ERROR" }) },
-
+        onError: (error) => { 
+            if(error instanceof Error)
+            showToast({ message: error.message, type: "ERROR" }) 
+        },
     });
 
     const handleClick = () => {
@@ -39,7 +43,7 @@ const LogoutButton = ({ isAdmin }: Props) => {
 
     return (
         <button onClick={handleClick}
-            className={ `px-4 py-2 cursor-pointer text-blue-300 font-bold hover:text-white`}>Logout</button>
+            className={`px-4 py-2 cursor-pointer text-blue-300 font-bold hover:text-white`}>Logout</button>
     );
 }
 

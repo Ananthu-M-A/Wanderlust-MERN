@@ -1,4 +1,6 @@
-export const constructSearchHotelQuery = (queryParams: any) => {
+import { BookingBotSearchParams, HotelSearchParams, UserSearchParams } from "../../../types/types";
+
+export const constructSearchHotelQuery = (queryParams: HotelSearchParams) => {
     let searchQuery: any = {};
 
     if (queryParams.destination) {
@@ -54,7 +56,7 @@ export const constructSearchHotelQuery = (queryParams: any) => {
     return searchQuery;
 };
 
-export const bookingBotSearchQuery = (queryParams: any) => {
+export const bookingBotSearchQuery = (queryParams: BookingBotSearchParams) => {
     let constructedQuery: any = {};
     if (queryParams.destination) {
         constructedQuery.$or = [
@@ -66,7 +68,7 @@ export const bookingBotSearchQuery = (queryParams: any) => {
     return constructedQuery
 };
 
-export const constructSearchQuery = (queryParams: any) => {
+export const constructSearchQuery = (queryParams: UserSearchParams) => {
     let constructedQuery: any = {};
     if (queryParams.destination) {
         constructedQuery.$or = [

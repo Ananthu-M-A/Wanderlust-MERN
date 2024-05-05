@@ -31,7 +31,7 @@ export const sessionPayment =
         }        
     }
 
-export const retrievePaymentId = async (sessionId: any) => {
+export const retrievePaymentId = async (sessionId: string) => {
     try {
         const session = await stripe.checkout.sessions.retrieve(sessionId);
         const paymentIntentId = session.payment_intent;

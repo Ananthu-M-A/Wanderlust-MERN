@@ -4,7 +4,7 @@ import "react-chatbotify/dist/react-chatbotify.css";
 import * as apiClient from "../../api-client";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FoodItem, HotelType, OpeningHour, RestaurantType, RoomType } from "../../../../types/types";
+import { FoodItem, HotelType, OpeningHour, PaymentData, RestaurantType, RoomType } from "../../../../types/types";
 import { useMutation } from "react-query";
 import { useAppContext } from "../../contexts/AppContext";
 import { FoodItems } from "../../../../types/Enums";
@@ -70,7 +70,7 @@ const MyChatBot = () => {
     },
   });
 
-  const handlePayment = async (paymentData: any) => {
+  const handlePayment = async (paymentData: PaymentData) => {
     try {
       const response = mutate(paymentData);
       console.log("Response:", response);

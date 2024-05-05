@@ -286,3 +286,21 @@ export type PaymentData = {
     foodCount?: number,
     restaurantId?: string
 }
+
+export type HotelSearchParams = {
+    destination?: string;
+    adultCount?: string;
+    childCount?: string;
+    facilities?: string[] | string;
+    types?: string[] | string;
+    stars?: number[] | number;
+    maxPrice?: string;
+}
+
+export type BookingBotSearchParams = {
+    destination?: string;
+}
+
+export type UserSearchParams = {
+    destination?: string;
+}

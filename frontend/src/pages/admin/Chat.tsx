@@ -1,10 +1,10 @@
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import ChatWindow from '../../components/ChatWindow';
 import '../../index.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const socket = io(API_BASE_URL);
+const socket: Socket = io(API_BASE_URL);
 
 const Chat = () => {
     const [name] = useState<string>("DemoAdmin");
