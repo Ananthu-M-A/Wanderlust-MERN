@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import http from 'http';
 import messageSocket from './sockets/messageSocket';
+import morgan from "morgan"
 import "dotenv/config";
 import { connectDb } from './utils/MongoDB';
 import MongoDBStore from 'connect-mongodb-session';
@@ -36,7 +37,7 @@ const server = http.createServer(app);
 messageSocket(server);
 
 const allowedOrigins = [process.env.FRONTEND_URL, "https://checkout.stripe.com"]; // Add more frontend URLs as needed
-
+app.use(morgan("dev"))
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
