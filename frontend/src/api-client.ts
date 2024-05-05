@@ -5,9 +5,12 @@ import { BookingData, BookingType, HotelType, LoginFormData, PaymentData, Regist
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUB_KEY;
 
+
+const instance = axios.create({timeout:30000})
+
 export const loadCurrentUser = async (): Promise<UserType> => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/admin/users/load-user`, {
+        const response = await instance.get(`${API_BASE_URL}/api/admin/users/load-user`, {
             withCredentials: true,
         });
         return response.data;
@@ -18,7 +21,7 @@ export const loadCurrentUser = async (): Promise<UserType> => {
 
 export const loadAccount = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/user/profile`, {
+        const response = await instance.get(`${API_BASE_URL}/api/user/profile`, {
             withCredentials: true,
         });
         return response.data;
@@ -29,7 +32,7 @@ export const loadAccount = async () => {
 
 export const register = async (formData: RegisterFormData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/user/register`, formData, {
+        const response = await instance.post(`${API_BASE_URL}/api/user/register`, formData, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -44,7 +47,7 @@ export const register = async (formData: RegisterFormData) => {
 
 export const resetPassword = async (formData: ResetPasswordFormData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/user/reset-password`, formData, {
+        const response = await instance.post(`${API_BASE_URL}/api/user/reset-password`, formData, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -61,7 +64,7 @@ export const updateProfile = async (formData: FormData) => {
     console.log(formData);
 
     try {
-        const response = await axios.put(`${API_BASE_URL}/api/user/profile/update`, formData, {
+        const response = await instance.put(`${API_BASE_URL}/api/user/profile/update`, formData, {
             withCredentials: true
         });
 
@@ -73,7 +76,7 @@ export const updateProfile = async (formData: FormData) => {
 
 export const verifyRegistration = async (otp: string) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/user/verify-registration`, { otp }, {
+        const response = await instance.post(`${API_BASE_URL}/api/user/verify-registration`, { otp }, {
             headers: {
                 "Content-Type": "application/json"
             },
@@ -88,7 +91,7 @@ export const verifyRegistration = async (otp: string) => {
 
 export const verifyResetPassword = async (otp: string) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/user/verify-reset-password`, { otp }, {
+        const response = await instance.post(`${API_BASE_URL}/api/user/verify-reset-password`, { otp }, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -103,7 +106,7 @@ export const verifyResetPassword = async (otp: string) => {
 
 export const login = async (formData: LoginFormData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/user/login`, formData, {
+        const response = await instance.post(`${API_BASE_URL}/api/user/login`, formData, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -119,7 +122,7 @@ export const login = async (formData: LoginFormData) => {
 
 export const validateAdminToken = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/admin/validate-token`, {
+        const response = await instance.get(`${API_BASE_URL}/api/admin/validate-token`, {
             withCredentials: true,
         });
         return response.data;
@@ -130,7 +133,7 @@ export const validateAdminToken = async () => {
 
 export const logout = async () => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/user/logout`, null, {
+        const response = await instance.post(`${API_BASE_URL}/api/user/logout`, null, {
             withCredentials: true,
         });
         return response.data;
@@ -142,7 +145,7 @@ export const logout = async () => {
 
 export const adminLogout = async () => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/admin/logout`, {}, {
+        const response = await instance.post(`${API_BASE_URL}/api/admin/logout`, {}, {
             withCredentials: true
         });
         return response.data;
@@ -153,7 +156,7 @@ export const adminLogout = async () => {
 
 export const addHotel = async (hotelFormData: FormData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/admin/hotels/create-hotel`, hotelFormData, {
+        const response = await instance.post(`${API_BASE_URL}/api/admin/hotels/create-hotel`, hotelFormData, {
             withCredentials: true,
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -167,7 +170,7 @@ export const addHotel = async (hotelFormData: FormData) => {
 
 export const addRestaurant = async (restaurantFormData: FormData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/admin/restaurants/create-restaurant`, restaurantFormData, {
+        const response = await instance.post(`${API_BASE_URL}/api/admin/restaurants/create-restaurant`, restaurantFormData, {
             withCredentials: true,
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -185,7 +188,7 @@ export const loadHotels = async (searchParams: SearchParams): Promise<SearchHote
     queryParams.append("page", searchParams.page || "");
 
     try {
-        const response: AxiosResponse<SearchHotelResponse> = await axios.get(`${API_BASE_URL}/api/admin/hotels`, {
+        const response: AxiosResponse<SearchHotelResponse> = await instance.get(`${API_BASE_URL}/api/admin/hotels`, {
             params: queryParams,
             withCredentials: true
         });
@@ -202,7 +205,7 @@ export const loadRestaurants = async (searchParams: SearchParams): Promise<Searc
     queryParams.append("page", searchParams.page || "");
 
     try {
-        const response: AxiosResponse<SearchRestaurantResponse> = await axios.get(`${API_BASE_URL}/api/admin/restaurants`, {
+        const response: AxiosResponse<SearchRestaurantResponse> = await instance.get(`${API_BASE_URL}/api/admin/restaurants`, {
             params: queryParams,
             withCredentials: true
         });
@@ -215,7 +218,7 @@ export const loadRestaurants = async (searchParams: SearchParams): Promise<Searc
 
 export const blockHotel = async (hotelId: string) => {
     try {
-        await axios.put(`${API_BASE_URL}/api/admin/hotels/${hotelId}/block`, null, {
+        await instance.put(`${API_BASE_URL}/api/admin/hotels/${hotelId}/block`, null, {
             withCredentials: true,
         });
     } catch (error) {
@@ -225,7 +228,7 @@ export const blockHotel = async (hotelId: string) => {
 
 export const unblockHotel = async (hotelId: string) => {
     try {
-        await axios.put(`${API_BASE_URL}/api/admin/hotels/${hotelId}/unblock`, null, {
+        await instance.put(`${API_BASE_URL}/api/admin/hotels/${hotelId}/unblock`, null, {
             withCredentials: true,
         });
     } catch (error) {
@@ -235,7 +238,7 @@ export const unblockHotel = async (hotelId: string) => {
 
 export const blockRestaurant = async (restaurantId: string) => {
     try {
-        await axios.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/block`, null, {
+        await instance.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/block`, null, {
             withCredentials: true,
         });
     } catch (error) {
@@ -245,7 +248,7 @@ export const blockRestaurant = async (restaurantId: string) => {
 
 export const unblockRestaurant = async (restaurantId: string) => {
     try {
-        await axios.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/unblock`, null, {
+        await instance.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}/unblock`, null, {
             withCredentials: true,
         });
     } catch (error) {
@@ -255,7 +258,7 @@ export const unblockRestaurant = async (restaurantId: string) => {
 
 export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
     try {
-        const response: AxiosResponse<HotelType> = await axios.get(`${API_BASE_URL}/api/admin/hotels/${hotelId}`, {
+        const response: AxiosResponse<HotelType> = await instance.get(`${API_BASE_URL}/api/admin/hotels/${hotelId}`, {
             withCredentials: true
         });
         return response.data;
@@ -266,7 +269,7 @@ export const loadHotelById = async (hotelId: string): Promise<HotelType> => {
 
 export const loadRestaurantById = async (restaurantId: string): Promise<RestaurantType> => {
     try {
-        const response: AxiosResponse<RestaurantType> = await axios.get(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}`, {
+        const response: AxiosResponse<RestaurantType> = await instance.get(`${API_BASE_URL}/api/admin/restaurants/${restaurantId}`, {
             withCredentials: true
         });
         return response.data;
@@ -277,7 +280,7 @@ export const loadRestaurantById = async (restaurantId: string): Promise<Restaura
 
 export const updateHotelById = async (hotelFormData: FormData) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/api/admin/hotels/${hotelFormData.get("hotelId")}/update`, hotelFormData, {
+        const response = await instance.put(`${API_BASE_URL}/api/admin/hotels/${hotelFormData.get("hotelId")}/update`, hotelFormData, {
             withCredentials: true
         });
         return response.data;
@@ -288,7 +291,7 @@ export const updateHotelById = async (hotelFormData: FormData) => {
 
 export const updateRestaurantById = async (restaurantFormData: FormData) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantFormData.get("restaurantId")}/update`, restaurantFormData, {
+        const response = await instance.put(`${API_BASE_URL}/api/admin/restaurants/${restaurantFormData.get("restaurantId")}/update`, restaurantFormData, {
             withCredentials: true
         });
         return response.data;
@@ -303,7 +306,7 @@ export const loadUsers = async (searchParams: SearchParams): Promise<SearchUserR
     queryParams.append("page", searchParams.page || "");
 
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/admin/users`, {
+        const response = await instance.get(`${API_BASE_URL}/api/admin/users`, {
             params: queryParams,
             withCredentials: true
         });
@@ -315,7 +318,7 @@ export const loadUsers = async (searchParams: SearchParams): Promise<SearchUserR
 
 export const blockUser = async (userId: string) => {
     try {
-        await axios.put(`${API_BASE_URL}/api/admin/users/${userId}/block`, null, {
+        await instance.put(`${API_BASE_URL}/api/admin/users/${userId}/block`, null, {
             withCredentials: true
         });
     } catch (error) {
@@ -325,7 +328,7 @@ export const blockUser = async (userId: string) => {
 
 export const unblockUser = async (userId: string) => {
     try {
-        await axios.put(`${API_BASE_URL}/api/admin/users/${userId}/unblock`, null, {
+        await instance.put(`${API_BASE_URL}/api/admin/users/${userId}/unblock`, null, {
             withCredentials: true
         });
     } catch (error) {
@@ -349,7 +352,7 @@ export const searchHotels = async (searchParams: SearchParams): Promise<SearchHo
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/user/home/search-hotels`, {
+        const response = await instance.get(`${API_BASE_URL}/api/user/home/search-hotels`, {
             params: queryParams
         });
         return response.data;
@@ -374,7 +377,7 @@ export const searchRestaurants = async (searchParams: SearchRestaurantParams): P
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/user/home/search-restaurants`, {
+        const response = await instance.get(`${API_BASE_URL}/api/user/home/search-restaurants`, {
             params: queryParams
         });
         return response.data;
@@ -385,7 +388,7 @@ export const searchRestaurants = async (searchParams: SearchRestaurantParams): P
 
 export const loadHotelHomeById = async (hotelId: string): Promise<HotelType> => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/user/home/search-hotels/${hotelId}`);
+        const response = await instance.get(`${API_BASE_URL}/api/user/home/search-hotels/${hotelId}`);
         return response.data;
     } catch (error) {
         throw new Error("Failed to update hotels");
@@ -396,7 +399,7 @@ export const createCheckoutSession = async (paymentData: PaymentData) => {
     try {
         const stripe = await loadStripe(PUBLIC_KEY);
 
-        const response = await axios.post(`${API_BASE_URL}/api/user/booking/checkout`, paymentData, {
+        const response = await instance.post(`${API_BASE_URL}/api/user/booking/checkout`, paymentData, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -428,7 +431,7 @@ export const loadBookings = async (query: string): Promise<BookingType[]> => {
     try {
         console.log(query);
 
-        const response = await axios.get(`${API_BASE_URL}/api/user/booking/bookings?bookingId=${query}`, {
+        const response = await instance.get(`${API_BASE_URL}/api/user/booking/bookings?bookingId=${query}`, {
             withCredentials: true
         });
 
@@ -441,7 +444,7 @@ export const loadBookings = async (query: string): Promise<BookingType[]> => {
 
 export const downloadDoc = async (bookingId: string) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/user/booking/${bookingId}/receipt`, {
+        const response = await instance.get(`${API_BASE_URL}/api/user/booking/${bookingId}/receipt`, {
             responseType: 'blob',
             headers: {
                 'Content-Type': 'application/pdf',
@@ -459,7 +462,7 @@ export const downloadDoc = async (bookingId: string) => {
 
 export const cancelBooking = async (bookingId: string) => {
     try {
-        await axios.put(`${API_BASE_URL}/api/user/booking/${bookingId}/cancel`, null, {
+        await instance.put(`${API_BASE_URL}/api/user/booking/${bookingId}/cancel`, null, {
             withCredentials: true
         });
     } catch (error) {
@@ -469,7 +472,7 @@ export const cancelBooking = async (bookingId: string) => {
 
 export const adminLogin = async (formData: LoginFormData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/admin/login`, formData, {
+        const response = await instance.post(`${API_BASE_URL}/api/admin/login`, formData, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -486,7 +489,7 @@ export const loadBookingsTable = async (BookingData: BookingData): Promise<Searc
         const queryParams = new URLSearchParams();
         queryParams.append("bookingId", BookingData.bookingId || "");
         queryParams.append("page", BookingData.page || "");
-        const response = await axios.get(`${API_BASE_URL}/api/admin/bookings?${queryParams}`, {
+        const response = await instance.get(`${API_BASE_URL}/api/admin/bookings?${queryParams}`, {
             withCredentials: true
         });
         return response.data;
@@ -498,7 +501,7 @@ export const loadBookingsTable = async (BookingData: BookingData): Promise<Searc
 
 export const loadBookingDetails = async (bookingId: string) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
+        const response = await instance.get(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
             withCredentials: true
         });
         return response.data;
@@ -510,7 +513,7 @@ export const loadBookingDetails = async (bookingId: string) => {
 
 export const validateToken = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/user/validate-token`, {
+        const response = await instance.get(`${API_BASE_URL}/api/user/validate-token`, {
             withCredentials: true
         });
         return response.data;
