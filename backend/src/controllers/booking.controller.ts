@@ -223,11 +223,11 @@ export const bookings = async (req: Request, res: Response) => {
         let allBookings: BookingType[] = [];
 
         if (bookingId && (bookingId?.length === 24)) {
-            const bookings = await Booking.find({ _id: bookingId }).populate("hotelId").populate("restaurantId");
+            const bookings = await Booking.find({ _id: bookingId, userId: req.userId }).populate("hotelId").populate("restaurantId");
             allBookings = bookings;
 
         } else {
-            const bookings = await Booking.find().populate("hotelId").populate("restaurantId");
+            const bookings = await Booking.find({userId: req.userId}).populate("hotelId").populate("restaurantId");
             allBookings = bookings;
         }
 
