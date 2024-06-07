@@ -69,3 +69,8 @@ export enum PriceList {
     FIFTEEN_THOUSAND = 15000, 
     THIRTY_THOUSAND = 30000
 }
+
+export enum UserRole {
+    Admin = "admin",
+    User = "user"
+}

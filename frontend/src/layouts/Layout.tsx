@@ -3,6 +3,7 @@ import Header from "../components/header/Header";
 import Hero from "../components/header/Hero";
 import SearchBar from "../components/search/SearchBar";
 import { useLocation } from "react-router-dom";
+import Footer from "../components/footer/Footer";
 
 interface Props {
     children: React.ReactNode;
@@ -33,6 +34,7 @@ const Layout = ({ children }: Props) => {
             <div className="container mx-auto py-10 flex-1">
                 {children}
             </div>
+            <Footer />
         </div>
     )
 };
