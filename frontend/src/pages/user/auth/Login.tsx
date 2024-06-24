@@ -33,7 +33,7 @@ const Login = () => {
     }, [isLoggedIn])
 
     return (
-        <form className="flex flex-col gap-5" onSubmit={onSubmit}>
+        <form className="flex flex-col gap-5 bg-gray-100 p-5 rounded" onSubmit={onSubmit}>
             <h2 className="text-3xl font-bold">Login</h2>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Email

@@ -1,6 +1,5 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useSearchContext } from "../../contexts/SearchContext";
-import { MdRestore, MdTravelExplore } from "react-icons/md";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,6 +12,7 @@ const SearchBar = () => {
     const [data, setData] = useState<string[]>([]);
     const [place, setPlace] = useState<string>();
     const { pathname } = useLocation();
+    const searchRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         console.log("hotel names", data);
@@ -49,13 +49,7 @@ const SearchBar = () => {
         event.preventDefault();
         search.saveSearchValues(destination, checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);
         navigate("/search");
-    };
-
-    const handleClear = (event: FormEvent) => {
-        event.preventDefault();
-        search.clearSearchValues();
-        navigate("/search");
-        window.location.reload();
+        scrollToSection(searchRef);
     };
 
     const checkInMinDate = new Date();
@@ -72,47 +66,57 @@ const SearchBar = () => {
         search.saveSearchValues(destination[0], checkIn, checkOut, adultCount, childCount, roomType, roomCount, roomPrice, totalCost);
     };
 
+    const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+        if (ref.current) {
+            ref.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
-        <form onSubmit={handleSubmit}
-            className="-mt-16 p-3 bg-black rounded shadow-md grid gid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4">
-            <div>
-                <DatePicker
-                    selected={checkIn} selectsStart minDate={checkInMinDate} maxDate={maxDate}
-                    placeholderText="Check-in Date" wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none"
-                    onChange={(date: Date) => {
-                        setCheckIn(date);
-                        const newDate = new Date(date.getTime());
-                        newDate.setDate(newDate.getDate() + 1);
-                        setCheckOut(newDate);
-                    }}
-                />
+        <form onSubmit={handleSubmit} className="w-full md:w-1/2 mx-auto my-10 py-5 px-4 md:px-10 bg-gray-100 rounded shadow-md grid grid-cols-1 gap-4">
+            <h1 className="text-black text-xl font-bold text-center">Hotels</h1>
+            <div className="flex flex-col md:flex-row w-full gap-4">
+                <label className="flex-1">
+                    Check-In:
+                    <DatePicker
+                        selected={checkIn} selectsStart minDate={checkInMinDate} maxDate={maxDate}
+                        placeholderText="Check-in Date" className="w-full p-2 border-2"
+                        onChange={(date: Date) => {
+                            setCheckIn(date);
+                            const newDate = new Date(date.getTime());
+                            newDate.setDate(newDate.getDate() + 1);
+                            setCheckOut(newDate);
+                        }}
+                    />
+                </label>
+                <label className="flex-1">
+                    Check-Out:
+                    <DatePicker
+                        selected={checkOut} startDate={checkIn} endDate={checkOut}
+                        minDate={checkOutMinDate} maxDate={maxDate} placeholderText="Check-out Date"
+                        onChange={(date) => setCheckOut(date as Date)}
+                        className="w-full p-2 border-2"
+                    />
+                </label>
             </div>
-            <div className="flex bg-white px-2 py-1 gap-2">
-                <label className="items-center flex">
+            <div className="flex flex-col md:flex-row w-full gap-4">
+                <label className="flex-1">
                     Adults:
                     <input type="number" min={1} max={20} value={adultCount}
-                        className="w-full p-1 focus:outline-none font-bold"
+                        className="w-full p-2 border-2"
                         onChange={(event) => setAdultCount(parseInt(event.target.value))} />
                 </label>
-                <label className="items-center flex">
+                <label className="flex-1">
                     Children:
                     <input type="number" min={0} max={20} value={childCount}
-                        className="w-full p-1 focus:outline-none font-bold"
+                        className="w-full p-2 border-2"
                         onChange={(event) => setChildCount(parseInt(event.target.value))} />
                 </label>
             </div>
-            <div>
-                <DatePicker
-                    selected={checkOut} startDate={checkIn} endDate={checkOut}
-                    minDate={checkOutMinDate} maxDate={maxDate} placeholderText="Check-out Date"
-                    onChange={(date) => setCheckOut(date as Date)}
-                    wrapperClassName="min-w-full" className="min-w-full bg-white p-2 focus:outline-none"
-                />
-            </div>
-            <div className="flex bg-white px-2 py-1 gap-2">
-                <label className="items-center flex">
+            <div className="flex flex-col md:flex-row w-full gap-4">
+                <label className="flex-1">
                     Room:
-                    <select value={roomType} className="p-2 focus:outline-none font-bold"
+                    <select value={roomType} className="w-full p-2 border-2"
                         onChange={(event) => setRoomType(event.target.value)}>
                         <option value="">Select Type</option>
                         {Object.values(RoomTypes).map((roomType, index) => (
@@ -120,26 +124,21 @@ const SearchBar = () => {
                         ))}
                     </select>
                 </label>
-                <label className="items-center flex">
+                <label className="flex-1">
                     Count:
                     <input type="number" min={1} max={20} value={roomCount}
-                        className="w-full p-1 focus:outline-none font-bold"
+                        className="w-full p-2 border-2"
                         onChange={(event) => setRoomCount(parseInt(event.target.value))} />
                 </label>
             </div>
-            <div className="flex flex-row items-center flex-1 bg-white p-2">
-                <button
-                    className="w-100 font-bold text-xl hover:text-blue-600">
-                    <MdTravelExplore size={25} className="mr-2" />
-                </button>
-                <input placeholder="Where are you going?" value={destination}
-                    className="text-md w-full focus:outline-none"
+            <div className="flex items-center w-full gap-2 p-2 border-2">
+                <input placeholder="Enter destination?" value={destination}
+                    className="flex-1 p-2 border-2"
                     onChange={(event) => { setDestination(event.target.value) }} />
-                <button onClick={handleClear}
-                    className="w-100 font-bold text-xl hover:text-red-600">
-                    <MdRestore size={25} className="ml-2" />
-                </button>
             </div>
+            <button type="submit" className="mx-auto px-10 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-300">
+                SEARCH
+            </button>
             <GoogleMap searchInput={searchInput} onInputChange={handleSearchInputChange} sendDataToParent={handleData} />
         </form>
     )

@@ -4,8 +4,11 @@ export default {
   theme: {
     extend: {
       backgroundImage: theme => ({
-        'img': "url('/hero-cover.jpg')",
+        'img': "url('/hero-cover1.jpg')",
       }),
+      colors:{
+        headerColor: '#2067da'
+      }
     },
   },
   plugins: [],
