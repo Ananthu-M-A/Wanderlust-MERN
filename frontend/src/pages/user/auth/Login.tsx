@@ -17,7 +17,7 @@ const Login = () => {
         onSuccess: async () => {
             showToast({ message: "Login Successful!", type: "SUCCESS" });
             await queryClient.invalidateQueries("validateToken");
-            navigate(location.state?.from?.pathname || "/");
+            navigate(location.state?.from?.pathname || "/search");
         },
         onError: (error: Error) => { showToast({ message: error.message, type: "ERROR" }) },
     });
@@ -28,7 +28,7 @@ const Login = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            navigate("/");
+            navigate("/search");
         }
     }, [isLoggedIn])
 

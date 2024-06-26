@@ -21,9 +21,9 @@ const Header = () => {
   const activeClassNameProp = { activeClassName: "active-link" };
 
   return (
-    <div className="bg-white py-4 top-0 z-50">
+    <div className="bg-gray-200 py-4 top-0 z-50">
       <div className="container mx-auto flex justify-between items-center flex-wrap">
-        <Link to="/" className="text-3xl text-white font-bold tracking-tight mb-4 md:mb-0">
+        <Link to="/search" className="text-3xl text-white font-bold tracking-tight mb-4 md:mb-0">
           <img src="/logonobg2.png" style={{ height: "35px" }} alt="" />
           {isAdminLoggedIn && <span className='text-sm flex'><Link to="/admin/dashboard" >ADMIN</Link></span>}
         </Link>

@@ -13,13 +13,10 @@ const Layout = ({ children }: Props) => {
     const { pathname } = useLocation();
     const [showComponent, setShowComponent] = useState(true);
     useEffect(() => {
-        if ((pathname.startsWith("/admin")) || (pathname === "/adminLogin") ||
-            (pathname === "/login") || (pathname === "/register") ||
-            (pathname === "/reset-password") || (pathname === "/home/account") ||
-            (pathname === "/home/help")) {
-            setShowComponent(false);
-        } else {
+        if (pathname.startsWith("/search")) {
             setShowComponent(true);
+        } else {
+            setShowComponent(false);
         }
     }, [pathname]);
     return (
