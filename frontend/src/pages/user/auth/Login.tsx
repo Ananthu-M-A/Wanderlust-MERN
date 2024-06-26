@@ -33,7 +33,7 @@ const Login = () => {
     }, [isLoggedIn])
 
     return (
-        <form className="flex flex-col gap-5 bg-gray-100 p-5 rounded" onSubmit={onSubmit}>
+        <form className="flex flex-col gap-5 bg-gray-200 p-5 rounded" onSubmit={onSubmit}>
             <h2 className="text-3xl font-bold">Login</h2>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Email
@@ -65,7 +65,7 @@ const Login = () => {
                 </span>
 
                 <button type="submit"
-                    className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
+                    className="mx-auto px-10 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 mr-0 hover:bg-blue-500">
                     Login
                 </button>
             </span>

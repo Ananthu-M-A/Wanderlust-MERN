@@ -10,17 +10,17 @@ const BookingResultPage = () => {
   },[]);
   return (
     <div className="flex items-center justify-center">
-      <div className="max-w-md p-8 bg-white shadow-lg rounded-lg">
+      <div className="max-w-md p-8 bg-gray-200 border border-slate-300 shadow-lg rounded-lg">
         <h2 className="text-2xl font-semibold mb-4">Booking Successful!</h2>
         <p className="text-gray-700 mb-4">Thank you for booking another hotel.</p>
         <p className="text-gray-700 mb-4">Your hotel booking has been successfully placed.</p>
         <p className="text-gray-700 mb-4">Booking ID: {bookingId}</p>
         <p className="text-gray-700 mb-4"></p>
         <div className='flex items-center justify-center gap-5'>
-          <Link to="/search" className="text-blue-300 bg-black h-full p-2 font-bold hover:text-white text-xl">
+          <Link to="/search" className="mx-auto px-10 mr-0 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-500">
             <span>Go Home</span>
           </Link>
-          <Link to={`/home/bookings/${bookingId}`} className="text-blue-300 bg-black h-full p-2 font-bold hover:text-white text-xl">
+          <Link to={`/home/bookings/${bookingId}`} className="mx-auto px-10 mr-0 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-500">
             <span>Orders</span>
           </Link>
         </div>

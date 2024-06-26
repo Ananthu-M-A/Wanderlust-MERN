@@ -68,7 +68,7 @@ const Search = () => {
 
   return (
     <div className="grid grid-cols-1">
-      <div className="rounded-lg border border-slate-300 pt-5 h-fit sticky w-full bg-white opacity-80">
+      <div className="rounded-lg border border-slate-300 pt-5 h-fit sticky w-full bg-gray-100 opacity-80">
         <div className="ml-auto flex items-center p-3">
           <h3 className="text-md font-semibold border-b">
             Sort by <button className="mt-0 p-0 w-3">

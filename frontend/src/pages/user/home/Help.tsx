@@ -29,7 +29,7 @@ const Help = () => {
     }, [name, roomId]);
 
     return (
-        <div className="flex flex-col h-screen justify-center items-center bg-blue-100 rounded">
+        <div className="flex flex-col h-screen justify-center items-center bg-gray-100 rounded">
             <ChatWindow socket={socket} name={name} roomId={roomId} />
         </div>
     );

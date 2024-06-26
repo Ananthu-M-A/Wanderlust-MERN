@@ -28,7 +28,7 @@ const LogoutButton = ({ isAdmin }: Props) => {
         onSuccess: async () => {
             await queryClient.invalidateQueries("validateToken");
             showToast({ message: "Loggedout Successfully!", type: "SUCCESS" });
-            navigate("/");
+            navigate("/search");
         },
         onError: (error) => { 
             if(error instanceof Error)

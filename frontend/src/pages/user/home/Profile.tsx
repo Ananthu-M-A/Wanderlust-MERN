@@ -56,7 +56,7 @@ const Profile = () => {
 
     return (
         <>
-            <form className="flex flex-col gap-5" onSubmit={onSubmit} encType="multipart/form-data">
+            <form className="flex flex-col gap-5 bg-gray-200 border border-slate-300 rounded p-5" onSubmit={onSubmit} encType="multipart/form-data">
                 <h2 className="text-3xl font-bold">Profile</h2>
                 <div className="flex items-center justify-center">
                     <div className="h-20 w-20 overflow-hidden bg-gray-300 rounded-full border-4 flex-shrink-0">
@@ -92,7 +92,7 @@ const Profile = () => {
                     <label className="text-gray-700 text-sm font-bold flex-1">
                         Email
                         <input type="email" disabled
-                            className="border rounded w-full py-1 px-2 font-normal"
+                            className="border rounded w-full py-1 px-2 font-normal bg-gray-100"
                             {...register('email', {
                                 required: "This feild is required",
                                 pattern: { value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/, message: "Enter a valid Email, Eg:- user@example.com" },
@@ -112,7 +112,7 @@ const Profile = () => {
                     <label className="text-gray-700 text-sm font-bold flex-1">
                         Profile Picture
                         <input type="file" accept="image/*"
-                            className="w-full text-gray-700 font-normal border"
+                            className="w-full text-gray-700 font-normal border bg-gray-100"
                             {...register("imageFile")} />
                         {errors.imageFile && (<span className="text-red-500">{errors.imageFile.message}</span>)}
                     </label>
@@ -134,7 +134,7 @@ const Profile = () => {
                     </label>
                 </div>
                 <span>
-                    <button className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl mt-4">
+                    <button className="mx-auto px-10 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-500">
                         {isLoading ? <span>Updating...</span> : <span>Update Profile</span>}
                     </button>
                 </span>

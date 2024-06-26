@@ -51,7 +51,7 @@ const Bookings = () => {
     const sortedFilteredBookings = searchData.trim() ? bookings?.filter(booking => (booking._id === searchData || booking._id === searchData)) : bookings;
 
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto bg-gray-300 p-5 border border-slate-300 rounded">
             <ConfirmModal isOpen={showModal} message={`Do you really wish to cancel this booking?`}
                 onClose={function (): void { setShowModal(false); }}
                 onConfirm={async function (): Promise<void> {
@@ -67,7 +67,7 @@ const Bookings = () => {
                         className="text-md w-full focus:outline-none"
                         onChange={(event) => { setSearchData(event.target.value) }}
                     />
-                    <button className="w-100 font-bold text-xl hover:text-blue-600 px-2" onClick={handleClear}>
+                    <button className="w-100 font-semibold text-lg hover:shadow px-2" onClick={handleClear}>
                         Clear
                     </button>
                 </div>
@@ -75,7 +75,7 @@ const Bookings = () => {
                     {(searchData === "") &&
                         <h6 className="ml-2">Showing latest bookings...</h6>}
                     {sortedFilteredBookings?.length ? sortedFilteredBookings.map((booking: BookingType) => (
-                        <div key={booking._id} className="bg-white rounded shadow p-4 hover:shadow-lg scroll">
+                        <div key={booking._id} className="bg-white rounded shadow p-4 mt-5 hover:shadow-lg scroll">
                             <div className="flex justify-between">
                                 {booking.hotelId && (<>
                                     <span className="text-lg font-semibold mb-2">{booking.hotelId.name}
@@ -88,7 +88,7 @@ const Bookings = () => {
                                     </span>
                                 </>)}
                                 {(booking.bookingStatus === "active") ?
-                                    (<button className="text-lg font-bold mb-2 text-blue-800 hover:text-blue-600"
+                                    (<button className="text-lg font-semibold px-2 text-black hover:shadow"
                                         onClick={() => { handleCancel(booking._id) }}>
                                         Cancel
                                     </button>) :

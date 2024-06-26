@@ -51,7 +51,7 @@ const Header = () => {
           ) : (
             <>
               {!isLoggedIn ? (
-                <Link to="/login" className="text-black hover:text-headerColor font-semibold">Login</Link>
+                <Link to="/login" className="px-4 py-2 cursor-pointer text-black font-semibold hover:bg-gray-100">Login</Link>
               ) : (
                 <div className="flex mb-4 md:mb-0">
                   <h5 className="px-4 py-2 hover:bg-gray-100 font-semibold"><Link to="/home/account">Profile</Link></h5>

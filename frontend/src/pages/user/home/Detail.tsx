@@ -17,7 +17,7 @@ const Detail = () => {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 bg-gray-100 p-5 border border-slate-300 rounded">
             <div>
                 <span className="flex">
                     {
