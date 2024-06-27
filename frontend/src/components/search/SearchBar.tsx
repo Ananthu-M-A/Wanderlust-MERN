@@ -136,7 +136,7 @@ const SearchBar = () => {
                     className="flex-1 p-2 border-2"
                     onChange={(event) => { setDestination(event.target.value) }} />
             </div>
-            <button type="submit" className="mx-auto px-10 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-300">
+            <button type="submit" className="mx-auto px-10 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-500">
                 SEARCH
             </button>
             <GoogleMap searchInput={searchInput} onInputChange={handleSearchInputChange} sendDataToParent={handleData} />
