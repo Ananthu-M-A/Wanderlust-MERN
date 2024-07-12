@@ -63,7 +63,7 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
     })
     return (
         <FormProvider {...formMethods}>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} className="bg-gray-200 p-5 border border-slate-300 rounded">
                 <DetailsSection />
                 <WorkingHours />
                 <TypesSection />
@@ -71,7 +71,7 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
                 <FacilitiesSection />
                 <ImagesSection />
                 <span className="flex justify-end">
-                    <button className="bg-black text-blue-300 p-2 mt-2 font-bold hover:text-white text-xl disabled:bg-gray-500"
+                    <button className="mx-auto rounded-md bg-blue-400 text-md font-semibold text-white flex items-center p-2 mt-2 mr-0 hover:bg-blue-500"
                         disabled={isLoading} type="submit">
                         {((pathname === "/admin/add-restaurant") ? (isLoading ? "Please wait..." : "Add Restaurant") : (isLoading ? "Please wait..." : "Update Restaurant"))}
                     </button>

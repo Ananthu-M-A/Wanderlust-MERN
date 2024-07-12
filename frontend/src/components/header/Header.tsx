@@ -23,7 +23,7 @@ const Header = () => {
   return (
     <div className="bg-gray-200 py-4 top-0 z-50">
       <div className="container mx-auto flex justify-between items-center flex-wrap">
-        <Link to="/search" className="text-3xl text-white font-bold tracking-tight mb-4 md:mb-0">
+        <Link to="/search" className="text-3xl font-bold tracking-tight mb-4 md:mb-0">
           <img src="/logonobg2.png" style={{ height: "35px" }} alt="" />
           {isAdminLoggedIn && <span className='text-sm flex'><Link to="/admin/dashboard" >ADMIN</Link></span>}
         </Link>
@@ -31,9 +31,15 @@ const Header = () => {
           {isAdminLoggedIn ? (
             <>
               <div className="relative mb-4 md:mb-0">
-                <button className='text-blue-300 font-bold hover:text-white' onClick={handleDropdownToggle}>
+                <h3 className="px-4 py-2 cursor-pointer text-black font-semibold hover:bg-gray-100" onClick={handleDropdownToggle}>
                   Dashboard
-                </button>
+                  <button className="w-3 h-7 ml-1 py-2">
+                    <img src="/drop-down-arrow2.png" alt="Toggle filter visibility" />
+                  </button>
+                </h3>
+                {/* <button className='px-4 py-2 cursor-pointer text-black font-semibold hover:bg-gray-100' onClick={handleDropdownToggle}>
+                  Dashboard
+                </button> */}
                 {isDropdownOpen && (
                   <div className="absolute top-12 md:top-auto right-0 z-10 bg-white border border-gray-200 rounded shadow-md">
                     <ul onClick={() => setIsDropdownOpen(false)}>
@@ -46,7 +52,7 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <NavLink className='text-blue-300 font-bold hover:text-white' to="/admin/chat" {...activeClassNameProp}>Chat</NavLink>
+              <NavLink className='px-4 py-2 cursor-pointer text-black font-semibold hover:bg-gray-100' to="/admin/chat" {...activeClassNameProp}>Chat</NavLink>
             </>
           ) : (
             <>

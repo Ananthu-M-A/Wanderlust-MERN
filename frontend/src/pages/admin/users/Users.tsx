@@ -74,7 +74,7 @@ const Users = () => {
                     <input placeholder="Search users by name, email or mobile..." value={searchData}
                         className="text-md w-full focus:outline-none"
                         onChange={(event) => { setSearchData(event.target.value) }} />
-                    <button className="w-100 font-bold text-xl hover:text-blue-600"
+                    <button className="w-100 font-semibold text-lg hover:shadow px-2"
                         onClick={handleClear}>
                         Clear
                     </button>
@@ -104,14 +104,14 @@ const Users = () => {
                                             {user.isBlocked ? (
                                                 <button
                                                     onClick={() => handleUnblock(user._id)}
-                                                    className="w-100 text-blue-600 h-full p-2 font-bold text-xl hover:text-red-600"
+                                                    className="w-100 text-blue-600 h-full p-2 font-semibold text-lg hover:text-red-600 hover:shadow-lg px-2 py-1"
                                                 >
                                                     Unblock
                                                 </button>
                                             ) : (
                                                 <button
                                                     onClick={() => handleBlock(user._id)}
-                                                    className="w-100 text-red-600 h-full p-2 font-bold text-xl hover:text-blue-600"
+                                                    className="w-100 text-red-600 h-full p-2 font-semibold text-lg hover:text-blue-600 hover:shadow-lg px-2 py-1"
                                                 >
                                                     Block
                                                 </button>

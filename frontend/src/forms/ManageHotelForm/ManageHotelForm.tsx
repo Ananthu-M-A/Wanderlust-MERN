@@ -60,7 +60,7 @@ const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
     })
     return (
         <FormProvider {...formMethods}>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} className="bg-gray-200 p-5 border border-slate-300 rounded">
                 <DetailsSection />
                 <RoomsAndPriceSection />
                 <TypesSection />
@@ -68,7 +68,7 @@ const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
                 <GuestSection />
                 <ImagesSection />
                 <span className="flex justify-end">
-                    <button className="bg-black text-blue-300 p-2 mt-2 font-bold hover:text-white text-xl disabled:bg-gray-500"
+                    <button className="mx-auto rounded-md bg-blue-400 text-md font-semibold text-white flex items-center p-2 mt-2 mr-0 hover:bg-blue-500"
                         disabled={isLoading} type="submit">
                         {((pathname === "/admin/add-hotel") ? (isLoading ? "Please wait..." : "Add Hotel") : (isLoading ? "Please wait..." : "Update Hotel"))}
                     </button>

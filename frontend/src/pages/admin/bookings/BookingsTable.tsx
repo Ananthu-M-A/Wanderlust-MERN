@@ -29,7 +29,7 @@ const BookingsTable = () => {
     }, [])
 
     return (
-        <div className="space-y-5">
+        <div className="bg-gray-300 p-5 border border-slate-300 rounded space-y-5">
             <span className="flex justify-between">
                 <h1 className="text-3xl font-bold">Bookings</h1>
             </span>
@@ -38,7 +38,7 @@ const BookingsTable = () => {
                     <input placeholder="Search bookings by booking ID..." value={searchData}
                         className="text-md w-full focus:outline-none"
                         onChange={(event) => { setSearchData(event.target.value) }} />
-                    <button className="w-100 font-bold text-xl hover:text-blue-600"
+                    <button className="w-100 font-semibold text-lg hover:shadow px-2"
                         onClick={handleClear}>
                         Clear
                     </button>
@@ -72,7 +72,7 @@ const BookingsTable = () => {
                                     <div className="flex justify-center">
                                         <span className="mr-4">
                                             <Link to={`/admin/booking-details/${booking._id}`}
-                                                className="flex text-black text-xl font-bold p-2">
+                                                className="flex text-black text-lg font-semibold p-2 hover:shadow-lg px-2 py-1">
                                                 View
                                             </Link>
                                         </span>
