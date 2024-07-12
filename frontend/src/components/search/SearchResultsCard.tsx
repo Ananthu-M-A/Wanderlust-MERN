@@ -8,11 +8,11 @@ type Props = {
 
 const SearchResultsCard = ({ hotel }: Props) => {
     return (
-        <div className="grid grid-cols-2 xl:grid-cols-[2fr_3fr] border border-slate-300 rounded-lg p-8 gap-8 bg-gray-100  hover:bg-blue-100">
-            <div className="w-full h-[300px]">
-                <img src={hotel.imageUrls[0]} className="w-full h-full object-cover object-center" />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[2fr_3fr] border border-slate-300 rounded-lg p-4 md:p-8 gap-4 md:gap-8 bg-gray-100 hover:bg-blue-100">
+            <div className="w-full h-[200px] md:h-[300px]">
+                <img src={hotel.imageUrls[0]} className="w-full h-full object-cover object-center rounded-lg" />
             </div>
-            <div className="grid grid-rows-[1fr_2fr_1fr]">
+            <div className="grid grid-rows-[1fr_2fr_1fr] gap-2 md:gap-4">
                 <div>
                     <div className="flex items-center">
                         <span className="flex">
@@ -24,33 +24,33 @@ const SearchResultsCard = ({ hotel }: Props) => {
                             {hotel.type}
                         </span>
                     </div>
-                    <Link to={`/detail/${hotel._id}`} className="text-2xl font-bold cursor-pointer">
+                    <Link to={`/detail/${hotel._id}`} className="text-xl md:text-2xl font-bold cursor-pointer">
                         {hotel.name}
                     </Link>
                 </div>
 
                 <div>
-                    <div className="line-clamp-4">
+                    <div className="line-clamp-3 md:line-clamp-4">
                         {hotel.description}
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 items-end whitespace-nowrap">
-                    <div className="flex gap-1 items-center">
+                    <div className="flex gap-1 items-center flex-wrap">
                         {hotel.facilities.slice(0, 3).map((facility, index) => (
-                            <span key={index} className="bg-slate-300 p-2 rounded-lg font-bold text-xs whitespace-nowrap">
+                            <span key={index} className="bg-slate-300 p-1 md:p-2 rounded-lg font-bold text-xs whitespace-nowrap">
                                 {facility}
                             </span>
                         ))}
-                        <span className="text-sm">
+                        <span className="text-xs md:text-sm">
                             {hotel.facilities.length > 3 && `+${hotel.facilities.length - 3} more`}
                         </span>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                        <span className="font-bold">
+                        <span className="font-bold text-sm md:text-base">
                             ₹{hotel.roomTypes[0] ? hotel.roomTypes[0].price : 0} per night
                         </span>
-                        <Link to={`/detail/${hotel._id}`} className="mx-auto px-2 py-1 mr-0 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-500">
+                        <Link to={`/detail/${hotel._id}`} className="px-2 py-1 rounded-md bg-blue-400 text-sm md:text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-500">
                             View more
                         </Link>
                     </div>
