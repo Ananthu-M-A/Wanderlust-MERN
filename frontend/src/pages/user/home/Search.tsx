@@ -69,32 +69,32 @@ const Search = () => {
   return (
     <div className="grid grid-cols-1">
       <div className="rounded-lg border border-slate-300 pt-5 h-fit sticky w-full bg-gray-100 opacity-80">
-        <div className="ml-auto flex items-center p-3">
-          <h3 className="text-md font-semibold border-b">
-            Sort by <button className="mt-0 p-0 w-3">
-              <img src="drop-down-arrow.png" alt="" />
-            </button>
-          </h3>
-          <select value={sortOption} onChange={(event) => setSortOption(event.target.value)}
-            className="border rounded-md">
-            <option value="">Sort by</option>
-            <option value="starRating">Star Rating</option>
-            <option value="pricePerNightAsc">Price Per Night(low to high)</option>
-            <option value="pricePerNightDesc">Price Per Night(high to low)</option>
-          </select>
-        </div>
-        <div className="flex gap-4 ml-3">
-          <h3 className="text-md font-semibold border-b mb-2">
-            Filter by <button className="w-3" onClick={() => { setShowFilter(!showFilter) }}>
-              <img src="drop-down-arrow.png" alt="" />
-            </button>
-          </h3>
-          {showFilter && <>
-            <StarRatingFilter selectedStars={selectedStars} onChange={handleStarChange} />
-            <HotelTypesFilter selectedHotelTypes={selectedHotelTypes} onChange={handleHotelTypeChange} />
-            <FacilitiesFilter selectedFacilities={selectedFacilities} onChange={handleFacilityChange} />
-            <PriceFilter selectedPrice={selectedPrice} onChange={(value?: number) => setSelectedPrice(value)} />
-          </>}
+        <div className="flex items-start justify-between p-3">
+          <div className="flex gap-4">
+            <h3 className="text-md font-semibold border-b mb-2">
+              Filter by <button className="w-3" onClick={() => { setShowFilter(!showFilter) }}>
+                <img src="drop-down-arrow.png" alt="" />
+              </button>
+            </h3>
+            {showFilter && <>
+              <StarRatingFilter selectedStars={selectedStars} onChange={handleStarChange} />
+              <HotelTypesFilter selectedHotelTypes={selectedHotelTypes} onChange={handleHotelTypeChange} />
+              <FacilitiesFilter selectedFacilities={selectedFacilities} onChange={handleFacilityChange} />
+              <PriceFilter selectedPrice={selectedPrice} onChange={(value?: number) => setSelectedPrice(value)} />
+            </>}
+          </div>
+          <div className="flex items-center">
+            <h3 className="text-md font-semibold border-b">
+              Sort by 
+            </h3>
+            <select value={sortOption} onChange={(event) => setSortOption(event.target.value)}
+              className="border rounded-md ml-2">
+              <option value="">Sort by</option>
+              <option value="starRating">Star Rating</option>
+              <option value="pricePerNightAsc">Price Per Night(low to high)</option>
+              <option value="pricePerNightDesc">Price Per Night(high to low)</option>
+            </select>
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-1">
