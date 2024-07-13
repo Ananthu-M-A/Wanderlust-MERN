@@ -57,7 +57,7 @@ const Users = () => {
     }, [handleBlock, handleUnblock])
 
     return (
-        <div className="space-y-5">
+        <div className="bg-gray-300 p-5 border border-slate-300 rounded space-y-5">
             <span className="flex justify-between">
                 <h1 className="text-3xl font-bold">Users</h1>
             </span>

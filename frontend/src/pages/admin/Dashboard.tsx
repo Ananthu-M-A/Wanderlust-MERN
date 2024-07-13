@@ -14,7 +14,7 @@ const Dashboard = () => {
     const totalCost = bookings?.data.reduce((total, booking) => total + booking.totalCost, 0);
 
     return (
-        <div className="container mx-auto px-4 py-8 space-y-5">
+        <div className="container mx-auto px-4 py-8 bg-gray-300 border border-slate-300 rounded space-y-5">
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-gray-100 p-4 rounded-lg shadow-md">
