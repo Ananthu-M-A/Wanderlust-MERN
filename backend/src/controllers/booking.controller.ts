@@ -267,16 +267,16 @@ export const downloadDoc = async (req: Request, res: Response) => {
         const user = await User.findOne({ _id: req.userId });
 
         if (user && hotel && booking) {
-            const pdfPath = createPDF(booking, user, hotel);
+            const pdfBuffer = await createPDF(booking, user, hotel);
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', `attachment; filename=wanderlust_booking_id_${bookingId}.pdf`);
-            res.send(pdfPath);
+            res.send(pdfBuffer);
         }
         if (user && booking && restaurant) {
-            const pdfPath = createPDF(booking, user, undefined, restaurant);
+            const pdfBuffer = createPDF(booking, user, undefined, restaurant);
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', `attachment; filename=wanderlust_booking_id_${bookingId}.pdf`);
-            res.send(pdfPath);
+            res.send(pdfBuffer);
         }
     } catch (error) {
         console.log("Error in downloading payment receipt", error);

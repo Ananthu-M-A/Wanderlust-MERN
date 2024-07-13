@@ -31,7 +31,12 @@ const Bookings = () => {
     const handleDownloadDoc = async (bookingId: string) => {
         try {
             const url = await apiClient.downloadDoc(bookingId);
-            window.open(url, '_blank');
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `wanderlust_booking_id_${bookingId}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         } catch (error) {
             console.error('Error downloading document:', error);
         }
