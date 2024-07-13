@@ -67,7 +67,7 @@ const Search = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="rounded-lg border border-slate-300 h-fit sticky w-full bg-gray-100 opacity-80 top-0 z-10 p-3">
+      <div className="rounded-lg border border-slate-300 h-fit sticky w-full bg-gray-100 opacity-80 top-0 p-3">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-start">
           <div className="flex flex-col gap-4 w-full md:w-auto">
             <div className="flex justify-start items-center">

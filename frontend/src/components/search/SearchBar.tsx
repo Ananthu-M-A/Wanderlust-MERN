@@ -75,7 +75,7 @@ const SearchBar = () => {
     return (
         <form onSubmit={handleSubmit} className="w-full md:w-1/2 mx-auto my-10 py-5 px-4 md:px-10 bg-gray-100 rounded shadow-md grid grid-cols-1 gap-4">
             <h1 className="text-black text-xl font-bold text-center">Hotels</h1>
-            <div className="flex flex-col md:flex-row w-full gap-4">
+            <div className="flex flex-col md:flex-row w-full gap-3">
                 <label className="flex-1">
                     Check-In:
                     <DatePicker
@@ -132,7 +132,7 @@ const SearchBar = () => {
                 </label>
             </div>
             <div className="flex items-center w-full gap-2 p-2 border-2">
-                <input placeholder="Enter destination?" value={destination}
+                <input placeholder="Enter destination..." value={destination}
                     className="flex-1 p-2 border-2"
                     onChange={(event) => { setDestination(event.target.value) }} />
             </div>
