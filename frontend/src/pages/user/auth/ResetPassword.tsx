@@ -62,8 +62,8 @@ const ResetPassword = () => {
     }
 
     return (
-        <>
-            <form className="flex flex-col gap-5" onSubmit={onSubmit}>
+        <div className="bg-gray-200 border border-slate-300 rounded">
+            <form className="flex flex-col gap-5 bg-gray-200 p-5 rounded" onSubmit={onSubmit}>
                 <h2 className="text-3xl font-bold">Reset Password</h2>
                 <label className="text-gray-700 text-sm font-bold flex-1">
                     Email
@@ -107,44 +107,41 @@ const ResetPassword = () => {
                     </label>
                 </div>
                 <span>
-                    <button type="submit" className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl">
+                    <button type="submit" className="mx-auto px-10 rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-500">
                         Send OTP
                     </button>
                 </span>
             </form>
+            <div className="flex flex-col gap-5 bg-gray-200 pb-5 rounded">
+                {showComponent && timeLeft > 0 && (
+                    <span className="font-semibold text-center">Timer: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+                )}
 
-            {showComponent && timeLeft > 0 && (
-                <div>
-                    <span className="mt-4 font-semibold">Timer: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
-                </div>
-            )}
+                {!showComponent && timeLeft < 0 && (
+                    <span className="font-bold text-red-600 text-center">OTP Timeout! Send Again.</span>
+                )}
 
-            {!showComponent && timeLeft < 0 && (
-                <div>
-                    <span className="mt-4 font-bold text-red-600">OTP Timeout! Send Again.</span>
-                </div>
-            )}
-
-            {showComponent && timeLeft > 0 && (
-                <>
-                    <label className="text-gray-700 text-sm font-bold flex-1">
-                        Enter OTP
-                        <input
-                            type="text"
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value)}
-                            className="border rounded w-full py-1 px-2 font-normal"
-                        />
-                    </label>
-                    <button
-                        onClick={handleOtpVerification}
-                        className="bg-black text-blue-300 p-2 font-bold hover:text-white text-xl mt-4"
-                    >
-                        Reset Password
-                    </button>
-                </>
-            )}
-        </>
+                {showComponent && timeLeft > 0 && (
+                    <>
+                        <label className="text-gray-700 text-sm font-bold flex-1 p-5">
+                            Enter OTP
+                            <input
+                                type="text"
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                                className="border rounded w-full py-1 px-2 font-normal"
+                            />
+                        </label>
+                        <button
+                            onClick={handleOtpVerification}
+                            className="mx-auto rounded-md bg-blue-400 text-xl font-semibold text-white flex items-center p-2 hover:bg-blue-500"
+                        >
+                            Reset Password
+                        </button>
+                    </>
+                )}
+            </div>
+        </div>
     );
 };
 
