@@ -30,7 +30,8 @@
     "pdfkit": "^0.14.0",
     "redis": "^4.6.13",
     "socket.io": "^4.7.5",
-    "stripe": "^14.17.0"
+    "stripe": "^14.17.0",
+    "nodemon": "^3.0.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
