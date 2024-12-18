@@ -4,6 +4,9 @@
   "description": "",
   "main": "./src/index.ts",
   "type": "commonjs",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "build": "tsc"
