@@ -141,12 +141,12 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
             const user = await User.findOne({ _id: req.userId });
             const hotel = await Hotel.findOne({ _id: paymentData.hotelId });
             if (hotel && user && newBooking) {
-                createPDF(newBooking, user, hotel);
+                const pdfBuffer = await createPDF(newBooking, user, hotel);
                 const recipientEmail = user.email;
                 const subject = `Confirmation of Your Hotel Booking - [${newBooking._id}]`;
                 const attachments: Attachment[] = [{
                     filename: `wanderlust_booking_id_${newBooking._id}.pdf`,
-                    path: `wanderlust_booking_id_${newBooking._id}.pdf`
+                    content: pdfBuffer
                 }];
                 const emailContent = createBookingMail(newBooking, user, hotel);
                 if (emailContent) {
@@ -180,12 +180,12 @@ export const loadCheckoutResult = async (req: Request, res: Response) => {
             const user = await User.findOne({ _id: req.userId });
             const restaurant = await Restaurant.findOne({ _id: paymentData.restaurantId });
             if (restaurant && user && newBooking) {
-                createPDF(newBooking, user, undefined, restaurant);
+                const pdfBuffer = await createPDF(newBooking, user, undefined, restaurant);
                 const recipientEmail = user.email;
                 const subject = `Confirmation of Your Restaurant Booking - [${newBooking._id}]`;
                 const attachments: Attachment[] = [{
                     filename: `wanderlust_booking_id_${newBooking._id}.pdf`,
-                    path: `wanderlust_booking_id_${newBooking._id}.pdf`
+                    content: pdfBuffer
                 }];
                 const emailContent = createBookingMail(newBooking, user, undefined, restaurant);
                 if (emailContent) {
